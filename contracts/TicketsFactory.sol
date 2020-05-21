@@ -16,10 +16,13 @@ contract TicketsFactory is Ownable{
 
   mapping(uint => address) public ticketToOwner; //maps ticket id to owner
 
+  event ticketCreated(uint32 _identifier, address _owner);
+
   function _createTickets(uint32 _identifier, string memory _seatNumber) private onlyOwner {
     tickets.push(Ticket(_identifier, _seatNumber));
     ticketToOwner[id] = msg.sender;
     id++;
+    emit ticketCreated(_identifier, msg.sender);
   }
 
 }
