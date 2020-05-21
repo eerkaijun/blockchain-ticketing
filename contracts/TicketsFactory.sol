@@ -1,8 +1,10 @@
 pragma solidity >=0.6.0 <0.7.0;
 
-contract TicketsFactory {
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-  uint private id = 0; //might be gas expensive as a storage variable? 
+contract TicketsFactory is Ownable{
+
+  uint private id = 0; //might be gas expensive as a storage variable?
 
   struct Ticket {
     uint32 identifier;
@@ -14,7 +16,7 @@ contract TicketsFactory {
 
   mapping(uint => address) public ticketToOwner; //maps ticket id to owner
 
-  function _createTickets(uint32 _identifier, string memory _seatNumber) private {
+  function _createTickets(uint32 _identifier, string memory _seatNumber) private onlyOwner {
     tickets.push(Ticket(_identifier, _seatNumber));
     ticketToOwner[id] = msg.sender;
     id++;
