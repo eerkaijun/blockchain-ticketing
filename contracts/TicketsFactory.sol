@@ -4,8 +4,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TicketsFactory is Ownable{
 
-  uint private id = 0; //might be gas expensive as a storage variable?
-
   struct Ticket {
     uint32 identifier;
     string seatNumber;
@@ -20,8 +18,7 @@ contract TicketsFactory is Ownable{
 
   function _createTickets(uint32 _identifier, string memory _seatNumber) private onlyOwner {
     tickets.push(Ticket(_identifier, _seatNumber));
-    ticketToOwner[id] = msg.sender;
-    id++;
+    ticketToOwner[tickets.length-1] = msg.sender;
     emit ticketCreated(_identifier, msg.sender);
   }
 
