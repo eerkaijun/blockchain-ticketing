@@ -16,7 +16,7 @@ contract TicketsFactory is Ownable{
 
   event ticketCreated(uint32 _identifier, address _owner);
 
-  function _createTickets(uint32 _identifier, string memory _seatNumber) private onlyOwner {
+  function createTickets(uint32 _identifier, string memory _seatNumber) public onlyOwner {
     tickets.push(Ticket(_identifier, _seatNumber));
     ticketToOwner[tickets.length-1] = msg.sender;
     emit ticketCreated(_identifier, msg.sender);
