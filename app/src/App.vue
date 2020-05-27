@@ -25,6 +25,14 @@
         <v-btn color="info">Login</v-btn>
       </v-card-actions>
     </v-card>
+    <v-card>
+      <v-card-title>
+        <h1>Purchase Tickets</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-btn color="purple">Buy</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-app>
 </template>
 
