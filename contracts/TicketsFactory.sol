@@ -12,7 +12,7 @@ contract TicketsFactory is Ownable{
   //@dev list of tickets for the event, with index of tickets as its id
   Ticket[] public tickets;
 
-  mapping(uint => address) public ticketToOwner; //maps ticket id to owner
+  mapping(uint => address) public ticketToOwner; //maps ticket id to owner (id starts from zero)
 
   event ticketCreated(uint32 _identifier, address _owner);
 
