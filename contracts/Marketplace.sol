@@ -8,9 +8,9 @@ contract Marketplace is TicketsFactory, ERC721 {
   uint resellAdditionalPrice; //upper limit of the resell price
   uint maxTicketNum; //upper limit of how many tickets one can buy
 
-  constructor(uint price, uint num) ERC721("NFT Ticket", "TIX") public {
-    resellAdditionalPrice = price;
-    maxTicketNum = num;
+  constructor() ERC721("NFT Ticket", "TIX") public {
+    resellAdditionalPrice = 0.01 ether;
+    maxTicketNum = 10;
   }
 
   //Available function: setApprovalForAll(address to, bool approved)
