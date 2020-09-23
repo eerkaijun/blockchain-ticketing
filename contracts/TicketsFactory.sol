@@ -4,8 +4,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TicketsFactory is Ownable{
 
+ // this metadata should probably be stored off chain -- IPFS
   struct Ticket {
-    uint32 identifier;
+    uint32 price;
     string seatNumber;
   }
 
@@ -13,13 +14,16 @@ contract TicketsFactory is Ownable{
   Ticket[] public tickets;
 
   mapping(uint => address) public ticketToOwner; //maps ticket id to owner (id starts from zero)
+  // how to prevent other from editting this mapping
 
-  event ticketCreated(uint32 _identifier, address _owner);
+  event ticketCreated(uint _id, address _owner);
 
-  function createTickets(uint32 _identifier, string memory _seatNumber) public onlyOwner {
-    tickets.push(Ticket(_identifier, _seatNumber));
-    ticketToOwner[tickets.length-1] = msg.sender;
-    emit ticketCreated(_identifier, msg.sender);
+  // should be called recursively if to create multiple tickets
+  function createTicket(uint32 _price, string memory _seatNumber) public onlyOwner {
+    tickets.push(Ticket(_price, _seatNumber));
+    uint id = tickets.length-1;
+    ticketToOwner[id] = msg.sender;
+    emit ticketCreated(id, msg.sender);
   }
 
 }
