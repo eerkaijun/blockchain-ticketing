@@ -21,8 +21,8 @@ contract Marketplace is TicketsFactory, ERC721 {
   function buyTicket(uint256 _tokenId) external payable {
     Ticket memory ticket = tickets[_tokenId];
     address seller = ticketToOwner[_tokenId];
-    require(msg.value >= ticket.price);
-    require(balanceOf(msg.sender) <= maxTicketNum);
+    require(msg.value == ticket.price, "payment failed");
+    require(balanceOf(msg.sender) <= maxTicketNum, "not enough balance");
     safeTransferFrom(seller, msg.sender, _tokenId); // need to make sure msg.sender is first added to approved list
     ticketToOwner[_tokenId] = msg.sender;
   }
