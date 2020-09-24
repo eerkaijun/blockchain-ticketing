@@ -4,6 +4,22 @@ import "./TicketsFactory.sol";
 //import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Marketplace is TicketsFactory {
+
+  uint private _maxTicketNum;
+
+  constructor() public {
+    _maxTicketNum = 10;
+  }
+
+  //Primary marketplace
+
+  // this function should be called by the buyer (should be a private function called by another function)
+  function transferTicket(uint256 _tokenId) external {
+    address seller = ownerOf(_tokenId);
+    require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
+    safeTransferFrom(seller, msg.sender, _tokenId); // need to make sure msg.sender is first added to approved list
+  }
+
   /*
   uint resellAdditionalPrice; //upper limit of the resell price
   //uint maxTicketNum; //upper limit of how many tickets one can buy
