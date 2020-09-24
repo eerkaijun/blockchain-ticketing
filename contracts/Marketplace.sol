@@ -6,12 +6,15 @@ import "./TicketsFactory.sol";
 contract Marketplace is TicketsFactory {
 
   uint private _maxTicketNum;
+  uint private _ticketPrice;
 
   constructor() public {
     _maxTicketNum = 10;
+    _ticketPrice = 3 ether; 
   }
 
-  function buyTicket(uint256 _tokenId) external {
+  function buyTicket(uint256 _tokenId) external payable {
+    require(msg.value >= _ticketPrice);
     _transferTicket(_tokenId);
   }
 

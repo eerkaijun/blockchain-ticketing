@@ -1,5 +1,5 @@
-
 const Marketplace = artifacts.require("Marketplace");
+const utils = require("./helpers/utils");
 
 contract("Marketplace", (accounts) => {
   let [owner, user] = accounts;
@@ -8,15 +8,21 @@ contract("Marketplace", (accounts) => {
     contractInstance = await Marketplace.new();
   });
 
-  it("User should be able to transfer ticket", async() => {
+  it("User should be able to buy ticket", async() => {
     await contractInstance.createTicket({from:owner}); //first create a ticket
     await contractInstance.setApprovalForAll(user, true, {from:owner});
-    const result = await contractInstance.buyTicket(1, {from:user});
+    const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('4','ether')});
     assert.equal(result.receipt.status, true);
     const ownerAddress = await contractInstance.ownerOf(1);
     assert.equal(ownerAddress, user, "minted tokens now owned by user");
     const balance = await contractInstance.balanceOf(owner);
     assert.equal(balance, 0, "owner doesn't hold any tokens anymore");
+  });
+
+  it("User should not be able to buy ticket below the price", async() => {
+    await contractInstance.createTicket({from:owner}); //first create a ticket
+    await contractInstance.setApprovalForAll(user, true, {from:owner});
+    await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('2','ether')}));
   });
 
 
