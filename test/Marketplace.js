@@ -9,7 +9,7 @@ contract("Marketplace", (accounts) => {
 
   it("User should be able to buy ticket", async() => {
     await contractInstance.createTicket(3, "A01", {from:owner}); //first create a ticket
-    await contractInstance.setApprovalForAll(user, true, {from:owner});
+    //await contractInstance.setApprovalForAll(user, true, {from:owner});
     const result = await contractInstance.buyTicket(0, {from:user, value:3});
     assert.equal(result.receipt.status, true);
     const ownerAddress = await contractInstance.ticketToOwner(0);
