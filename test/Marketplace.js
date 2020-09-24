@@ -1,3 +1,4 @@
+/*
 const Marketplace = artifacts.require("Marketplace");
 
 contract("Marketplace", (accounts) => {
@@ -21,3 +22,4 @@ contract("Marketplace", (accounts) => {
 
 
 })
+*/

@@ -4,7 +4,7 @@ import "./TicketsFactory.sol";
 //import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Marketplace is TicketsFactory {
-
+  /*
   uint resellAdditionalPrice; //upper limit of the resell price
   //uint maxTicketNum; //upper limit of how many tickets one can buy
 
@@ -37,7 +37,7 @@ contract Marketplace is TicketsFactory {
     //safeTransferFrom(seller, msg.sender, _tokenId); // need to make sure msg.sender is first added to approved list
     ticketToOwner[_tokenId] = msg.sender;
   }
-
+  */
 
 
 }
