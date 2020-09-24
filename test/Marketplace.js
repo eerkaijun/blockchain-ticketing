@@ -11,7 +11,7 @@ contract("Marketplace", (accounts) => {
   it("User should be able to transfer ticket", async() => {
     await contractInstance.createTicket({from:owner}); //first create a ticket
     await contractInstance.setApprovalForAll(user, true, {from:owner});
-    const result = await contractInstance.transferTicket(1, {from:user});
+    const result = await contractInstance.buyTicket(1, {from:user});
     assert.equal(result.receipt.status, true);
     const ownerAddress = await contractInstance.ownerOf(1);
     assert.equal(ownerAddress, user, "minted tokens now owned by user");

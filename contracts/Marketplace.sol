@@ -11,10 +11,14 @@ contract Marketplace is TicketsFactory {
     _maxTicketNum = 10;
   }
 
+  function buyTicket(uint256 _tokenId) external {
+    _transferTicket(_tokenId);
+  }
+
   //Primary marketplace
 
   // this function should be called by the buyer (should be a private function called by another function)
-  function transferTicket(uint256 _tokenId) external {
+  function _transferTicket(uint256 _tokenId) private {
     address seller = ownerOf(_tokenId);
     require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
     safeTransferFrom(seller, msg.sender, _tokenId); // need to make sure msg.sender is first added to approved list
