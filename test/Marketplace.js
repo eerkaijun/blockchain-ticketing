@@ -13,6 +13,8 @@ contract("Marketplace", (accounts) => {
     await contractInstance.setApprovalForAll(user, true, {from:owner});
     const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('4','ether')});
     assert.equal(result.receipt.status, true);
+    const contractBalance = await web3.eth.getBalance(contractInstance.address);
+    assert.equal(contractBalance, web3.utils.toWei('4','ether'), "contract received fund");
     const ownerAddress = await contractInstance.ownerOf(1);
     assert.equal(ownerAddress, user, "minted tokens now owned by user");
     const balance = await contractInstance.balanceOf(owner);
