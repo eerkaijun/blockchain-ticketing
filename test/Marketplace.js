@@ -21,23 +21,16 @@ contract("Marketplace", (accounts) => {
   });
 
   it("User should not be able to buy ticket below the price", async() => {
-    await contractInstance.createTicket({from:owner}); 
+    await contractInstance.createTicket({from:owner});
     await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('2','ether')}));
   });
 
-  it("Owner should be able to withdraw money from contract", async() => {
+  it("Seller should be able to withdraw money from contract", async() => {
     await contractInstance.createTicket({from:owner});
     const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
     assert.equal(result.receipt.status, true);
     await contractInstance.withdraw({from:owner});
-    const balance = await web3.eth.getBalance(contractInstance.address);
-    assert.equal(balance, 0, "money deposited into owner's account");
+    // to be added: proving money is transferred into seller's account
   })
-
-  it("User should not be able to withdraw money from contract", async() => {
-    await contractInstance.createTicket({from:owner});
-    const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
-    await utils.shouldThrow(contractInstance.withdraw({from:user}));
-  });
 
 })
