@@ -21,16 +21,12 @@ contract Marketplace is TicketsFactory {
   function buyTicket(uint256 _tokenId) external payable {
     require(msg.value >= _ticketPrice);
     require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
-    //_transferTicket(_tokenId);
     address seller = ownerOf(_tokenId);
     _safeTransfer(seller, msg.sender, _tokenId, "");
     etherBalance[seller] += msg.value;
+    emit ticketTransferred(_tokenId, msg.sender);
   }
 
-  /*
-  function _transferTicket(uint256 _tokenId) private {
-    address seller = ownerOf(_tokenId);
-    _safeTransfer(seller, msg.sender, _tokenId, "");
-  }*/
+  event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
 
 }
