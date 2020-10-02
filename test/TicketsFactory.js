@@ -9,7 +9,7 @@ contract("TicketsFactory", (accounts) => {
   });
 
   it("Owner should be able to create tickets", async() => {
-    const result = await contractInstance.createTicket({from:owner});
+    const result = await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
     assert.equal(result.receipt.status, true);
     const ownerAddress = await contractInstance.ownerOf(1);
     assert.equal(ownerAddress, owner, "minted tokens now owned by owner");
@@ -18,6 +18,6 @@ contract("TicketsFactory", (accounts) => {
   });
 
   it("Normal user should not be able to create tickets", async() => {
-    await utils.shouldThrow(contractInstance.createTicket(3, "A01", {from:user}));
+    await utils.shouldThrow(contractInstance.createTicket(0, {from:user}));
   });
 })
