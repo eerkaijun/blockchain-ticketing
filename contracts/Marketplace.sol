@@ -25,7 +25,7 @@ contract Marketplace is TicketsFactory {
   function _transferTicket(uint256 _tokenId) private {
     address seller = ownerOf(_tokenId);
     require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
-    safeTransferFrom(seller, msg.sender, _tokenId); // need to make sure msg.sender is first added to approved list
+    _safeTransfer(seller, msg.sender, _tokenId, ""); 
   }
 
 }

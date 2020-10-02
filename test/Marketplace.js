@@ -10,7 +10,6 @@ contract("Marketplace", (accounts) => {
 
   it("User should be able to buy ticket", async() => {
     await contractInstance.createTicket({from:owner}); //first create a ticket
-    await contractInstance.setApprovalForAll(user, true, {from:owner});
     const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('4','ether')});
     assert.equal(result.receipt.status, true);
     const contractBalance = await web3.eth.getBalance(contractInstance.address);
@@ -23,13 +22,11 @@ contract("Marketplace", (accounts) => {
 
   it("User should not be able to buy ticket below the price", async() => {
     await contractInstance.createTicket({from:owner}); //first create a ticket
-    await contractInstance.setApprovalForAll(user, true, {from:owner});
     await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('2','ether')}));
   });
 
   it("Owner should be able to withdraw money from contract", async() => {
     await contractInstance.createTicket({from:owner});
-    await contractInstance.setApprovalForAll(user, true, {from:owner});
     const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
     assert.equal(result.receipt.status, true);
     await contractInstance.withdraw({from:owner});
@@ -39,7 +36,6 @@ contract("Marketplace", (accounts) => {
 
   it("User should not be able to withdraw money from contract", async() => {
     await contractInstance.createTicket({from:owner});
-    await contractInstance.setApprovalForAll(user, true, {from:owner});
     const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
     await utils.shouldThrow(contractInstance.withdraw({from:user}));
   });
