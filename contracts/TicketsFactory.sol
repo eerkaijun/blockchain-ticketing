@@ -18,6 +18,7 @@ contract TicketsFactory is Ownable, ERC721{
     _incrementTokenId();
     ticketPrice[newTokenId] = _price;
     onSale[newTokenId] = false;
+    _setTokenURI(newTokenId, ""); // to be added a proper URI for IPFS
   }
 
   function changeTicketPrice(uint256 _tokenId, uint256 _price) public onlyOwner {
@@ -31,12 +32,5 @@ contract TicketsFactory is Ownable, ERC721{
   function _incrementTokenId() private  {
     _currentTokenId++;
   }
-
-  /*
-  // this metadata should probably be stored off chain -- IPFS
-  struct Ticket {
-    uint32 price;
-    string seatNumber;
-  }*/
 
 }
