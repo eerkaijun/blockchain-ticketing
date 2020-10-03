@@ -7,6 +7,7 @@ contract TicketsFactory is Ownable, ERC721{
 
   uint256 private _currentTokenId = 0;
   mapping (uint256 => uint256) ticketPrice;
+  mapping (uint256 => bool) onSale;
 
   constructor() ERC721("NFT Tickets", "TIX") public {
   }
@@ -16,6 +17,7 @@ contract TicketsFactory is Ownable, ERC721{
     _mint(msg.sender, newTokenId); //token id starts from 1
     _incrementTokenId();
     ticketPrice[newTokenId] = _price;
+    onSale[newTokenId] = false;
   }
 
   function changeTicketPrice(uint256 _tokenId, uint256 _price) public onlyOwner {
