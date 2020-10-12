@@ -27,6 +27,14 @@
     </v-card>
     <v-card>
       <v-card-title>
+        <h1>Create Tickets</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-btn v-on:click="createTicket('3')" color="blue">Mint</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
@@ -45,14 +53,14 @@ export default {
   data () {
     return {
       web3Provider: null,
-      contracts: {},
+      contract: null,
       account: '0x0',
     }
   },
 
   async mounted() {
     await this.initProvider();
-    //this.initContract();
+    await this.initContract();
   },
 
   methods: {
@@ -74,6 +82,19 @@ export default {
           alert("You changed account!");
         }
       }, 100);
+    },
+
+    async initContract() {
+      const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
+      const contractInstance = await fetch('Marketplace.json');
+      console.log(contractInstance);
+      this.contract = await web3.eth.contract(contractInstance, contractAddress);
+    },
+
+    async createTicket(price) {
+      //var ticketPrice = await web3.utils.toWei(price, 'ether');
+      await this.contract.methods.createTicket(price);
+      console.log("Ticket created successfully!");
     }
 
   }
