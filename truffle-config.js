@@ -30,6 +30,15 @@ module.exports = {
       // websockets: true        // Enable EventEmitter interface for web3 (default: false)
     // },
 
+    goerli:{
+      provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/3275f4ffdd0d4b3e8ac104b1bd78007d`),
+      network_id: 5,
+      gas: 5500000,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true     
+    },
+
     ropsten: {
       provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/3275f4ffdd0d4b3e8ac104b1bd78007d`),
       network_id: 3,       // Ropsten's id
