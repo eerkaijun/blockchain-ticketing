@@ -7,7 +7,7 @@ module.exports = {
   },
   child: {
     RPC: 'https://rpc-mumbai.matic.today',
-    DERC721: '0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651',
+    DERC721: '0x897d1430Dff9DdDcFB34E4FE6D714b9B1D8b6268',
   },
   user: {
     address: '0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A',
