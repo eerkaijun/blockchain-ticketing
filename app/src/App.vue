@@ -35,10 +35,18 @@
     </v-card>
     <v-card>
       <v-card-title>
+        <h1>Put on Sales</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-btn v-on:click="toggleSale('1')" color="green">Toggle</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-btn color="purple">Buy</v-btn>
+        <v-btn v-on:click="buyTicket('1')" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
   </v-app>
@@ -94,9 +102,18 @@ export default {
     },
 
     async createTicket(price) {
-      console.log(this.contract);
       await this.contract.methods.createTicket(price).send({from:'0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A'});
       console.log("Ticket created successfully!");
+    },
+
+    async toggleSale(id) {
+      await this.contract.methods.toggleSale(id).send({from:'0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A'});
+      console.log("Ticket put on sale!");
+    },
+
+    async buyTicket(id) {
+      await this.contract.methods.buyTicket(id).send({from:'0xA8fff942D9507Ef8fc79f44e2040333b2F24Fdd7'});
+      console.log("Ticket bought successfully!");
     }
 
   }
