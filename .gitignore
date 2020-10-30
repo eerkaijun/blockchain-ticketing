@@ -2,3 +2,9 @@ build
 node_modules
 app/node_modules
 .secret
+zokrates/first_tutorial/
+zokrates/hello_zokrates/out
+zokrates/hello_zokrates/out.ztf
+zokrates/hello_zokrates/proving.key
+zokrates/hello_zokrates/verification.key
+zokrates/hello_zokrates/witness
