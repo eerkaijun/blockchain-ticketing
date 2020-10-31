@@ -76,23 +76,26 @@ export default {
 
   methods: {
     async initProvider() {
-      if (typeof web3 !== 'undefined') {
-        this.web3Provider = web3.currentProvider;
-        web3 = new Web3(web3.currentProvider); //force it to version 1.2.7
-        console.log(web3.version);
-        this.account = web3.eth.accounts[0];
+      if (window.ethereum) {
+        this.web3Provider = window.ethereum;
+        web3 = new Web3(window.ethereum); //force it to version 1.2.8
+        console.log("Current web3 version:",web3.version);
+        let accounts = await web3.eth.getAccounts();
+        this.account = accounts[0];
+        console.log("Current connected account:",this.account);
       } else {
         console.log("Please install Metamask to continue.");
       }
 
-      setInterval(function() {
-        // Check if account has changed
-        if (web3.eth.accounts[0] !== this.account) {
-          this.account = web3.eth.accounts[0];
+      setInterval(async() => {
+        let updated;
+        updated = await web3.eth.getAccounts();
+        if (updated[0] !== this.account) {
+          this.account = updated[0];
           // Call a function to update the UI with the new account
           alert("You changed account!");
         }
-      }, 100);
+      }, 1000);
     },
 
     async initContract() {
@@ -102,17 +105,17 @@ export default {
     },
 
     async createTicket(price) {
-      await this.contract.methods.createTicket(price).send({from:'0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A'});
+      await this.contract.methods.createTicket(price).send({from:this.account});
       console.log("Ticket created successfully!");
     },
 
     async toggleSale(id) {
-      await this.contract.methods.toggleSale(id).send({from:'0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A'});
+      await this.contract.methods.toggleSale(id).send({from:this.account});
       console.log("Ticket put on sale!");
     },
 
     async buyTicket(id) {
-      await this.contract.methods.buyTicket(id).send({from:'0xA8fff942D9507Ef8fc79f44e2040333b2F24Fdd7'});
+      await this.contract.methods.buyTicket(id).send({from:this.account});
       console.log("Ticket bought successfully!");
     }
 
