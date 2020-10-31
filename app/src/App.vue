@@ -2,7 +2,7 @@
   <v-app>
     <v-card>
       <v-card-title>
-        <h1>Login</h1>
+        <h3>Address: {{account}}</h3>
       </v-card-title>
       <v-card-text>
         <v-form>
@@ -30,7 +30,8 @@
         <h1>Create Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-btn v-on:click="createTicket('3')" color="blue">Mint</v-btn>
+        <v-select v-model="price" :items="prices" label="Select Price"></v-select>
+        <v-btn v-on:click="createTicket(price)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -38,7 +39,8 @@
         <h1>Put on Sales</h1>
       </v-card-title>
       <v-card-actions>
-        <v-btn v-on:click="toggleSale('1')" color="green">Toggle</v-btn>
+        <v-text-field v-model="id" label="Select Ticket ID"></v-text-field>
+        <v-btn v-on:click="toggleSale(id)" color="green">Toggle</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -46,7 +48,8 @@
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-btn v-on:click="buyTicket('1')" color="purple">Buy</v-btn>
+        <v-select v-model="ticket" :items="tickets" label="Select Ticket ID"></v-select>
+        <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
   </v-app>
@@ -66,6 +69,11 @@ export default {
       web3Provider: null,
       contract: null,
       account: '0x0',
+      prices: ['1','2','3'],
+      price: '',
+      id: '',
+      tickets: [],
+      ticket
     }
   },
 
@@ -88,6 +96,7 @@ export default {
       }
 
       setInterval(async() => {
+        //check whether account is changed at every one second interval
         let updated;
         updated = await web3.eth.getAccounts();
         if (updated[0] !== this.account) {
