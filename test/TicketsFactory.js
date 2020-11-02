@@ -11,7 +11,7 @@ contract("TicketsFactory", (accounts) => {
   it("Owner should be able to create tickets", async() => {
     const result = await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
     assert.equal(result.receipt.status, true);
-    const ownerAddress = await contractInstance.ownerOf(1);
+    const ownerAddress = await contractInstance.ownerOf(0);
     assert.equal(ownerAddress, owner, "minted tokens now owned by owner");
     const balance = await contractInstance.balanceOf(owner);
     assert.equal(balance, 1, "owner only hold one token")

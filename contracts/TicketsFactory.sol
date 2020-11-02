@@ -7,27 +7,30 @@ contract TicketsFactory is Ownable, ERC721{
 
   uint256 private _currentTokenId = 0;
   mapping (uint256 => uint256) ticketPrice;
-  mapping (uint256 => bool) onSale;
+  //mapping (uint256 => bool) onSale;
+  bool[] public onSale;
+  //address[] public owners;
 
   constructor() ERC721("NFT Tickets", "TIX") public {
   }
 
   function createTicket(uint256 _price) public onlyOwner {
-    uint256 newTokenId = _getNextTokenId();
-    _mint(msg.sender, newTokenId); //token id starts from 1
+    //uint256 newTokenId = _getNextTokenId();
+    _mint(msg.sender, _currentTokenId); //token id starts from 0
+    ticketPrice[_currentTokenId] = _price;
+    onSale.push(false);
+    _setTokenURI(_currentTokenId, ""); // to be added a proper URI for IPFS
     _incrementTokenId();
-    ticketPrice[newTokenId] = _price;
-    onSale[newTokenId] = false;
-    _setTokenURI(newTokenId, ""); // to be added a proper URI for IPFS
   }
 
   function changeTicketPrice(uint256 _tokenId, uint256 _price) public onlyOwner {
     ticketPrice[_tokenId] = _price;
   }
 
+  /*
   function _getNextTokenId() private view returns (uint256) {
     return _currentTokenId.add(1);
-  }
+  }*/
 
   function _incrementTokenId() private  {
     _currentTokenId++;

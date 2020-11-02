@@ -10,12 +10,12 @@ contract("Marketplace", (accounts) => {
 
   it("User should be able to buy ticket when on sale", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
-    await contractInstance.toggleSale(1, {from:owner});
-    const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
+    await contractInstance.toggleSale(0, {from:owner});
+    const result = await contractInstance.buyTicket(0, {from:user, value: web3.utils.toWei('3','ether')});
     assert.equal(result.receipt.status, true);
     const contractBalance = await web3.eth.getBalance(contractInstance.address);
     assert.equal(contractBalance, web3.utils.toWei('3','ether'), "contract received fund");
-    const ownerAddress = await contractInstance.ownerOf(1);
+    const ownerAddress = await contractInstance.ownerOf(0);
     assert.equal(ownerAddress, user, "minted tokens now owned by user");
     const balance = await contractInstance.balanceOf(owner);
     assert.equal(balance, 0, "owner doesn't hold any tokens anymore");
@@ -23,25 +23,25 @@ contract("Marketplace", (accounts) => {
 
   it("User should not be able to buy ticket not on sale", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
-    await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')}));
+    await utils.shouldThrow(contractInstance.buyTicket(0, {from:user, value: web3.utils.toWei('3','ether')}));
   });
 
   it("User should not be able to buy ticket below the price", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
-    await contractInstance.toggleSale(1, {from:owner});
-    await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('2','ether')}));
+    await contractInstance.toggleSale(0, {from:owner});
+    await utils.shouldThrow(contractInstance.buyTicket(0, {from:user, value: web3.utils.toWei('2','ether')}));
   });
 
   it("User should not be able to buy ticket above 10% of original price", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
-    await contractInstance.toggleSale(1, {from:owner});
-    await utils.shouldThrow(contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3.4','ether')}));
+    await contractInstance.toggleSale(0, {from:owner});
+    await utils.shouldThrow(contractInstance.buyTicket(0, {from:user, value: web3.utils.toWei('3.4','ether')}));
   });
 
   it("Seller should be able to withdraw money from contract", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), {from:owner});
-    await contractInstance.toggleSale(1, {from:owner});
-    const result = await contractInstance.buyTicket(1, {from:user, value: web3.utils.toWei('3','ether')});
+    await contractInstance.toggleSale(0, {from:owner});
+    const result = await contractInstance.buyTicket(0, {from:user, value: web3.utils.toWei('3','ether')});
     assert.equal(result.receipt.status, true);
     await contractInstance.withdraw({from:owner});
     // to be added: proving money is transferred into seller's account
