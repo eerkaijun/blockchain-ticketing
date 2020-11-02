@@ -73,7 +73,7 @@ export default {
       price: '',
       id: '',
       tickets: [],
-      ticket
+      ticket: '',
     }
   },
 
