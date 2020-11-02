@@ -34,6 +34,7 @@ contract Marketplace is TicketsFactory{
     _safeTransfer(seller, msg.sender, _tokenId, "");
     onSale[_tokenId] = false;
     etherBalance[seller] += msg.value;
+    owners[_tokenId] = msg.sender;
     emit ticketTransferred(_tokenId, msg.sender);
   }
 

@@ -15,8 +15,10 @@ contract("Marketplace", (accounts) => {
     assert.equal(result.receipt.status, true);
     const contractBalance = await web3.eth.getBalance(contractInstance.address);
     assert.equal(contractBalance, web3.utils.toWei('3','ether'), "contract received fund");
-    const ownerAddress = await contractInstance.ownerOf(0);
-    assert.equal(ownerAddress, user, "minted tokens now owned by user");
+    const ownerAddress1 = await contractInstance.ownerOf(0);
+    const ownerAddress2 = await contractInstance.owners(0);
+    assert.equal(ownerAddress1, user, "minted tokens now owned by user");
+    assert.equal(ownerAddress2, user, "minted tokens now owned by user");
     const balance = await contractInstance.balanceOf(owner);
     assert.equal(balance, 0, "owner doesn't hold any tokens anymore");
   });
