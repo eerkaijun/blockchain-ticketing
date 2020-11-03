@@ -39,7 +39,7 @@
         <h1>Put on Sales</h1>
       </v-card-title>
       <v-card-actions>
-        <v-text-field v-model="id" label="Select Ticket ID"></v-text-field>
+        <v-select v-model="id" :items="ids" label="Select Ticket ID"></v-select>
         <v-btn v-on:click="toggleSale(id)" color="green">Toggle</v-btn>
       </v-card-actions>
     </v-card>
@@ -49,6 +49,7 @@
       </v-card-title>
       <v-card-actions>
         <v-select v-model="ticket" :items="tickets" label="Select Ticket ID"></v-select>
+        <v-card-text>The price for ticket ID {{ticket}} is {{ticketPrice}}</v-card-text>
         <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
@@ -69,17 +70,20 @@ export default {
       web3Provider: null,
       contract: null,
       account: '0x0',
-      prices: ['1','2','3'],
+      prices: ['0.01','0.02','0.03'],
       price: '',
+      ids: [],
       id: '',
       tickets: [],
       ticket: '',
+      ticketPrice: '',
     }
   },
 
   async mounted() {
     await this.initProvider();
     await this.initContract();
+    await this.initMarketplace();
   },
 
   methods: {
@@ -108,13 +112,30 @@ export default {
     },
 
     async initContract() {
-      const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
+      //const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
+      const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //new Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
     },
 
+    async initMarketplace() {
+
+      setInterval(async() => {
+        //update marketplace every 3 seconds
+        const temp = await this.contract.methods.getOnSaleLength().call();
+        var i, onSale, owner;
+        for (i=0; i<temp; i++) {
+          onSale = await this.contract.methods.onSale(i).call();
+          owner = await this.contract.methods.owners(i).call();
+          if (onSale) this.tickets.push(i);
+          if (owner == this.account) this.ids.push(i);
+        }
+      }, 3000);
+
+    },
+
     async createTicket(price) {
-      await this.contract.methods.createTicket(price).send({from:this.account});
+      await this.contract.methods.createTicket(web3.utils.toWei(price,'ether')).send({from:this.account});
       console.log("Ticket created successfully!");
     },
 
@@ -124,7 +145,8 @@ export default {
     },
 
     async buyTicket(id) {
-      await this.contract.methods.buyTicket(id).send({from:this.account});
+      const to_be_paid = await this.contract.methods.ticketPrice(id).call()
+      await this.contract.methods.buyTicket(id).send({from:this.account, value:to_be_paid});
       console.log("Ticket bought successfully!");
     }
 
