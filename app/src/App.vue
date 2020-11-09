@@ -20,11 +20,29 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="success">Register</v-btn>
+        <v-btn v-on:click="dialog=true" color="success">Register</v-btn>
         <v-spacer></v-spacer>
         <v-btn color="info">Login</v-btn>
       </v-card-actions>
     </v-card>
+    <v-dialog v-model="dialog">
+      <v-card>
+        <v-card-title>
+          <h3>Please fill in your personal details to register</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field label="Full Name"/>
+            <v-text-field label="Date of Birth"/>
+            <v-text-field label="Email Address"/>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn>Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-card>
       <v-card-title>
         <h1>Create Tickets</h1>
@@ -77,6 +95,7 @@ export default {
       tickets: [],
       ticket: '',
       ticketPrice: '',
+      dialog: false
     }
   },
 
