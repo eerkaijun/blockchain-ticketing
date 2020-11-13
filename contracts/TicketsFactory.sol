@@ -53,4 +53,12 @@ contract TicketsFactory is Ownable, ERC721, BaseRelayRecipient, IKnowForwarderAd
 		return trustedForwarder;
 	}
 
+  function _msgData() internal override(Context, BaseRelayRecipient) view returns (bytes memory ret) {
+    return BaseRelayRecipient._msgData();
+  }
+
+  function _msgSender() internal override(Context, BaseRelayRecipient) view returns (address payable) {
+    return BaseRelayRecipient._msgSender();
+  }
+
 }
