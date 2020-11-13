@@ -16,7 +16,10 @@ contract TicketsFactory is Ownable, ERC721, BaseRelayRecipient, IKnowForwarderAd
   address[] public owners;
 
   constructor() ERC721("NFT Tickets", "TIX") public {
-    trustedForwarder = 0x25CEd1955423BA34332Ec1B60154967750a0297D; //ropsten trusted forwarder address
+  }
+
+  function setTrustedForwarder(address _trustedForwarder) public onlyOwner {
+    trustedForwarder = _trustedForwarder;
   }
 
   function createTicket(uint256 _price) public onlyOwner {
