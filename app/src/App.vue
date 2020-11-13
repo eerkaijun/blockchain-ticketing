@@ -81,6 +81,14 @@ import MarketplaceABI from './plugins/Marketplace';
 
 const Web3 = require('web3');
 
+const conf = {
+	marketplace: '0xeAF3Df71cD27D6B3d301ED373158e117AB436685',
+	paymaster:   '0x56b7acbf49F53fA8723A7C41b1765B8C640A5aa7',
+	relayhub:    '0x29e41C2b329fF4921d8AC654CEc909a0B575df20',
+  forwarder:   '0x25CEd1955423BA34332Ec1B60154967750a0297D',
+	gasPrice:    20000000000   // 20 Gwei
+}
+
 export default {
   name: 'App',
   data () {
