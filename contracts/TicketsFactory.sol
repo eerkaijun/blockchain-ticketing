@@ -1,9 +1,13 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
+import "@opengsn/gsn/contracts/interfaces/IKnowForwarderAddress.sol";
 
-contract TicketsFactory is Ownable, ERC721{
+contract TicketsFactory is Ownable, ERC721, BaseRelayRecipient, IKnowForwarderAddress{
 
   uint256 private _currentTokenId = 0;
   mapping (uint256 => uint256) public ticketPrice;
@@ -12,14 +16,15 @@ contract TicketsFactory is Ownable, ERC721{
   address[] public owners;
 
   constructor() ERC721("NFT Tickets", "TIX") public {
+    trustedForwarder = 0x25CEd1955423BA34332Ec1B60154967750a0297D; //ropsten trusted forwarder address
   }
 
   function createTicket(uint256 _price) public onlyOwner {
     //uint256 newTokenId = _getNextTokenId();
-    _mint(msg.sender, _currentTokenId); //token id starts from 0
+    _mint(_msgSender(), _currentTokenId); //token id starts from 0
     ticketPrice[_currentTokenId] = _price;
     onSale.push(false);
-    owners.push(msg.sender);
+    owners.push(_msgSender());
     _setTokenURI(_currentTokenId, ""); // to be added a proper URI for IPFS
     _incrementTokenId();
   }
@@ -36,13 +41,16 @@ contract TicketsFactory is Ownable, ERC721{
     return owners.length;
   }
 
-  /*
-  function _getNextTokenId() private view returns (uint256) {
-    return _currentTokenId.add(1);
-  }*/
-
   function _incrementTokenId() private  {
     _currentTokenId++;
   }
+
+  function versionRecipient() external virtual view override returns (string memory) {
+		return "1.0";
+	}
+
+  function getTrustedForwarder() public view override returns(address) {
+		return trustedForwarder;
+	}
 
 }

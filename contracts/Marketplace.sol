@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity >=0.6.0 <0.7.0;
 
 import "./TicketsFactory.sol";
@@ -14,12 +16,12 @@ contract Marketplace is TicketsFactory{
   }
 
   function withdraw() public {
-    msg.sender.transfer(etherBalance[msg.sender]);
+    _msgSender().transfer(etherBalance[_msgSender()]);
   }
 
   // tickets need to put on sale first before it could be purchased
   function toggleSale(uint256 _tokenId) public {
-    require(msg.sender == ownerOf(_tokenId));
+    require(_msgSender() == ownerOf(_tokenId));
     onSale[_tokenId] = !onSale[_tokenId];
   }
 
@@ -29,13 +31,13 @@ contract Marketplace is TicketsFactory{
     require(onSale[_tokenId] == true);
     require(msg.value >= price, "at least the ticket price");
     require(msg.value < price.add(price.div(10)), "not more than 10% of original price");
-    require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
+    require(balanceOf(_msgSender()) <= _maxTicketNum, "exceeded max number of tickets bought");
     address seller = ownerOf(_tokenId);
-    _safeTransfer(seller, msg.sender, _tokenId, "");
+    _safeTransfer(seller, _msgSender(), _tokenId, "");
     onSale[_tokenId] = false;
     etherBalance[seller] += msg.value;
-    owners[_tokenId] = msg.sender;
-    emit ticketTransferred(_tokenId, msg.sender);
+    owners[_tokenId] = _msgSender();
+    emit ticketTransferred(_tokenId, _msgSender());
   }
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
