@@ -79,7 +79,8 @@
 
 import MarketplaceABI from './plugins/Marketplace';
 
-const Web3 = require('web3');
+const Web3 = require('web3'); //force import specified version of web3
+const gsn = require('@opengsn/gsn');
 
 const conf = {
 	marketplace: '0xeAF3Df71cD27D6B3d301ED373158e117AB436685',
@@ -116,8 +117,16 @@ export default {
   methods: {
     async initProvider() {
       if (window.ethereum) {
-        this.web3Provider = window.ethereum;
-        web3 = new Web3(window.ethereum); //force it to version 1.2.8
+        const gsnConfig = await gsn.resolveConfigurationGSN(window.ethereum, {
+          chainId: window.ethereum.chainId,
+          paymasterAddress: conf.paymaster,
+          forwarderAddress: conf.forwarder,
+          methodSuffix: '_v4',jsonStringifyRequest: true});
+        const gsnProvider = new gsn.RelayProvider(window.ethereum, gsnConfig);
+        web3 = new Web3(gsnProvider);
+        this.web3Provider = gsnProvider;
+        //this.web3Provider = window.ethereum;
+        //web3 = new Web3(window.ethereum); //force it to version 1.2.8
         console.log("Current web3 version:",web3.version);
         let accounts = await web3.eth.getAccounts();
         this.account = accounts[0];
@@ -139,8 +148,8 @@ export default {
     },
 
     async initContract() {
-      //const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
-      const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //new Mumbai testnet address
+      const contractAddress = "0xeAF3Df71cD27D6B3d301ED373158e117AB436685"; //new Ropsten testnet address
+      //const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //new Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
     },
@@ -172,7 +181,7 @@ export default {
     },
 
     async buyTicket(id) {
-      const to_be_paid = await this.contract.methods.ticketPrice(id).call()
+      const to_be_paid = await this.contract.methods.ticketPrice(id).call();
       await this.contract.methods.buyTicket(id).send({from:this.account, value:to_be_paid});
       console.log("Ticket bought successfully!");
     }
