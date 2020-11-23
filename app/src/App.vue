@@ -48,7 +48,11 @@
         <h1>Create Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="price" :items="prices" label="Select Price"></v-select>
+        <v-text-field v-model="seat" label="Define Seat Number"></v-text-field>
+        <v-select v-model="category" :items="categories" label="Select Category"></v-select>
+      </v-card-actions>
+      <v-card-actions>
+        <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
         <v-btn v-on:click="createTicket(price)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
@@ -88,7 +92,9 @@ export default {
       web3Provider: null,
       contract: null,
       account: '0x0',
-      prices: ['0.01','0.02','0.03'],
+      categories: ['Normal', 'VIP'],
+      category: '',
+      seat: '',
       price: '',
       ids: [],
       id: '',
