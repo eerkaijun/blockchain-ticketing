@@ -84,6 +84,8 @@
 import MarketplaceABI from './plugins/Marketplace';
 
 const Web3 = require('web3');
+const ipfsClient = require('ipfs-http-client');
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
 export default {
   name: 'App',
@@ -162,6 +164,8 @@ export default {
     async createTicket(price, seat, category) {
       let metadata = "{seat_number: " + seat + ", category: " + category + "}";
       console.log(metadata);
+      let result = await ipfs.add(metadata);
+      console.log(result);
       await this.contract.methods.createTicket(web3.utils.toWei(price,'ether')).send({from:this.account});
       console.log("Ticket created successfully!");
     },
