@@ -53,7 +53,7 @@
       </v-card-actions>
       <v-card-actions>
         <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
-        <v-btn v-on:click="createTicket(price)" color="blue">Mint</v-btn>
+        <v-btn v-on:click="createTicket(price, seat, category)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -159,7 +159,9 @@ export default {
 
     },
 
-    async createTicket(price) {
+    async createTicket(price, seat, category) {
+      let metadata = "{seat_number: " + seat + ", category: " + category + "}";
+      console.log(metadata);
       await this.contract.methods.createTicket(web3.utils.toWei(price,'ether')).send({from:this.account});
       console.log("Ticket created successfully!");
     },
