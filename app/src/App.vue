@@ -43,6 +43,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-data-table :headers="headers" :items="items"></v-data-table>
     <v-card>
       <v-card-title>
         <h1>Create Tickets</h1>
@@ -70,7 +71,7 @@
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="ticket" :items="tickets" label="Select Ticket ID"></v-select>
+        <v-select v-model="ticket" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
         <v-card-text>The price for ticket ID {{ticket}} is {{ticketPrice}}</v-card-text>
         <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
       </v-card-actions>
@@ -84,6 +85,7 @@
 import MarketplaceABI from './plugins/Marketplace';
 
 const Web3 = require('web3');
+const axios = require('axios');
 const ipfsClient = require('ipfs-http-client');
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
@@ -100,10 +102,16 @@ export default {
       price: '',
       ids: [],
       id: '',
-      tickets: [],
+      ticketsOnSale: [],
       ticket: '',
       ticketPrice: '',
-      dialog: false
+      dialog: false,
+      headers: [{ text: 'Seat Number', value: 'seat_number' },
+                { text: 'Ticket Price', value: 'ticket_value' },
+                { text: 'Category', value: 'ticket_category' },
+                { text: 'Ticket ID', value: 'ticket_id'},
+                { text: 'On Sale', value: 'on_sale'}],
+      items: []
     }
   },
 
@@ -139,14 +147,14 @@ export default {
     },
 
     async initContract() {
-      //const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
-      const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //new Mumbai testnet address
+      const contractAddress = "0x4cac580E78Eb67B2F3d2c519419e248b5d7E30b9"; //Mumbai testnet address
+      //const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //old Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
     },
 
     async initMarketplace() {
-
+      /*
       setInterval(async() => {
         //update marketplace every 3 seconds
         const temp = await this.contract.methods.getOnSaleLength().call();
@@ -154,19 +162,35 @@ export default {
         for (i=0; i<temp; i++) {
           onSale = await this.contract.methods.onSale(i).call();
           owner = await this.contract.methods.owners(i).call();
-          if (onSale) this.tickets.push(i);
+          if (onSale) this.ticketsOnSale.push(i);
           if (owner == this.account) this.ids.push(i);
         }
       }, 3000);
+      */
 
+      const num_tickets = await this.contract.methods.getOnSaleLength().call();
+      var uri, data, item;
+      for (let i=0; i<num_tickets; i++) {
+        uri = await this.contract.methods.tokenURI(i).call();
+        try {
+          data = await axios.get(uri);
+          item = data.data;
+          item.ticket_id = i;
+          item.on_sale = await this.contract.methods.onSale(i).call();
+          console.log(item);
+          this.items.push(item);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     },
 
     async createTicket(price, seat, category) {
-      let metadata = "{seat_number: " + seat + ", category: " + category + "}";
-      console.log(metadata);
-      let result = await ipfs.add(metadata);
-      console.log(result);
-      await this.contract.methods.createTicket(web3.utils.toWei(price,'ether')).send({from:this.account});
+      let metadata = {"seat_number":seat, "ticket_category":category, "ticket_value":price};
+      console.log(JSON.stringify(metadata));
+      let result = await ipfs.add(JSON.stringify(metadata));
+      console.log("IPFS hash: ", result.path);
+      await this.contract.methods.createTicket(web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
       console.log("Ticket created successfully!");
     },
 
