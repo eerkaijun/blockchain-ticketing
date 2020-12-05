@@ -147,27 +147,33 @@ export default {
     },
 
     async initContract() {
-      const contractAddress = "0x4cac580E78Eb67B2F3d2c519419e248b5d7E30b9"; //Mumbai testnet address
+      const contractAddress = "0x7C3FEe83E179B4d0f18851F748a78fed7e165956"; //Mumbai testnet address
       //const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //old Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
+      var self = this;
+      this.contract.events.saleToggled().on('data', function(event){
+        console.log("EVENT INCOMING!!!");
+        self.initMarketplace(); //scope error
+      }).on('error', console.error);
+
     },
 
     async initMarketplace() {
-      /*
+
       setInterval(async() => {
         //update marketplace every 3 seconds
         const temp = await this.contract.methods.getOnSaleLength().call();
-        var i, onSale, owner;
-        for (i=0; i<temp; i++) {
+        var onSale, owner;
+        for (let i=0; i<temp; i++) {
           onSale = await this.contract.methods.onSale(i).call();
           owner = await this.contract.methods.owners(i).call();
           if (onSale) this.ticketsOnSale.push(i);
           if (owner == this.account) this.ids.push(i);
         }
       }, 3000);
-      */
 
+      this.items = [];
       const num_tickets = await this.contract.methods.getOnSaleLength().call();
       var uri, data, item;
       for (let i=0; i<num_tickets; i++) {
@@ -203,7 +209,8 @@ export default {
       const to_be_paid = await this.contract.methods.ticketPrice(id).call()
       await this.contract.methods.buyTicket(id).send({from:this.account, value:to_be_paid});
       console.log("Ticket bought successfully!");
-    }
+    },
+
 
   }
 }
