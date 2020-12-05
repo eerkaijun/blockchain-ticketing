@@ -21,6 +21,7 @@ contract Marketplace is TicketsFactory{
   function toggleSale(uint256 _tokenId) public {
     require(msg.sender == ownerOf(_tokenId));
     onSale[_tokenId] = !onSale[_tokenId];
+    emit saleToggled(_tokenId, onSale[_tokenId]);
   }
 
   // this function should be called by the buyer
@@ -36,8 +37,10 @@ contract Marketplace is TicketsFactory{
     etherBalance[seller] += msg.value;
     owners[_tokenId] = msg.sender;
     emit ticketTransferred(_tokenId, msg.sender);
+    emit saleToggled(_tokenId, false);
   }
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
+  event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
 
 }
