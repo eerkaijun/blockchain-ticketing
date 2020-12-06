@@ -25,8 +25,9 @@ contract TicketsFactory is Ownable, ERC721{
     _incrementTokenId();
   }
 
-  function changeTicketPrice(uint256 _tokenId, uint256 _price) public onlyOwner {
+  function changeTicketPrice(uint256 _tokenId, uint256 _price, string memory _tokenURI) public onlyOwner {
     ticketPrice[_tokenId] = _price;
+    _setTokenURI(_tokenId, _tokenURI);
   }
 
   function getOnSaleLength() public view returns(uint) {
