@@ -4,28 +4,14 @@
       <v-card-title>
         <h3>Address: {{account}}</h3>
       </v-card-title>
-      <v-card-text>
-        <v-form>
-          <v-text-field
-            label="Username"
-            prepend-icon="mdi-account-circle"
-          />
-          <v-text-field
-            type="Password"
-            label="Password"
-            prepend-icon="mdi-lock"
-            append-icon="mdi-eye-off"
-          />
-        </v-form>
-      </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn v-on:click="dialog=true" color="success">Register</v-btn>
+        <v-btn v-on:click="registerDialog=true" color="success">Register</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="info">Login</v-btn>
+        <v-btn v-on:click="loginDialog=true" color="info">Login</v-btn>
       </v-card-actions>
     </v-card>
-    <v-dialog v-model="dialog">
+    <v-dialog v-model="registerDialog">
       <v-card>
         <v-card-title>
           <h3>Please fill in your personal details to register</h3>
@@ -35,6 +21,23 @@
             <v-text-field label="Full Name"/>
             <v-text-field label="Date of Birth"/>
             <v-text-field label="Email Address"/>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn>Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="loginDialog">
+      <v-card>
+        <v-card-title>
+          <h3>Enter your credentials to login</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field label="Username" prepend-icon="mdi-account-circle"/>
+            <v-text-field type="Password" label="Password" prepend-icon="mdi-lock" append-icon="mdi-eye-off"/>
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -103,7 +106,8 @@ export default {
       toggleID: '',
       ticketsOnSale: [],
       ticket: '',
-      dialog: false,
+      registerDialog: false,
+      loginDialog: false,
       headers: [{ text: 'Seat Number', value: 'seat_number' },
                 { text: 'Ticket Price (in ether)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
