@@ -62,6 +62,16 @@
     </v-card>
     <v-card>
       <v-card-title>
+        <h1>Change Ticket Price</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-select v-model="ticketPriceID" :items="myTickets" label="Select Ticket ID"></v-select>
+        <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
+        <v-btn v-on:click="changeTicketPrice(ticketPriceID, price)" color="blue">Update</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>
         <h1>Toggle State</h1>
       </v-card-title>
       <v-card-actions>
@@ -74,8 +84,8 @@
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="ticket" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
-        <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
+        <v-select v-model="ticketID" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
+        <v-btn v-on:click="buyTicket(ticketID)" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
   </v-app>
@@ -105,11 +115,12 @@ export default {
       myTickets: [],
       toggleID: '',
       ticketsOnSale: [],
-      ticket: '',
+      ticketID: '',
+      ticketPriceID: '',
       registerDialog: false,
       loginDialog: false,
       headers: [{ text: 'Seat Number', value: 'seat_number' },
-                { text: 'Ticket Price (in ether)', value: 'ticket_value' },
+                { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
                 { text: 'Ticket ID', value: 'ticket_id'},
                 { text: 'On Sale', value: 'on_sale'}],
@@ -150,8 +161,7 @@ export default {
     },
 
     async initContract() {
-      const contractAddress = "0x7C3FEe83E179B4d0f18851F748a78fed7e165956"; //Mumbai testnet address
-      //const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //old Mumbai testnet address
+      const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
       var self = this;
@@ -207,6 +217,22 @@ export default {
       console.log("Ticket bought successfully!");
     },
 
+    async changeTicketPrice(id, price) {
+      let uri = await this.contract.methods.tokenURI(id).call();
+      var item;
+      try {
+        let data = await axios.get(uri);
+        item = data.data;
+        item.ticket_value = price;
+        console.log(item);
+      } catch (error) {
+        console.log(error);
+      }
+      let result = await ipfs.add(JSON.stringify(item));
+      console.log("IPFS hash: ", result.path);
+      await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
+      console.log("Ticket price changed successfully!");
+    }
 
   }
 }
