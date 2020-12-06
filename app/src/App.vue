@@ -59,11 +59,11 @@
     </v-card>
     <v-card>
       <v-card-title>
-        <h1>Put on Sales</h1>
+        <h1>Toggle State</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="id" :items="ids" label="Select Ticket ID"></v-select>
-        <v-btn v-on:click="toggleSale(id)" color="green">Toggle</v-btn>
+        <v-select v-model="toggleID" :items="myTickets" label="Select Ticket ID"></v-select>
+        <v-btn v-on:click="toggleSale(toggleID)" color="green">Toggle</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -72,7 +72,6 @@
       </v-card-title>
       <v-card-actions>
         <v-select v-model="ticket" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
-        <v-card-text>The price for ticket ID {{ticket}} is {{ticketPrice}}</v-card-text>
         <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
@@ -100,14 +99,13 @@ export default {
       category: '',
       seat: '',
       price: '',
-      ids: [],
-      id: '',
+      myTickets: [],
+      toggleID: '',
       ticketsOnSale: [],
       ticket: '',
-      ticketPrice: '',
       dialog: false,
       headers: [{ text: 'Seat Number', value: 'seat_number' },
-                { text: 'Ticket Price', value: 'ticket_value' },
+                { text: 'Ticket Price (in ether)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
                 { text: 'Ticket ID', value: 'ticket_id'},
                 { text: 'On Sale', value: 'on_sale'}],
@@ -140,6 +138,7 @@ export default {
         updated = await web3.eth.getAccounts();
         if (updated[0] !== this.account) {
           this.account = updated[0];
+          this.initMarketplace();
           // Call a function to update the UI with the new account
           alert("You changed account!");
         }
@@ -160,23 +159,16 @@ export default {
     },
 
     async initMarketplace() {
-
-      setInterval(async() => {
-        //update marketplace every 3 seconds
-        const temp = await this.contract.methods.getOnSaleLength().call();
-        var onSale, owner;
-        for (let i=0; i<temp; i++) {
-          onSale = await this.contract.methods.onSale(i).call();
-          owner = await this.contract.methods.owners(i).call();
-          if (onSale) this.ticketsOnSale.push(i);
-          if (owner == this.account) this.ids.push(i);
-        }
-      }, 3000);
-
+      this.ticketsOnSale = [];
+      this.myTickets = [];
       this.items = [];
       const num_tickets = await this.contract.methods.getOnSaleLength().call();
-      var uri, data, item;
+      var uri, data, item, onSale, owner;
       for (let i=0; i<num_tickets; i++) {
+        onSale = await this.contract.methods.onSale(i).call();
+        owner = await this.contract.methods.owners(i).call();
+        if (onSale && owner != this.account) this.ticketsOnSale.push(i);
+        if (owner == this.account) this.myTickets.push(i);
         uri = await this.contract.methods.tokenURI(i).call();
         try {
           data = await axios.get(uri);
