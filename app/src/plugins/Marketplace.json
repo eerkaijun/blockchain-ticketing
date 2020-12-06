@@ -109,6 +109,25 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "state",
+        "type": "bool"
+      }
+    ],
+    "name": "saleToggled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "_owner",
         "type": "address"
@@ -180,6 +199,11 @@
         "internalType": "uint256",
         "name": "_price",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_tokenURI",
+        "type": "string"
       }
     ],
     "name": "changeTicketPrice",
@@ -193,6 +217,11 @@
         "internalType": "uint256",
         "name": "_price",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_tokenURI",
+        "type": "string"
       }
     ],
     "name": "createTicket",
