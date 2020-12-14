@@ -2,8 +2,3 @@ build
 node_modules
 app/node_modules
 .secret
-zokrates/hash_digest/out
-zokrates/hash_digest/out.ztf
-zokrates/hash_digest/proving.key
-zokrates/hash_digest/verification.key
-zokrates/hash_digest/witness
