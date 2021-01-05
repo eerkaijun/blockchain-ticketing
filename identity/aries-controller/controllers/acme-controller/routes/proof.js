@@ -12,7 +12,7 @@ navLinkService.registerCustomLinks([
 const proofJSON = {
     "connection_id": "<Enter a valid Connection ID>",
     "proof_request": {
-      "name": "Proof of Education",
+      "name": "Proof of Ethereum Identity",
       "version": "1.0",
       "requested_attributes": {
         "0_name_uuid": {
@@ -23,16 +23,8 @@ const proofJSON = {
             }
           ]
         },
-        "0_date_uuid": {
-          "name": "date",
-          "restrictions": [
-            {
-              "cred_def_id": "<Enter a valid Credential Definition ID>"
-            }
-          ]
-        },
-        "0_degree_uuid": {
-          "name": "degree",
+        "0_address_uuid": {
+          "name": "address",
           "restrictions": [
             {
               "cred_def_id": "<Enter a valid Credential Definition ID>"
@@ -41,18 +33,6 @@ const proofJSON = {
         },
         "0_self_attested_thing_uuid": {
           "name": "self_attested_thing"
-        }
-      },
-      "requested_predicates": {
-        "0_age_GE_uuid": {
-          "name": "age",
-          "p_type": ">=",
-          "p_value": 18,
-          "restrictions": [
-            {
-              "cred_def_id": "<Enter a valid Credential Definition ID>"
-            }
-          ]
         }
       }
     }
@@ -92,7 +72,7 @@ async function handleRequestProofGet(req, res, next) {
     const agentService = require('../services/AgentService');
     const allConnections = await agentService.getConnections();
     const connections = allConnections.filter(connection => connection.state === 'active' || connection.state === 'request');
-    
+
     if (req.errors) {
         res.status(422);
     }
