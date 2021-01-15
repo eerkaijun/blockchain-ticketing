@@ -12,20 +12,22 @@ contract TicketsFactory is Ownable, ERC721{
   address[] public owners;
 
   constructor() ERC721("NFT Tickets", "TIX") public {
+    _setBaseURI("https://ipfs.infura.io/ipfs/");
   }
 
-  function createTicket(uint256 _price) public onlyOwner {
+  function createTicket(uint256 _price, string memory _tokenURI) public onlyOwner {
     //uint256 newTokenId = _getNextTokenId();
     _mint(msg.sender, _currentTokenId); //token id starts from 0
     ticketPrice[_currentTokenId] = _price;
     onSale.push(false);
     owners.push(msg.sender);
-    _setTokenURI(_currentTokenId, ""); // to be added a proper URI for IPFS
+    _setTokenURI(_currentTokenId, _tokenURI);
     _incrementTokenId();
   }
 
-  function changeTicketPrice(uint256 _tokenId, uint256 _price) public onlyOwner {
+  function changeTicketPrice(uint256 _tokenId, uint256 _price, string memory _tokenURI) public onlyOwner {
     ticketPrice[_tokenId] = _price;
+    _setTokenURI(_tokenId, _tokenURI);
   }
 
   function getOnSaleLength() public view returns(uint) {
@@ -35,11 +37,6 @@ contract TicketsFactory is Ownable, ERC721{
   function getOwnersLength() public view returns(uint) {
     return owners.length;
   }
-
-  /*
-  function _getNextTokenId() private view returns (uint256) {
-    return _currentTokenId.add(1);
-  }*/
 
   function _incrementTokenId() private  {
     _currentTokenId++;

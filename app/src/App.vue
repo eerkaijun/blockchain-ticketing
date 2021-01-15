@@ -4,53 +4,88 @@
       <v-card-title>
         <h3>Address: {{account}}</h3>
       </v-card-title>
-      <v-card-text>
-        <v-form>
-          <v-text-field
-            label="Username"
-            prepend-icon="mdi-account-circle"
-          />
-          <v-text-field
-            type="Password"
-            label="Password"
-            prepend-icon="mdi-lock"
-            append-icon="mdi-eye-off"
-          />
-        </v-form>
-      </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="success">Register</v-btn>
+        <v-btn v-on:click="registerDialog=true" color="success">Register</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="info">Login</v-btn>
+        <v-btn v-on:click="loginDialog=true" color="info">Login</v-btn>
       </v-card-actions>
     </v-card>
-    <v-card>
+    <v-dialog v-model="registerDialog">
+      <v-card>
+        <v-card-title>
+          <h3>Please fill in your personal details to register</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field label="Full Name"/>
+            <v-text-field label="Date of Birth"/>
+            <v-text-field label="Email Address"/>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn>Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="loginDialog">
+      <v-card>
+        <v-card-title>
+          <h3>Enter your credentials to login</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field label="Username" prepend-icon="mdi-account-circle"/>
+            <v-text-field type="Password" label="Password" prepend-icon="mdi-lock" append-icon="mdi-eye-off"/>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn>Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-data-table :headers="headers" :items="items"></v-data-table>
+    <v-card v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         <h1>Create Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="price" :items="prices" label="Select Price"></v-select>
-        <v-btn v-on:click="createTicket(price)" color="blue">Mint</v-btn>
+        <v-text-field v-model="seat" label="Define Seat Number"></v-text-field>
+        <v-select v-model="category" :items="categories" label="Select Category"></v-select>
+      </v-card-actions>
+      <v-card-actions>
+        <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
+        <v-btn v-on:click="createTicket(price, seat, category)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
       <v-card-title>
-        <h1>Put on Sales</h1>
+        <h1>Change Ticket Price</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="id" :items="ids" label="Select Ticket ID"></v-select>
-        <v-btn v-on:click="toggleSale(id)" color="green">Toggle</v-btn>
+        <v-select v-model="ticketPriceID" :items="myTickets" label="Select Ticket ID"></v-select>
+        <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
+        <v-btn v-on:click="changeTicketPrice(ticketPriceID, price)" color="blue">Update</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
+      <v-card-title>
+        <h1>Toggle State</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-select v-model="toggleID" :items="myTickets" label="Select Ticket ID"></v-select>
+        <v-btn v-on:click="toggleSale(toggleID)" color="green">Toggle</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         <h1>Purchase Tickets</h1>
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="ticket" :items="tickets" label="Select Ticket ID"></v-select>
-        <v-card-text>The price for ticket ID {{ticket}} is {{ticketPrice}}</v-card-text>
-        <v-btn v-on:click="buyTicket(ticket)" color="purple">Buy</v-btn>
+        <v-select v-model="ticketID" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
+        <v-btn v-on:click="buyTicket(ticketID)" color="purple">Buy</v-btn>
       </v-card-actions>
     </v-card>
   </v-app>
@@ -62,6 +97,9 @@
 import MarketplaceABI from './plugins/Marketplace';
 
 const Web3 = require('web3');
+const axios = require('axios');
+const ipfsClient = require('ipfs-http-client');
+const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
 export default {
   name: 'App',
@@ -70,13 +108,23 @@ export default {
       web3Provider: null,
       contract: null,
       account: '0x0',
-      prices: ['0.01','0.02','0.03'],
+      categories: ['Normal', 'VIP'],
+      category: '',
+      seat: '',
       price: '',
-      ids: [],
-      id: '',
-      tickets: [],
-      ticket: '',
-      ticketPrice: '',
+      myTickets: [],
+      toggleID: '',
+      ticketsOnSale: [],
+      ticketID: '',
+      ticketPriceID: '',
+      registerDialog: false,
+      loginDialog: false,
+      headers: [{ text: 'Seat Number', value: 'seat_number' },
+                { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
+                { text: 'Category', value: 'ticket_category' },
+                { text: 'Ticket ID', value: 'ticket_id'},
+                { text: 'On Sale', value: 'on_sale'}],
+      items: []
     }
   },
 
@@ -105,6 +153,7 @@ export default {
         updated = await web3.eth.getAccounts();
         if (updated[0] !== this.account) {
           this.account = updated[0];
+          this.initMarketplace();
           // Call a function to update the UI with the new account
           alert("You changed account!");
         }
@@ -112,30 +161,48 @@ export default {
     },
 
     async initContract() {
-      //const contractAddress = "0x22Fc73bC6Af889A0Adb5405f126a600Ac3Cb4651"; //Mumbai testnet address
-      const contractAddress = "0x96823E9836921Bd42C6Ff4EC96a33F64564017eE"; //new Mumbai testnet address
+      const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //Mumbai testnet address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
+      var self = this;
+      this.contract.events.saleToggled().on('data', function(event){
+        console.log("EVENT INCOMING!!!");
+        self.initMarketplace(); //scope error
+      }).on('error', console.error);
+
     },
 
     async initMarketplace() {
-
-      setInterval(async() => {
-        //update marketplace every 3 seconds
-        const temp = await this.contract.methods.getOnSaleLength().call();
-        var i, onSale, owner;
-        for (i=0; i<temp; i++) {
-          onSale = await this.contract.methods.onSale(i).call();
-          owner = await this.contract.methods.owners(i).call();
-          if (onSale) this.tickets.push(i);
-          if (owner == this.account) this.ids.push(i);
+      this.ticketsOnSale = [];
+      this.myTickets = [];
+      this.items = [];
+      const num_tickets = await this.contract.methods.getOnSaleLength().call();
+      var uri, data, item, onSale, owner;
+      for (let i=0; i<num_tickets; i++) {
+        onSale = await this.contract.methods.onSale(i).call();
+        owner = await this.contract.methods.owners(i).call();
+        if (onSale && owner != this.account) this.ticketsOnSale.push(i);
+        if (owner == this.account) this.myTickets.push(i);
+        uri = await this.contract.methods.tokenURI(i).call();
+        try {
+          data = await axios.get(uri);
+          item = data.data;
+          item.ticket_id = i;
+          item.on_sale = await this.contract.methods.onSale(i).call();
+          console.log(item);
+          this.items.push(item);
+        } catch (error) {
+          console.log(error);
         }
-      }, 3000);
-
+      }
     },
 
-    async createTicket(price) {
-      await this.contract.methods.createTicket(web3.utils.toWei(price,'ether')).send({from:this.account});
+    async createTicket(price, seat, category) {
+      let metadata = {"seat_number":seat, "ticket_category":category, "ticket_value":price};
+      console.log(JSON.stringify(metadata));
+      let result = await ipfs.add(JSON.stringify(metadata));
+      console.log("IPFS hash: ", result.path);
+      await this.contract.methods.createTicket(web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
       console.log("Ticket created successfully!");
     },
 
@@ -148,6 +215,23 @@ export default {
       const to_be_paid = await this.contract.methods.ticketPrice(id).call()
       await this.contract.methods.buyTicket(id).send({from:this.account, value:to_be_paid});
       console.log("Ticket bought successfully!");
+    },
+
+    async changeTicketPrice(id, price) {
+      let uri = await this.contract.methods.tokenURI(id).call();
+      var item;
+      try {
+        let data = await axios.get(uri);
+        item = data.data;
+        item.ticket_value = price;
+        console.log(item);
+      } catch (error) {
+        console.log(error);
+      }
+      let result = await ipfs.add(JSON.stringify(item));
+      console.log("IPFS hash: ", result.path);
+      await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
+      console.log("Ticket price changed successfully!");
     }
 
   }
