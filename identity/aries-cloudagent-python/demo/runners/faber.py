@@ -192,10 +192,8 @@ async def main(start_port: int, no_auto: bool = False, show_timing: bool = False
 
                 # TODO define attributes to send for credential
                 agent.cred_attrs[credential_definition_id] = {
-                    "name": "Alice Smith",
-                    "date": "2018-05-28",
-                    "degree": "Maths",
-                    "age": "24",
+                    "name": "Kai Jun Eer",
+                    "address": "0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A"
                 }
 
                 cred_preview = {
@@ -219,8 +217,7 @@ async def main(start_port: int, no_auto: bool = False, show_timing: bool = False
                 log_status("#20 Request proof of degree from alice")
                 req_attrs = [
                     {"name": "name", "restrictions": [{"issuer_did": agent.did}]},
-                    {"name": "date", "restrictions": [{"issuer_did": agent.did}]},
-                    {"name": "degree", "restrictions": [{"issuer_did": agent.did}]},
+                    {"name": "address", "restrictions": [{"issuer_did": agent.did}]},
                     {"name": "self_attested_thing"},
                 ]
                 req_preds = [
@@ -232,15 +229,11 @@ async def main(start_port: int, no_auto: bool = False, show_timing: bool = False
                     }
                 ]
                 indy_proof_request = {
-                    "name": "Proof of Education",
+                    "name": "Proof of Ethereum Identity",
                     "version": "1.0",
                     "nonce": str(uuid4().int),
                     "requested_attributes": {
                         f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
-                    },
-                    "requested_predicates": {
-                        f"0_{req_pred['name']}_GE_uuid": req_pred
-                        for req_pred in req_preds
                     },
                 }
                 proof_request_web_request = {
