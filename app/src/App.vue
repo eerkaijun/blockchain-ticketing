@@ -47,7 +47,7 @@
       </v-card>
     </v-dialog>
     <v-data-table :headers="headers" :items="items"></v-data-table>
-    <v-card>
+    <v-card v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         <h1>Create Tickets</h1>
       </v-card-title>
@@ -79,7 +79,7 @@
         <v-btn v-on:click="toggleSale(toggleID)" color="green">Toggle</v-btn>
       </v-card-actions>
     </v-card>
-    <v-card>
+    <v-card v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         <h1>Purchase Tickets</h1>
       </v-card-title>
