@@ -108,7 +108,6 @@
   </v-app>
 </template>
 
-<script src="component.js"></script>
 <script language="javascript" type="text/javascript" src="jslibs/web3.min.js"></script>
 <script>
 
