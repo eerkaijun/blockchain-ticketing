@@ -48,7 +48,7 @@
     </v-dialog>
     <v-data-table :headers="headers" :items="items">
       <template v-slot:item.action="props">
-        <v-btn class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
+        <v-btn v-if="props.item.on_sale" class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
           Buy Ticket
         </v-btn>
       </template>
