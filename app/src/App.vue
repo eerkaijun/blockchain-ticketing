@@ -87,15 +87,6 @@
         <v-btn v-on:click="createTicket(price, seat, category)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
-    <v-card v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
-      <v-card-title>
-        Purchase Tickets
-      </v-card-title>
-      <v-card-actions>
-        <v-select v-model="ticketID" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
-        <v-btn v-on:click="buyTicket(ticketID)" color="purple">Buy</v-btn>
-      </v-card-actions>
-    </v-card>
   </v-app>
 </template>
 
@@ -124,9 +115,7 @@ export default {
       maxPrice: '',
       myTickets: [],
       toggleID: '',
-      ticketsOnSale: [],
       ticketID: '',
-      ticketPriceID: '',
       registerDialog: false,
       loginDialog: false,
       changePriceDialog: false,
@@ -186,7 +175,6 @@ export default {
     },
 
     async initMarketplace() {
-      this.ticketsOnSale = [];
       this.myTickets = [];
       this.items = [];
       const num_tickets = await this.contract.methods.getOnSaleLength().call();
@@ -194,7 +182,6 @@ export default {
       for (let i=0; i<num_tickets; i++) {
         onSale = await this.contract.methods.onSale(i).call();
         owner = await this.contract.methods.owners(i).call();
-        if (onSale && owner != this.account) this.ticketsOnSale.push(i);
         //if (owner == this.account) this.myTickets.push(i);
         uri = await this.contract.methods.tokenURI(i).call();
         try {
