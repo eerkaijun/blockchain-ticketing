@@ -87,15 +87,6 @@
         <v-btn v-on:click="createTicket(price, seat, category)" color="blue">Mint</v-btn>
       </v-card-actions>
     </v-card>
-    <v-card>
-      <v-card-title>
-        Toggle State
-      </v-card-title>
-      <v-card-actions>
-        <v-select v-model="toggleID" :items="[0,1,2]" label="Select Ticket ID"></v-select>
-        <v-btn v-on:click="toggleSale(toggleID)" color="green">Toggle</v-btn>
-      </v-card-actions>
-    </v-card>
     <v-card v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         Purchase Tickets
