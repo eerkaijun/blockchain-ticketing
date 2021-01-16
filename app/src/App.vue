@@ -46,7 +46,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-data-table :headers="headers" :items="items"></v-data-table>
+    <v-data-table :headers="headers" :items="items">
+      <template v-slot:item.action="props">
+        <v-btn class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
+          Buy Ticket
+        </v-btn>
+      </template>
+    </v-data-table>
     <v-card v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         Create Tickets
@@ -91,6 +97,7 @@
   </v-app>
 </template>
 
+<script src="component.js"></script>
 <script language="javascript" type="text/javascript" src="jslibs/web3.min.js"></script>
 <script>
 
@@ -123,7 +130,8 @@ export default {
                 { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
                 { text: 'Ticket ID', value: 'ticket_id'},
-                { text: 'On Sale', value: 'on_sale'}],
+                { text: 'On Sale', value: 'on_sale'},
+                { text: 'Action', value: 'action'}],
       items: []
     }
   },
@@ -135,6 +143,11 @@ export default {
   },
 
   methods: {
+
+    onButtonClick(item) {
+      console.log('click on ' + item.ticket_id);
+    },
+
     async initProvider() {
       if (window.ethereum) {
         this.web3Provider = window.ethereum;
