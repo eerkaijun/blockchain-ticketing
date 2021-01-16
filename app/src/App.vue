@@ -53,6 +53,27 @@
         </v-btn>
       </template>
     </v-data-table>
+    <v-data-table :headers="headers" :items="myTickets">
+      <template v-slot:item.action="props">
+        <v-btn class="mx-2" dark color="pink" v-on:click="selectTicketPrice(props.item.ticket_id, props.item.ticket_value)">
+          Change Price
+        </v-btn>
+        <v-btn class="mx-2" dark color="green" v-on:click="toggleSale(props.item.ticket_id)">
+          Toggle Sale
+        </v-btn>
+      </template>
+    </v-data-table>
+    <v-dialog v-model="changePriceDialog">
+      <v-card>
+        <v-card-title>Change Ticket Price</v-card-title>
+        <v-card-text>The current ticket price is {{currentPrice}} ether.</v-card-text>
+        <v-card-text>The maximum ticket price is {{maxPrice}} ether.</v-card-text>
+        <v-card-actions>
+          <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
+          <v-btn v-on:click="changeTicketPrice(ticketID, price)" color="blue">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-card v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
         Create Tickets
@@ -68,20 +89,10 @@
     </v-card>
     <v-card>
       <v-card-title>
-        Change Ticket Price
-      </v-card-title>
-      <v-card-actions>
-        <v-select v-model="ticketPriceID" :items="myTickets" label="Select Ticket ID"></v-select>
-        <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
-        <v-btn v-on:click="changeTicketPrice(ticketPriceID, price)" color="blue">Update</v-btn>
-      </v-card-actions>
-    </v-card>
-    <v-card>
-      <v-card-title>
         Toggle State
       </v-card-title>
       <v-card-actions>
-        <v-select v-model="toggleID" :items="myTickets" label="Select Ticket ID"></v-select>
+        <v-select v-model="toggleID" :items="[0,1,2]" label="Select Ticket ID"></v-select>
         <v-btn v-on:click="toggleSale(toggleID)" color="green">Toggle</v-btn>
       </v-card-actions>
     </v-card>
@@ -119,6 +130,8 @@ export default {
       category: '',
       seat: '',
       price: '',
+      currentPrice: '',
+      maxPrice: '',
       myTickets: [],
       toggleID: '',
       ticketsOnSale: [],
@@ -126,6 +139,7 @@ export default {
       ticketPriceID: '',
       registerDialog: false,
       loginDialog: false,
+      changePriceDialog: false,
       headers: [{ text: 'Seat Number', value: 'seat_number' },
                 { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
@@ -143,10 +157,6 @@ export default {
   },
 
   methods: {
-
-    onButtonClick(item) {
-      console.log('click on ' + item.ticket_id);
-    },
 
     async initProvider() {
       if (window.ethereum) {
@@ -190,20 +200,28 @@ export default {
       this.myTickets = [];
       this.items = [];
       const num_tickets = await this.contract.methods.getOnSaleLength().call();
-      var uri, data, item, onSale, owner;
+      var uri, data, item, myTicket, onSale, owner;
       for (let i=0; i<num_tickets; i++) {
         onSale = await this.contract.methods.onSale(i).call();
         owner = await this.contract.methods.owners(i).call();
         if (onSale && owner != this.account) this.ticketsOnSale.push(i);
-        if (owner == this.account) this.myTickets.push(i);
+        //if (owner == this.account) this.myTickets.push(i);
         uri = await this.contract.methods.tokenURI(i).call();
         try {
           data = await axios.get(uri);
-          item = data.data;
-          item.ticket_id = i;
-          item.on_sale = await this.contract.methods.onSale(i).call();
-          console.log(item);
-          this.items.push(item);
+          if (owner == this.account) {
+            myTicket = data.data;
+            myTicket.ticket_id = i;
+            myTicket.on_sale = await this.contract.methods.onSale(i).call();
+            console.log(myTicket);
+            this.myTickets.push(myTicket);
+          } else {
+            item = data.data;
+            item.ticket_id = i;
+            item.on_sale = await this.contract.methods.onSale(i).call();
+            console.log(item);
+            this.items.push(item);
+          }
         } catch (error) {
           console.log(error);
         }
@@ -228,6 +246,15 @@ export default {
       const to_be_paid = await this.contract.methods.ticketPrice(id).call()
       await this.contract.methods.buyTicket(id).send({from:this.account, value:to_be_paid});
       console.log("Ticket bought successfully!");
+    },
+
+    async selectTicketPrice(id, currentPrice) {
+      this.ticketID = id;
+      this.currentPrice = currentPrice;
+      //let originalPrice = await this.contracts.methods.originalTicketPrice(id).call();
+      //this.maxPrice = web3.utils.toWei(originalPrice,'ether') * 1.1;
+      this.maxPrice = 0.1
+      this.changePriceDialog = true;
     },
 
     async changeTicketPrice(id, price) {
