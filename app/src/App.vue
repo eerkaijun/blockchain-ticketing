@@ -14,7 +14,7 @@
     <v-dialog v-model="registerDialog">
       <v-card>
         <v-card-title>
-          <h3>Please fill in your personal details to register</h3>
+          Please fill in your personal details to register
         </v-card-title>
         <v-card-text>
           <v-form>
@@ -32,7 +32,7 @@
     <v-dialog v-model="loginDialog">
       <v-card>
         <v-card-title>
-          <h3>Enter your credentials to login</h3>
+          Enter your credentials to login
         </v-card-title>
         <v-card-text>
           <v-form>
@@ -49,7 +49,7 @@
     <v-data-table :headers="headers" :items="items"></v-data-table>
     <v-card v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
-        <h1>Create Tickets</h1>
+        Create Tickets
       </v-card-title>
       <v-card-actions>
         <v-text-field v-model="seat" label="Define Seat Number"></v-text-field>
@@ -62,7 +62,7 @@
     </v-card>
     <v-card>
       <v-card-title>
-        <h1>Change Ticket Price</h1>
+        Change Ticket Price
       </v-card-title>
       <v-card-actions>
         <v-select v-model="ticketPriceID" :items="myTickets" label="Select Ticket ID"></v-select>
@@ -72,7 +72,7 @@
     </v-card>
     <v-card>
       <v-card-title>
-        <h1>Toggle State</h1>
+        Toggle State
       </v-card-title>
       <v-card-actions>
         <v-select v-model="toggleID" :items="myTickets" label="Select Ticket ID"></v-select>
@@ -81,7 +81,7 @@
     </v-card>
     <v-card v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' ">
       <v-card-title>
-        <h1>Purchase Tickets</h1>
+        Purchase Tickets
       </v-card-title>
       <v-card-actions>
         <v-select v-model="ticketID" :items="ticketsOnSale" label="Select Ticket ID"></v-select>
