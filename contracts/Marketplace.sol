@@ -25,7 +25,7 @@ contract Marketplace is TicketsFactory{
   }
 
   // this function should be called by the buyer
-  function buyTicket(uint256 _tokenId) external payable {
+  function buyTicket(uint256 _tokenId) external payable eventNotStarted {
     uint256 price = ticketPrice[_tokenId];
     require(onSale[_tokenId] == true);
     require(msg.value >= price, "at least the ticket price");
