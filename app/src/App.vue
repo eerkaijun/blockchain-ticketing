@@ -170,7 +170,8 @@ export default {
     },
 
     async initContract() {
-      const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //Mumbai testnet address
+      //const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //previous successful Mumbai testnet address
+      const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
       var self = this;
@@ -235,9 +236,8 @@ export default {
     async selectTicketPrice(id, currentPrice) {
       this.ticketID = id;
       this.currentPrice = currentPrice;
-      //let originalPrice = await this.contracts.methods.originalTicketPrice(id).call();
-      //this.maxPrice = web3.utils.toWei(originalPrice,'ether') * 1.1;
-      this.maxPrice = 0.1
+      let originalPrice = await this.contract.methods.originalTicketPrice(id).call();
+      this.maxPrice = Math.round((web3.utils.fromWei(originalPrice,'ether') * 1.1) * 1000) / 1000;
       this.changePriceDialog = true;
     },
 
