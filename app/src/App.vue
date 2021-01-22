@@ -46,14 +46,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-data-table :headers="headers" :items="items">
+    <v-data-table caption="Tickets in the Marketplace" :headers="headers" :items="items">
       <template v-slot:item.action="props">
         <v-btn v-if="props.item.on_sale" class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
           Buy Ticket
         </v-btn>
       </template>
     </v-data-table>
-    <v-data-table :headers="headers" :items="myTickets">
+    <v-data-table caption="My Tickets" :headers="headers" :items="myTickets">
       <template v-slot:item.action="props">
         <v-btn class="mx-2" dark color="pink" v-on:click="selectTicketPrice(props.item.ticket_id, props.item.ticket_value)">
           Change Price
