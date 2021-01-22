@@ -95,19 +95,24 @@
     </v-dialog>
     <v-card>
       <v-card-action>
-        <v-btn v-on:click="signTransaction()" color="green">Entrance Acess</v-btn>
+        <v-btn v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
       </v-card-action>
     </v-card>
     <v-dialog v-model="entranceAccess">
       <v-card>
         <v-card-title>Entrance Access</v-card-title>
         <v-card-text>The number of tickets owned is {{ticketsOwned}} tickets.</v-card-text>
+        <div id="qrcode"></div>
       </v-card>
     </v-dialog>
   </v-app>
 </template>
 
 <script language="javascript" type="text/javascript" src="jslibs/web3.min.js"></script>
+<script type="text/javascript">
+  const QRCode = require('qrcode');
+  new QRCode(document.getElementById("qrcode"), "testing");
+</script>
 <script>
 
 import MarketplaceABI from './plugins/Marketplace';
