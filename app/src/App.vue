@@ -93,6 +93,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-card>
+      <v-card-action>
+        <v-btn v-on:click="signTransaction()" color="green">Entrance Acess</v-btn>
+      </v-card-action>
+    </v-card>
+    <v-dialog v-model="entranceAccess">
+      <v-card>
+        <v-card-title>Entrance Access</v-card-title>
+        <v-card-text>The number of tickets owned is {{ticketsOwned}} tickets.</v-card-text>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -122,10 +133,12 @@ export default {
       myTickets: [],
       toggleID: '',
       ticketID: '',
+      ticketsOwned: 0,
       registerDialog: false,
       loginDialog: false,
       changePriceDialog: false,
       createTicketDialog: false,
+      entranceAccess: false,
       headers: [{ text: 'Seat Number', value: 'seat_number' },
                 { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
@@ -171,13 +184,16 @@ export default {
 
     async initContract() {
       //const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //previous successful Mumbai testnet address
-      const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract
+      const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract Mumbai testnet
+      //const contractAddress = "0xb04b505c37Ab567fc483B784e36409dbAcd374c5"; //Ropsten address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
-      var self = this;
-      this.contract.events.saleToggled().on('data', function(event){
+      //var self = this;
+      this.contract.events.saleToggled().on("data", function(event){
         console.log("EVENT INCOMING!!!");
-        self.initMarketplace(); //scope error
+        //self.initMarketplace(); //scope error
+      }).on('connected', function(event){
+        console.log("Successfully subscribed to the event");
       }).on('error', console.error);
 
     },
@@ -256,6 +272,26 @@ export default {
       console.log("IPFS hash: ", result.path);
       await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
       console.log("Ticket price changed successfully!");
+    },
+
+    async signTransaction() {
+      const message = await this.randomString();
+      const signature = await web3.eth.personal.sign(message, this.account);
+      console.log("The signature: " + signature);
+      const signer = await web3.eth.personal.ecRecover(message, signature);
+      console.log("The signer address: " + signer);
+      this.ticketsOwned = await this.contract.methods.balanceOf(signer).call();
+      this.entranceAccess = true;
+    },
+
+    async randomString() {
+      var result = '';
+      var characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for ( var i = 0; i < 5; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
     }
 
   }
