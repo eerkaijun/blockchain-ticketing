@@ -75,28 +75,31 @@
       </v-card>
     </v-dialog>
     <v-card>
-      <v-card-action>
+      <v-card-actions>
         <v-btn v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
         v-on:click="createTicketDialog=true" color="blue">Create Tickets</v-btn>
-      </v-card-action>
+      </v-card-actions>
     </v-card>
     <v-dialog v-model="createTicketDialog">
       <v-card dark>
         <v-card-title>Create Tickets</v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field v-model="seat" label="Define Seat Number"></v-text-field>
+            <v-select v-model="category" :items="categories" label="Select Category"></v-select>
+            <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
-          <v-text-field v-model="seat" label="Define Seat Number"></v-text-field>
-          <v-select v-model="category" :items="categories" label="Select Category"></v-select>
-        </v-card-actions>
-        <v-card-actions>
-          <v-text-field v-model="price" label="Define Price (in ETH)"></v-text-field>
           <v-btn v-on:click="createTicket(price, seat, category)" color="blue">Mint</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-card>
-      <v-card-action>
+      <v-card-actions>
         <v-btn v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
-      </v-card-action>
+      </v-card-actions>
     </v-card>
     <v-dialog v-model="entranceAccess">
       <v-card>
