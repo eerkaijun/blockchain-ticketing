@@ -104,6 +104,8 @@
     <v-dialog v-model="entranceAccess">
       <v-card>
         <v-card-title>Entrance Access</v-card-title>
+        <v-card-text>The random string is {{message}}</v-card-text>
+        <v-card-text>The signature is {{signature}}</v-card-text>
         <v-card-text>The number of tickets owned is {{ticketsOwned}} tickets.</v-card-text>
         <div id="qrcode"></div>
       </v-card>
@@ -147,6 +149,8 @@ export default {
       changePriceDialog: false,
       createTicketDialog: false,
       entranceAccess: false,
+      message: '',
+      signature: '',
       headers: [{ text: 'Seat Number', value: 'seat_number' },
                 { text: 'Ticket Price (in ETH)', value: 'ticket_value' },
                 { text: 'Category', value: 'ticket_category' },
@@ -283,10 +287,10 @@ export default {
     },
 
     async signTransaction() {
-      const message = await this.randomString();
-      const signature = await web3.eth.personal.sign(message, this.account);
-      console.log("The signature: " + signature);
-      const signer = await web3.eth.personal.ecRecover(message, signature);
+      this.message = await this.randomString();
+      this.signature = await web3.eth.personal.sign(this.message, this.account);
+      console.log("The signature: " + this.signature);
+      const signer = await web3.eth.personal.ecRecover(this.message, this.signature);
       console.log("The signer address: " + signer);
       this.ticketsOwned = await this.contract.methods.balanceOf(signer).call();
       this.entranceAccess = true;
