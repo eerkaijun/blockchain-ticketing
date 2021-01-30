@@ -107,20 +107,19 @@
         <v-card-text>The random string is {{message}}</v-card-text>
         <v-card-text>The signature is {{signature}}</v-card-text>
         <v-card-text>The number of tickets owned is {{ticketsOwned}} tickets.</v-card-text>
-        <div id="qrcode"></div>
+        <v-card-text>
+          <qrcode :value="signature"></qrcode>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </v-app>
 </template>
 
 <script language="javascript" type="text/javascript" src="jslibs/web3.min.js"></script>
-<script type="text/javascript">
-  const QRCode = require('qrcode');
-  new QRCode(document.getElementById("qrcode"), "testing");
-</script>
 <script>
 
 import MarketplaceABI from './plugins/Marketplace';
+import Qrcode from 'v-qrcode/src/index';
 
 const Web3 = require('web3');
 const axios = require('axios');
@@ -159,6 +158,10 @@ export default {
                 { text: 'Action', value: 'action'}],
       items: []
     }
+  },
+
+  components: {
+      Qrcode
   },
 
   async mounted() {
