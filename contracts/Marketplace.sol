@@ -1,15 +1,18 @@
-pragma solidity >=0.6.0 <0.7.0;
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.7.0 <0.8.0;
 
 import "./TicketsFactory.sol";
 //import "@openzeppelin/contracts/math/SafeMath.sol";
 
 contract Marketplace is TicketsFactory{
 
-  //using SafeMath for uint;
+  using SafeMath for uint;
+
   mapping (address => uint256) etherBalance;
   uint private _maxTicketNum;
 
-  constructor() public {
+  constructor() {
     _maxTicketNum = 10;
   }
 
