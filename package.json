@@ -12,7 +12,8 @@
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^3.4.0",
-    "solidity-coverage": "^0.7.14"
+    "solidity-coverage": "^0.7.14",
+    "truffle": "^5.1.65"
   },
   "scripts": {
     "test": "truffle test "

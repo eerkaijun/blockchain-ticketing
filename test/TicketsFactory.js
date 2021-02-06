@@ -18,7 +18,7 @@ contract("TicketsFactory", (accounts) => {
   });
 
   it("Normal user should not be able to create tickets", async() => {
-    await utils.shouldThrow(contractInstance.createTicket(0, {from:user}));
+    await utils.shouldThrow(contractInstance.createTicket(0, "", {from:user}));
   });
 
   it("Ticket owner should be able to change ticket price", async() => {
