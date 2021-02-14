@@ -10,10 +10,10 @@ contract Marketplace is TicketsFactory{
   using SafeMath for uint;
 
   mapping (address => uint256) etherBalance;
-  uint private _maxTicketNum;
+  uint private _maxTicketNum = 10;
 
   constructor() {
-    _maxTicketNum = 10;
+    //_maxTicketNum = 10;
   }
 
   function withdraw() public {
@@ -33,7 +33,7 @@ contract Marketplace is TicketsFactory{
     require(onSale[_tokenId] == true);
     require(msg.value >= price, "at least the ticket price");
     //require(msg.value < price.add(price.div(10)), "not more than 10% of original price");
-    require(balanceOf(msg.sender) <= _maxTicketNum, "exceeded max number of tickets bought");
+    require(balanceOf(msg.sender) < _maxTicketNum, "exceeded max number of tickets bought");
     address seller = ownerOf(_tokenId);
     onSale[_tokenId] = false;
     etherBalance[seller] += msg.value;
