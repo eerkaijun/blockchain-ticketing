@@ -21,6 +21,14 @@ contract("TicketsFactory", (accounts) => {
     await utils.shouldThrow(contractInstance.createTicket(0, "", {from:user}));
   });
 
+  it("All created tickets should be recorded on the blockchain", async() => {
+    await contractInstance.createTicket(web3.utils.toWei('3','ether'), "", {from:owner});
+    const result1 = await contractInstance.getOnSaleLength();
+    const result2 = await contractInstance.getOwnersLength();
+    assert.equal(result1, 1);
+    assert.equal(result2, 1);
+  });
+
   it("Ticket owner should be able to change ticket price", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), "", {from:owner});
     const result = await contractInstance.changeTicketPrice(0, web3.utils.toWei('3.1','ether'), "", {from:owner});
@@ -32,5 +40,10 @@ contract("TicketsFactory", (accounts) => {
   it("Ticket owner should not be able to change ticket price to higher than 10% of orginal price", async() => {
     await contractInstance.createTicket(web3.utils.toWei('3','ether'), "", {from:owner});
     await utils.shouldThrow(contractInstance.changeTicketPrice(0, web3.utils.toWei('3.4','ether'), "", {from:owner}));
+  });
+
+  it("No one should be able to change ticket price except the ticket owner", async() => {
+    await contractInstance.createTicket(web3.utils.toWei('3','ether'), "", {from:owner});
+    await utils.shouldThrow(contractInstance.changeTicketPrice(0, web3.utils.toWei('3.1','ether'), "", {from:user}));
   });
 })
