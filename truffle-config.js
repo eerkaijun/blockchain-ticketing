@@ -36,7 +36,7 @@ module.exports = {
       gas: 5500000,
       confirmations: 2,
       timeoutBlocks: 200,
-      skipDryRun: true     
+      skipDryRun: true
     },
 
     ropsten: {
@@ -69,10 +69,12 @@ module.exports = {
     // timeout: 100000
   },
 
+  plugins: ["solidity-coverage"],
+
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.6.4",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.7.1",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
