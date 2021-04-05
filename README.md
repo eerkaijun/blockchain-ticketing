@@ -6,7 +6,7 @@ This repository contains the implementation of a fully-functioning blockchain ti
 
 Prerequisites: solidity, truffle and npm installed 
 
-To test smart contracts, first start ganache and run `truffle test`.
+To test smart contracts, first start ganache and run `truffle test`. To see the coverage achieved by the unit tests, run `truffle run coverage`. The coverage report is added to the `coverage` directory. 
 
 To deploy smart contracts, run `truffle migrate --network ropsten`. Change `ropsten` to the network that you want to deploy the smart contracts to. You could add custom networks in the truffle-config.js file. 
 
