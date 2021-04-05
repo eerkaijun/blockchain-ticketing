@@ -198,9 +198,7 @@ export default {
     },
 
     async initContract() {
-      //const contractAddress = "0xa029C3a51e202a0A2Ab793fF480B90eB91887a42"; //previous successful Mumbai testnet address
       const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract Mumbai testnet
-      //const contractAddress = "0xb04b505c37Ab567fc483B784e36409dbAcd374c5"; //Ropsten address
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
       //var self = this;
