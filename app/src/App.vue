@@ -1,15 +1,20 @@
 <template>
   <v-app>
     <v-card>
-      <v-card-title>
-        <h3>Address: {{account}}</h3>
-      </v-card-title>
-      <v-divider></v-divider>
+      <v-card-title>Blockchain Ticketing System</v-card-title>
       <v-card-actions>
         <v-btn v-on:click="registerDialog=true" color="success">Register</v-btn>
-        <v-spacer></v-spacer>
         <v-btn v-on:click="loginDialog=true" color="info">Login</v-btn>
       </v-card-actions>
+    </v-card>
+    <v-card>
+      <br>
+      <v-toolbar flat dense>
+        <v-select v-model="type" :items="types" label="Select Event Type"
+        solo prepend-icon="mdi-map" flat max-width="300px"></v-select>
+        <v-select v-model="selectedEvent" :items="events" label="Select Event"
+        solo prepend-icon="mdi-map" flat max-width="300px"></v-select>
+      </v-toolbar>
     </v-card>
     <v-dialog v-model="registerDialog">
       <v-card>
@@ -46,6 +51,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <div>
+      <img src="./assets/seating-plan.png" class="center">
+    </div>
     <v-data-table caption="Tickets in the Marketplace" :headers="headers" :items="items">
       <template v-slot:item.action="props">
         <v-btn v-if="props.item.on_sale" class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
@@ -156,7 +164,11 @@ export default {
                 { text: 'Ticket ID', value: 'ticket_id'},
                 { text: 'On Sale', value: 'on_sale'},
                 { text: 'Action', value: 'action'}],
-      items: []
+      items: [],
+      types: ['Celebrity Concert', 'Football Match'],
+      type: '',
+      events: [],
+      selectedEvent: ''
     }
   },
 
@@ -310,3 +322,17 @@ export default {
   }
 }
 </script>
+
+<style>
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+
+  .center {
+    width: 500px;
+    height: auto;
+  }
+</style>
