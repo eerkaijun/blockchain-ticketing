@@ -51,10 +51,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div>
+    <div v-if="selectedEvent!==''">
       <img src="./assets/seating-plan.png" class="center">
     </div>
-    <v-data-table caption="Tickets in the Marketplace" :headers="headers" :items="items">
+    <v-data-table v-if="selectedEvent!==''" caption="Tickets in the Marketplace" :headers="headers" :items="items">
       <template v-slot:item.action="props">
         <v-btn v-if="props.item.on_sale" class="mx-2" dark color="pink" v-on:click="buyTicket(props.item.ticket_id)">
           Buy Ticket
@@ -84,7 +84,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-card>
+    <v-card v-if="selectedEvent!==''">
       <v-card-actions>
         <v-btn v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
         v-on:click="createTicketDialog=true" color="blue">Create Tickets</v-btn>
@@ -106,7 +106,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-card>
+    <v-card v-if="selectedEvent!==''">
       <v-card-actions>
         <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
         v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
