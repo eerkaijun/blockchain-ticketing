@@ -61,16 +61,18 @@
         </v-btn>
       </template>
     </v-data-table>
-    <v-data-table caption="My Tickets" :headers="headers" :items="myTickets">
-      <template v-slot:item.action="props">
-        <v-btn class="mx-2" dark color="pink" v-on:click="selectTicketPrice(props.item.ticket_id, props.item.ticket_value)">
-          Change Price
-        </v-btn>
-        <v-btn class="mx-2" dark color="green" v-on:click="toggleSale(props.item.ticket_id)">
-          Toggle Sale
-        </v-btn>
-      </template>
-    </v-data-table>
+    <v-dialog v-model="myTicket">
+      <v-data-table caption="My Tickets" :headers="headers" :items="myTickets">
+        <template v-slot:item.action="props">
+          <v-btn class="mx-2" dark color="pink" v-on:click="selectTicketPrice(props.item.ticket_id, props.item.ticket_value)">
+            Change Price
+          </v-btn>
+          <v-btn class="mx-2" dark color="green" v-on:click="toggleSale(props.item.ticket_id)">
+            Toggle Sale
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-dialog>
     <v-dialog v-model="changePriceDialog">
       <v-card>
         <v-card-title>Change Ticket Price</v-card-title>
@@ -107,6 +109,7 @@
     <v-card>
       <v-card-actions>
         <v-btn v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
+        <v-btn v-on:click="myTicket=true" color="blue">View My Tickets</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="entranceAccess">
@@ -168,7 +171,8 @@ export default {
       types: ['Celebrity Concert', 'Football Match'],
       type: '',
       events: [],
-      selectedEvent: ''
+      selectedEvent: '',
+      myTicket: false
     }
   },
 
