@@ -108,8 +108,10 @@
     </v-dialog>
     <v-card>
       <v-card-actions>
-        <v-btn v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
-        <v-btn v-on:click="myTicket=true" color="blue">View My Tickets</v-btn>
+        <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
+        v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
+        <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
+        v-on:click="myTicket=true" color="blue">View My Tickets</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="entranceAccess">
@@ -170,7 +172,7 @@ export default {
       items: [],
       types: ['Celebrity Concert', 'Football Match'],
       type: '',
-      events: [],
+      events: ['One Direction'],
       selectedEvent: '',
       myTicket: false
     }
