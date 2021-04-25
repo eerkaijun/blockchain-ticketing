@@ -16,7 +16,7 @@ contract TicketsFactory is Ownable, ERC721{
   //mapping (uint256 => bool) onSale;
   bool[] public onSale;
   address[] public owners;
-  bool eventStarted = false;
+  bool public eventStarted = false;
 
   constructor() ERC721("NFT Tickets", "TIX") {
     _setBaseURI("https://ipfs.infura.io/ipfs/");
@@ -56,6 +56,10 @@ contract TicketsFactory is Ownable, ERC721{
 
   function getOwnersLength() public view returns(uint) {
     return owners.length;
+  }
+
+  function getEventStarted() public view returns(bool) {
+    return eventStarted;
   }
 
   function _incrementTokenId() private  {

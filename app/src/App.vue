@@ -87,7 +87,9 @@
     <v-card v-if="selectedEvent!==''">
       <v-card-actions>
         <v-btn v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
-        v-on:click="createTicketDialog=true" color="blue">Create Tickets</v-btn>
+        v-on:click="createTicketDialog=true" color="green">Create Tickets</v-btn>
+        <v-btn v-if="account==='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
+        v-on:click="startEvent()" color="blue">Start Event</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="createTicketDialog">
@@ -109,9 +111,9 @@
     <v-card v-if="selectedEvent!==''">
       <v-card-actions>
         <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
-        v-on:click="signTransaction()" color="green">Entrance Access</v-btn>
-        <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' "
-        v-on:click="myTicket=true" color="blue">View My Tickets</v-btn>
+        v-on:click="myTicket=true" color="green">View My Tickets</v-btn>
+        <v-btn v-if="account!=='0xEDB4400a8b1DEccc6C62DFDDBD6F73E48537012A' && eventStarted "
+        v-on:click="signTransaction()" color="blue">Entrance Access</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="entranceAccess">
@@ -174,7 +176,8 @@ export default {
       type: '',
       events: ['One Direction'],
       selectedEvent: '',
-      myTicket: false
+      myTicket: false,
+      eventStarted: false
     }
   },
 
@@ -212,11 +215,15 @@ export default {
           // Call a function to update the UI with the new account
           alert("You changed account!");
         }
+
+        //check whether event has started at every one second interval
+        this.eventStarted = await this.contract.methods.getEventStarted().call();
       }, 1000);
     },
 
     async initContract() {
-      const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract Mumbai testnet
+      const contractAddress = "0x530C3005838CBC1Cd7060b647839B9813e89d2A6"; //with startEvent functionality
+      //const contractAddress = "0xae6d6C4dDFdD3f8e67c95609199eB567b3c56AA0"; //updated smart contract Mumbai testnet
       this.contract = await new web3.eth.Contract(MarketplaceABI, contractAddress);
       console.log(this.account);
       //var self = this;
@@ -303,6 +310,10 @@ export default {
       console.log("IPFS hash: ", result.path);
       await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
       console.log("Ticket price changed successfully!");
+    },
+
+    async startEvent() {
+      await this.contract.methods.startEvent().send({from:this.account});
     },
 
     async signTransaction() {
