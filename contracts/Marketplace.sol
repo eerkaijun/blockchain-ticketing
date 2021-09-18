@@ -3,10 +3,10 @@
 pragma solidity ^0.8.0;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
 
-contract Marketplace is Ownable, ERC721{
+contract Marketplace is Ownable, ERC721URIStorage{
 
   using SafeMath for uint;
   
@@ -22,27 +22,38 @@ contract Marketplace is Ownable, ERC721{
   bool eventStarted = false;
   mapping (address => uint256) etherBalance;
   uint private _maxTicketNum = 10;
+  string private _base; 
 
   constructor() ERC721("NFT Tickets", "TIX") {
-    
+    _setBaseURI("https://ipfs.infura.io/ipfs/");
   }
 
   modifier eventNotStarted() {
     require(eventStarted == false);
     _;
   }
+  
+  function _setBaseURI(string memory _uri) private {
+    _base = _uri; 
+  }
+  
+  function _baseURI() internal view override returns (string memory) {
+    return _base;
+  }
 
-  function createTicket(uint256 _price, uint256 _maxPrice) public onlyOwner {
+  function createTicket(uint256 _price, uint256 _maxPrice, string memory _tokenURI) public onlyOwner {
     _mint(msg.sender, _currentTokenId); //token id starts from 0
     tickets.push(Ticket(_maxPrice, _price, false));
+    _setTokenURI(_currentTokenId, _tokenURI);
     _incrementTokenId();
   }
 
-  function changeTicketPrice(uint256 _tokenId, uint256 _newPrice) public {
+  function changeTicketPrice(uint256 _tokenId, uint256 _newPrice, string memory _tokenURI) public {
     require(msg.sender == ownerOf(_tokenId));
     Ticket storage tix = tickets[_tokenId];
     require(_newPrice < tix.maxPrice, "not more than the upper limit price");
     tix.price = _newPrice;
+    _setTokenURI(_tokenId, _tokenURI);
   }
 
   function startEvent() public onlyOwner {
