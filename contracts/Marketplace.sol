@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// curren deployed address on Shibuya: 0x5D1ce7Fb931274Aa315707aEB2abAD9D138780FA
 
 pragma solidity ^0.8.0;
 
@@ -16,6 +17,8 @@ contract Marketplace is Ownable, ERC721URIStorage{
       uint256 price; // current price
       bool onSale;
   }
+  
+  address financeAddress; 
 
   uint256 private _currentTokenId = 0;
   Ticket[] public tickets; 
@@ -59,6 +62,10 @@ contract Marketplace is Ownable, ERC721URIStorage{
   function startEvent() public onlyOwner {
     eventStarted = true;
   }
+  
+  function getEventStarted() public view returns(bool) {
+    return eventStarted;
+  }
 
   function _incrementTokenId() private {
     _currentTokenId++;
@@ -84,10 +91,15 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(balanceOf(msg.sender) < _maxTicketNum, "exceeded max number of tickets bought");
     address seller = ownerOf(_tokenId);
     tix.onSale = false;
-    etherBalance[seller] += msg.value;
+    etherBalance[seller] += (msg.value).div(5).mul(3);
+    payable(financeAddress).transfer((msg.value).div(5).mul(2)); // transfer 40% to the finance contract
     _safeTransfer(seller, msg.sender, _tokenId, "");
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
+  }
+  
+  function setFinanceAddress(address _finance) public onlyOwner {
+    financeAddress = _finance; 
   }
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner

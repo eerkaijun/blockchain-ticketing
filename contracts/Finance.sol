@@ -6,14 +6,23 @@ pragma solidity ^0.8.0;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
 
+abstract contract MarketplaceInterface {
+    function getEventStarted() public virtual view returns(bool); 
+}
+
 contract Finance is Ownable {
     
     using SafeMath for uint;
+    
+    address marketplaceAddress = 0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47; 
+    MarketplaceInterface marketplaceContract = MarketplaceInterface(marketplaceAddress);
     
     uint public investmentPrice;
     uint public totalInvestment; // total shares that are released
     uint private _investmentSold = 0;
     mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
+    bool retrieved; 
+    uint public inVault; // funds that are deposited into vault from ticket sales
     
     // let's say the event organiser will have 100 tickets as Collateral
     // each ticket will cost $100 in the primary market
@@ -38,8 +47,18 @@ contract Finance is Ownable {
         _investmentSold = _investmentSold + _number;
     }
     
-    // event organiser can withdraw funds 
+    // event organiser can withdraw funds before the event starts
     function withdraw() public onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+    }
+    
+    function retrieve() public {
+        require(marketplaceContract.getEventStarted() == true);
+        if (!retrieved) {
+            retrieved = true;
+            inVault = address(this).balance;
+        }
+        investors[msg.sender] = 0;
+        payable(msg.sender).transfer(inVault.div(totalInvestment).mul(investors[msg.sender]));
     }
 }
