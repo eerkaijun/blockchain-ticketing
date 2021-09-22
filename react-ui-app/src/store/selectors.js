@@ -22,32 +22,30 @@ export const contractsLoadedSelector = createSelector(
   marketplaceLoaded,
   (ml) => ml
 );
+
+const ticketsLoaded = (state) =>
+  get(state, "marketplace.tickets.loaded", false);
+export const ticketsLoadedSelector = createSelector(ticketsLoaded, (tl) => tl);
+
+const tickets = (state) => get(state, "marketplace.tickets.data", []);
+export const ticketsSelector = createSelector(tickets, (tickets) => {
+  // Sort orders by date ascending for price comparison
+  tickets = tickets.sort((a, b) => b.ticket_id - a.ticket_id);
+  console.log("!!!tick", tickets);
+});
+
 ///////////////////////////////////////////////
 
-// // TODO: Move me to helpers file
-// export const formatBalance = (balance) => {
-//   const precision = 100 // 2 decimal places
-
-//   balance = ether(balance)
-//   balance = Math.round(balance * precision) / precision // Use 2 decimal places
-
-//   return balance
-// }
-
-// const tokenLoaded = state => get(state, 'token.loaded', false)
-// export const tokenLoadedSelector = createSelector(tokenLoaded, tl => tl)
-
-// const token = state => get(state, 'token.contract')
-// export const tokenSelector = createSelector(token, t => t)
-
-// const exchangeLoaded = state => get(state, 'exchange.loaded', false)
-// export const exchangeLoadedSelector = createSelector(exchangeLoaded, el => el)
-
-// const exchange = state => get(state, 'exchange.contract')
-// export const exchangeSelector = createSelector(exchange, e => e)
-
-// export const contractsLoadedSelector = createSelector(
-//   tokenLoaded,
-//   exchangeLoaded,
-//   (tl, el) => (tl && el)
+// const filledOrders = state => get(state, 'exchange.filledOrders.data', [])
+// export const filledOrdersSelector = createSelector(
+//   filledOrders,
+//   (orders) => {
+//     // Sort orders by date ascending for price comparison
+//     orders = orders.sort((a,b) => a.timestamp - b.timestamp)
+//     // Decorate the orders
+//     orders = decorateFilledOrders(orders)
+//     // Sort orders by date descending for display
+//     orders = orders.sort((a,b) => b.timestamp - a.timestamp)
+//     return orders
+//   }
 // )
