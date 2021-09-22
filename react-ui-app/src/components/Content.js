@@ -1,9 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Tabs, Tab, Button, Row, Col, Container, Table } from "react-bootstrap";
-import { accountSelector } from "../store/selectors";
+import { accountSelector, marketplaceSelector } from "../store/selectors";
+import { loadAllTickets } from "../store/interactions";
 
 class Content extends Component {
+  async componentWillMount() {
+    await this.loadTicketsData(this.props.dispatch);
+  }
+
+  async loadTicketsData(dispatch) {
+    await loadAllTickets(this.props.marketplace, dispatch);
+  }
+
   render() {
     return (
       <div className="container">
@@ -50,7 +59,8 @@ class Content extends Component {
 
 function mapStateToProps(state) {
   return {
-    account: accountSelector(state),
+    // account: accountSelector(state),
+    marketplace: marketplaceSelector(state),
   };
 }
 

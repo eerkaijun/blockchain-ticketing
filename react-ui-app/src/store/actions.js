@@ -13,14 +13,21 @@ export function web3AccountLoaded(account) {
   };
 }
 
-// TOKEN
+// MARKETPLACE
 export function marketplaceLoaded(contract) {
   return {
     type: "MARKETPLACE_LOADED",
     contract,
   };
 }
+export function ticketsLoaded(tickets) {
+  return {
+    type: "TICKETS_LOADED",
+    tickets,
+  };
+}
 
+//////////////////////////TODO remove not needed below
 // EXCHANGE
 export function exchangeLoaded(contract) {
   return {

@@ -23,39 +23,6 @@ class App extends Component {
     // await this.initMarketplace();
   }
 
-  async initMarketplace() {
-    this.state.myTickets = [];
-    this.state.items = [];
-
-    const num_tickets = await this.contract.methods.getOnSaleLength().call();
-    // console.log("!!!!!num_tickets", num_tickets);
-    var uri, data, item, myTicket, onSale, owner;
-    for (let i = 0; i < num_tickets; i++) {
-      onSale = await this.contract.methods.onSale(i).call();
-      owner = await this.contract.methods.owners(i).call();
-      //if (owner == this.account) this.myTickets.push(i);
-      uri = await this.contract.methods.tokenURI(i).call();
-      try {
-        data = await axios.get(uri);
-        if (owner == this.account) {
-          myTicket = data.data;
-          myTicket.ticket_id = i;
-          myTicket.on_sale = await this.contract.methods.onSale(i).call();
-          this.state.myTickets.push(myTicket);
-        } else {
-          item = data.data;
-          item.ticket_id = i;
-          item.on_sale = await this.contract.methods.onSale(i).call();
-          console.log(item);
-          this.state.items.push(item);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    console.log("!!!!!this.state.myTickets", this.state.myTickets);
-  }
-
   async createTicket(price, seat, category) {
     let metadata = {
       seat_number: seat,
@@ -86,6 +53,7 @@ class App extends Component {
       );
       return;
     }
+    // await loadAllTickets(marketplace);
   }
 
   render() {

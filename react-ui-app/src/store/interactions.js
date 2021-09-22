@@ -3,6 +3,7 @@ import {
   web3Loaded,
   web3AccountLoaded,
   marketplaceLoaded,
+  ticketsLoaded,
   exchangeLoaded,
   cancelledOrdersLoaded,
   filledOrdersLoaded,
@@ -25,16 +26,13 @@ import Marketplace from "../contracts-json/Marketplace.json";
 // import Exchange from "../abis/Exchange.json";
 // import { ETHER_ADDRESS } from "../helpers";
 
-// export const loadWeb3 = async (dispatch) => {
-//   if(typeof window.ethereum!=='undefined'){
-//     const web3 = new Web3(window.ethereum)
-//     dispatch(web3Loaded(web3))
-//     return web3
-//   } else {
-//     window.alert('Please install MetaMask')
-//     window.location.assign("https://metamask.io/")
-//   }
-// }
+const ipfsClient = require("ipfs-http-client");
+const ipfs = require("ipfs-http-client")({
+  host: "ipfs.infura.io",
+  port: "5001",
+  protocol: "https",
+});
+const axios = require("axios");
 
 export const loadWeb3 = async (dispatch) => {
   // Modern dapp browsers...
@@ -87,18 +85,44 @@ export const loadMarketplace = async (web3, networkID, dispatch) => {
     );
     return null;
   }
+};
 
-  // //var self = this;
-  // this.contract.events
-  //   .saleToggled()
-  //   .on("data", function (event) {
-  //     console.log("EVENT INCOMING!!!");
-  //     //self.initMarketplace(); //scope error
-  //   })
-  //   .on("connected", function (event) {
-  //     console.log("Successfully subscribed to the event");
-  //   })
-  //   .on("error", console.error);
+export const loadAllTickets = async (marketplace, dispatch) => {
+  const myTickets = [];
+  const items = [];
+
+  const num_tickets = await marketplace.methods.getOnSaleLength().call();
+  console.log("!!!!!num_tickets", num_tickets);
+  var uri, data, item, myTicket, onSale, owner;
+  for (let i = 0; i < num_tickets; i++) {
+    onSale = await marketplace.methods.onSale(i).call();
+    owner = await marketplace.methods.owners(i).call();
+    //if (owner == this.account) this.myTickets.push(i);
+    uri = await marketplace.methods.tokenURI(i).call();
+    try {
+      data = await axios.get(uri);
+      myTicket = data.data;
+      myTicket.ticket_id = i;
+      myTicket.on_sale = await marketplace.methods.onSale(i).call();
+      myTickets.push(myTicket);
+      // if (owner == this.account) {
+      //   myTicket = data.data;
+      //   myTicket.ticket_id = i;
+      //   myTicket.on_sale = await this.contract.methods.onSale(i).call();
+      //   this.state.myTickets.push(myTicket);
+      // } else {
+      //   item = data.data;
+      //   item.ticket_id = i;
+      //   item.on_sale = await this.contract.methods.onSale(i).call();
+      //   console.log(item);
+      //   this.state.items.push(item);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  console.log("!!!!!myTickets", myTickets);
+  dispatch(ticketsLoaded(myTickets));
 };
 
 // async initMarketplace() {
