@@ -4,6 +4,7 @@ import {
   web3AccountLoaded,
   marketplaceLoaded,
   ticketsLoaded,
+  saleToggling,
   exchangeLoaded,
   cancelledOrdersLoaded,
   filledOrdersLoaded,
@@ -87,12 +88,40 @@ export const loadMarketplace = async (web3, networkID, dispatch) => {
   }
 };
 
+export const createTicket = async (
+  price,
+  seat,
+  category,
+  marketplace,
+  account,
+  dispatch
+) => {
+  let metadata = {
+    seat_number: seat,
+    ticket_category: category,
+    ticket_value: price,
+  };
+  // console.log(JSON.stringify(metadata));
+  let result = await ipfs.add(JSON.stringify(metadata));
+
+  // console.log("IPFS hash: ", result.path);
+  // console.log("!!!account", account);
+  await marketplace.methods
+    // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
+    .createTicket(7894125630000, result.path)
+    .send({ from: account });
+  console.log("Ticket created successfully!");
+
+  const num_tickets = await marketplace.methods.getOnSaleLength().call();
+  // console.log("!!!!!num_tickets", num_tickets);
+};
+
 export const loadAllTickets = async (marketplace, dispatch) => {
   const myTickets = [];
   const items = [];
 
   const num_tickets = await marketplace.methods.getOnSaleLength().call();
-  console.log("!!!!!num_tickets", num_tickets);
+  // console.log("!!!!!num_tickets", num_tickets);
   var uri, data, item, myTicket, onSale, owner;
   for (let i = 0; i < num_tickets; i++) {
     onSale = await marketplace.methods.onSale(i).call();
@@ -121,9 +150,26 @@ export const loadAllTickets = async (marketplace, dispatch) => {
       console.log(error);
     }
   }
-  console.log("!!!!!myTickets", myTickets);
+  // console.log("!!!!!myTickets", myTickets);
   dispatch(ticketsLoaded(myTickets));
 };
+
+export const toggleSale = (dispatch, marketplace, ticket, account) => {
+  marketplace.methods
+    .toggleSale(ticket.ticket_id)
+    .send({ from: account })
+    .on("transactionHash", (hash) => {
+      dispatch(saleToggling());
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+// async toggleSale(id) {
+//   await this.contract.methods.toggleSale(id).send({from:this.account});
+//    console.log("Ticket put on sale!");
+//  },
 
 // async initMarketplace() {
 //   this.state.myTickets = [];

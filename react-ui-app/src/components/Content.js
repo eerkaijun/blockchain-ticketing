@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Tabs, Tab, Button, Row, Col, Container, Table } from "react-bootstrap";
 import { accountSelector, marketplaceSelector } from "../store/selectors";
-import { loadAllTickets } from "../store/interactions";
+import { loadAllTickets, createTicket } from "../store/interactions";
 import Tickets from "./Tickets";
 
 class Content extends Component {
@@ -12,6 +12,14 @@ class Content extends Component {
 
   async loadTicketsData(dispatch) {
     await loadAllTickets(this.props.marketplace, dispatch);
+    // await createTicket(
+    //   "789",
+    //   31,
+    //   32,
+    //   this.props.marketplace,
+    //   this.props.account,
+    //   dispatch
+    // );
   }
 
   render() {
@@ -32,7 +40,7 @@ class Content extends Component {
 
 function mapStateToProps(state) {
   return {
-    // account: accountSelector(state),
+    account: accountSelector(state),
     marketplace: marketplaceSelector(state),
   };
 }

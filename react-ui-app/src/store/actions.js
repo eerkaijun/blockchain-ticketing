@@ -27,14 +27,13 @@ export function ticketsLoaded(tickets) {
   };
 }
 
-//////////////////////////TODO remove not needed below
-// EXCHANGE
-export function exchangeLoaded(contract) {
+// Toggle sale
+export function saleToggling() {
   return {
-    type: "EXCHANGE_LOADED",
-    contract,
+    type: "SALE_TOGGLING",
   };
 }
+//////////////////////////TODO remove not needed below
 
 export function cancelledOrdersLoaded(cancelledOrders) {
   return {
@@ -54,13 +53,6 @@ export function allOrdersLoaded(allOrders) {
   return {
     type: "ALL_ORDERS_LOADED",
     allOrders,
-  };
-}
-
-// Cancel Order
-export function orderCancelling() {
-  return {
-    type: "ORDER_CANCELLING",
   };
 }
 

@@ -16,9 +16,9 @@ function marketplace(state = {}, action) {
     case "MARKETPLACE_LOADED":
       return { ...state, loaded: true, contract: action.contract };
     case "TICKETS_LOADED":
-      return { ...state, tickets: { loaedd: true, data: action.tickets } };
-    // case 'TOKEN_BALANCE_LOADED':
-    //   return { ...state, balance: action.balance }
+      return { ...state, tickets: { loaded: true, data: action.tickets } };
+    case "SALE_TOOGLING":
+      return { ...state, saleToggling: true };
     default:
       return state;
   }
