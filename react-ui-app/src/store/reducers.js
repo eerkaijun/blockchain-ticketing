@@ -17,8 +17,24 @@ function marketplace(state = {}, action) {
       return { ...state, loaded: true, contract: action.contract };
     case "TICKETS_LOADED":
       return { ...state, tickets: { loaded: true, data: action.tickets } };
-    case "SALE_TOOGLING":
+    case "SALE_TOGGLING":
       return { ...state, saleToggling: true };
+
+    case "SALE_TOGGLED":
+      return {
+        ...state,
+        saleToggling: false,
+        tickets: {
+          ...state.tickets,
+
+          data: state.tickets.data.map((ticket, i) =>
+            ticket.ticket_id == action.ticket._id
+              ? { ...ticket, on_sale: action.ticket.state }
+              : ticket
+          ),
+        },
+      };
+
     default:
       return state;
   }

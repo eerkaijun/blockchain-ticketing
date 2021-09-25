@@ -28,11 +28,20 @@ export function ticketsLoaded(tickets) {
 }
 
 // Toggle sale
-export function saleToggling() {
+export function saleToggling(ticket) {
   return {
     type: "SALE_TOGGLING",
+    ticket,
   };
 }
+
+export function saleToggled(ticket) {
+  return {
+    type: "SALE_TOGGLED",
+    ticket,
+  };
+}
+
 //////////////////////////TODO remove not needed below
 
 export function cancelledOrdersLoaded(cancelledOrders) {

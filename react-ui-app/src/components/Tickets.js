@@ -1,20 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  Tabs,
-  Tab,
-  Button,
-  Row,
-  Col,
-  Container,
-  Table,
-  Spinner,
-} from "react-bootstrap";
+import { Tabs, Tab, Button, Row, Col, Container, Table } from "react-bootstrap";
+import Spinner from "./Spinner";
 import {
   accountSelector,
   ticketsLoadedSelector,
   ticketsSelector,
   marketplaceSelector,
+  saleTogglingSelector,
 } from "../store/selectors";
 import { toggleSale } from "../store/interactions";
 
@@ -37,7 +30,6 @@ const showTickets = (props) => {
               <Button>Change Price</Button>
               <Button
                 onClick={(e) => {
-                  // console.log("!!!!");
                   toggleSale(dispatch, marketplace, ticket, account);
                 }}
               >
@@ -59,7 +51,6 @@ const showTickets = (props) => {
 
 class Tickets extends Component {
   render() {
-    console.log("!!!!tickets.js props", this.props);
     return (
       <div className="card bg-dark text-white">
         <div className="card-header">Tickets in the Marketplace</div>
@@ -79,6 +70,13 @@ class Tickets extends Component {
             {this.props.ticketsLoaded ? (
               showTickets(this.props)
             ) : (
+              // <tbody>
+              //   <tr>
+              //     <td colSpan="4">
+              //       <Spinner type="table" />
+              //     </td>
+              //   </tr>
+              // </tbody>
               <Spinner type="table" />
             )}
           </table>
@@ -89,8 +87,10 @@ class Tickets extends Component {
 }
 
 function mapStateToProps(state) {
+  const ticketsLoaded = ticketsLoadedSelector(state);
+  const saleToggling = saleTogglingSelector(state);
   return {
-    ticketsLoaded: ticketsLoadedSelector(state),
+    ticketsLoaded: ticketsLoaded && !saleToggling,
     marketplace: marketplaceSelector(state),
     tickets: ticketsSelector(state),
     account: accountSelector(state),

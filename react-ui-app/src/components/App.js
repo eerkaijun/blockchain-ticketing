@@ -39,7 +39,6 @@ class App extends Component {
     console.log("Ticket created successfully!");
 
     const num_tickets = await this.contract.methods.getOnSaleLength().call();
-    console.log("!!!!!num_tickets", num_tickets);
   }
 
   async loadBlockchainData(dispatch) {
@@ -53,7 +52,6 @@ class App extends Component {
       );
       return;
     }
-    // await loadAllTickets(marketplace);
   }
 
   render() {

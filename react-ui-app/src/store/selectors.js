@@ -36,6 +36,12 @@ export const ticketsSelector = createSelector(tickets, (tickets) => {
   return tickets;
 });
 
+const saleToggling = (state) => get(state, "marketplace.saleToggling", false);
+export const saleTogglingSelector = createSelector(
+  saleToggling,
+  (status) => status
+);
+
 ///////////////////////////////////////////////
 
 // const filledOrders = state => get(state, 'exchange.filledOrders.data', [])

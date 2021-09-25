@@ -5,6 +5,7 @@ import {
   marketplaceLoaded,
   ticketsLoaded,
   saleToggling,
+  saleToggled,
   exchangeLoaded,
   cancelledOrdersLoaded,
   filledOrdersLoaded,
@@ -154,18 +155,25 @@ export const loadAllTickets = async (marketplace, dispatch) => {
   dispatch(ticketsLoaded(myTickets));
 };
 
-export const toggleSale = (dispatch, marketplace, ticket, account) => {
+export const toggleSale = async (dispatch, marketplace, ticket, account) => {
   marketplace.methods
     .toggleSale(ticket.ticket_id)
     .send({ from: account })
     .on("transactionHash", (hash) => {
-      dispatch(saleToggling());
+      dispatch(saleToggling(ticket));
     })
     .on("error", (error) => {
       console.log(error);
       window.alert("There was an error!");
     });
 };
+
+export const subscribeToEvents = async (marketplace, dispatch) => {
+  marketplace.events.saleToggled({}, (error, event) => {
+    dispatch(saleToggled(event.returnValues));
+  });
+};
+
 // async toggleSale(id) {
 //   await this.contract.methods.toggleSale(id).send({from:this.account});
 //    console.log("Ticket put on sale!");
