@@ -18,12 +18,13 @@ contract Marketplace is Ownable, ERC721URIStorage{
       bool onSale;
   }
   
-  address financeAddress; 
+  address public financeAddress; 
 
   uint256 private _currentTokenId = 0;
   Ticket[] public tickets; 
   bool eventStarted = false;
   mapping (address => uint256) etherBalance;
+  uint public vaultBalance;
   uint private _maxTicketNum = 10;
   string private _base; 
 
@@ -48,6 +49,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
     _mint(msg.sender, _currentTokenId); //token id starts from 0
     tickets.push(Ticket(_maxPrice, _price, false));
     _setTokenURI(_currentTokenId, _tokenURI);
+	emit ticketCreated(_currentTokenId, _price, _tokenURI);
     _incrementTokenId();
   }
 
@@ -92,10 +94,16 @@ contract Marketplace is Ownable, ERC721URIStorage{
     address seller = ownerOf(_tokenId);
     tix.onSale = false;
     etherBalance[seller] += (msg.value).div(5).mul(3);
-    payable(financeAddress).transfer((msg.value).div(5).mul(2)); // transfer 40% to the finance contract
+    vaultBalance += (msg.value).div(5).mul(2);
+    //payable(financeAddress).transfer((msg.value).div(5).mul(2)); // transfer 40% to the finance contract
     _safeTransfer(seller, msg.sender, _tokenId, "");
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
+  }
+  
+  function transferToVault() public {
+    payable(financeAddress).transfer(vaultBalance);
+    vaultBalance = 0;
   }
   
   function setFinanceAddress(address _finance) public onlyOwner {
@@ -104,5 +112,6 @@ contract Marketplace is Ownable, ERC721URIStorage{
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
   event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
+  event ticketCreated(uint256 _id, uint256 _price, string _tokenURI);
 
 }

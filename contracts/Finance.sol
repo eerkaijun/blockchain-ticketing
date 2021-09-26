@@ -14,7 +14,7 @@ contract Finance is Ownable {
     
     using SafeMath for uint;
     
-    address marketplaceAddress = 0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47; 
+    address marketplaceAddress = 0xd9145CCE52D386f254917e481eB44e9943F39138; 
     MarketplaceInterface marketplaceContract = MarketplaceInterface(marketplaceAddress);
     
     uint public investmentPrice;
@@ -34,6 +34,8 @@ contract Finance is Ownable {
         investmentPrice = 30;
         totalInvestment = 100;
     }
+    
+    receive() external payable {}
     
     // investors can choose to invest in a number of tokens
     function invest(uint _number) public payable {
@@ -58,7 +60,11 @@ contract Finance is Ownable {
             retrieved = true;
             inVault = address(this).balance;
         }
-        investors[msg.sender] = 0;
         payable(msg.sender).transfer(inVault.div(totalInvestment).mul(investors[msg.sender]));
+        investors[msg.sender] = 0;
+    }
+    
+    function getContractBalance() public view returns(uint) {
+        return address(this).balance;
     }
 }
