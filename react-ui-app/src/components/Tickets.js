@@ -1,19 +1,33 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Tabs, Tab, Button, Row, Col, Container, Table } from "react-bootstrap";
+import {
+  Modal,
+  Tabs,
+  Tab,
+  Button,
+  Row,
+  Col,
+  Container,
+  Table,
+} from "react-bootstrap";
 import Spinner from "./Spinner";
+import ChangePriceModal from "./ChangePriceModal";
 import {
   accountSelector,
   ticketsLoadedSelector,
   ticketsSelector,
   marketplaceSelector,
   saleTogglingSelector,
+  modalSelector,
 } from "../store/selectors";
 import { toggleSale } from "../store/interactions";
+import { openModal, closeModal } from "../store/actions";
 
-const showTickets = (props) => {
+// const showTickets = (props, parentState, handleClose, handleShow) => {
+const showTickets = (props, handleShow) => {
   const { tickets, dispatch, marketplace, account } = props;
-  // console.log("!!!!showTickets props", props);
+
+  console.log("!!!!showTickets props", props);
   return (
     <tbody>
       {tickets.map((ticket, ind) => {
@@ -28,6 +42,12 @@ const showTickets = (props) => {
 
             <td>
               <Button>Change Price</Button>
+              <Button
+                variant="primary"
+                onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
+              >
+                Launch demo modal
+              </Button>
               <Button
                 onClick={(e) => {
                   toggleSale(dispatch, marketplace, ticket, account);
@@ -50,6 +70,22 @@ const showTickets = (props) => {
 };
 
 class Tickets extends Component {
+  ////////////////Modal demo////////////////////////
+  state = {
+    show: false,
+  };
+
+  setShow = (isShow) => {
+    this.setState({ show: isShow });
+  };
+  handleClose = () => {
+    this.setState({ show: false });
+  };
+  handleShow = () => {
+    this.setState({ show: true });
+  };
+
+  /////////////////////end Modal demo//////////////
   render() {
     return (
       <div className="card bg-dark text-white">
@@ -68,7 +104,12 @@ class Tickets extends Component {
               </tr>
             </thead>
             {this.props.ticketsLoaded ? (
-              showTickets(this.props)
+              showTickets(
+                this.props,
+                // this.state,
+                // this.handleClose,
+                this.handleShow
+              )
             ) : (
               // <tbody>
               //   <tr>
@@ -81,6 +122,45 @@ class Tickets extends Component {
             )}
           </table>
         </div>
+        {/* <Button variant="primary" onClick={this.handleShow}>
+          Launch demo modal
+        </Button> */}
+        {!!this.props.modal &&
+        !!this.props.modal.modal &&
+        this.props.modal.modal.type === "ChangePrice" ? (
+          <ChangePriceModal />
+        ) : (
+          <div></div>
+        )}
+
+        {/* <Modal
+          show={
+            !!this.props.modal &&
+            !!this.props.modal.modal &&
+            this.props.modal.modal.type === "ChangePrice"
+          }
+          // onHide={this.handleClose}
+          onHide={(e) => this.props.dispatch(closeModal())}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Modal heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={(e) => this.props.dispatch(closeModal())}
+            >
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={(e) => this.props.dispatch(closeModal())}
+            >
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal> */}
       </div>
     );
   }
@@ -94,6 +174,8 @@ function mapStateToProps(state) {
     marketplace: marketplaceSelector(state),
     tickets: ticketsSelector(state),
     account: accountSelector(state),
+    modal: modalSelector(state),
+    // setShow: this.setShow,
   };
 }
 

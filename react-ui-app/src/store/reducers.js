@@ -27,14 +27,37 @@ function marketplace(state = {}, action) {
         tickets: {
           ...state.tickets,
 
-          data: state.tickets.data.map((ticket, i) =>
+          data: state.tickets.data.map((ticket) =>
             ticket.ticket_id == action.ticket._id
               ? { ...ticket, on_sale: action.ticket.state }
               : ticket
           ),
         },
       };
+    case "TICKET_PRICE_CHANGED":
+      return {
+        ...state,
+        tickets: {
+          ...state.tickets,
 
+          data: state.tickets.data.map((ticket) =>
+            ticket.ticket_id == action.ticket.ticket_id
+              ? { ...ticket, ticket_value: action.ticket.ticket_value }
+              : ticket
+          ),
+        },
+      };
+    default:
+      return state;
+  }
+}
+
+function modal(state = null, action) {
+  switch (action.type) {
+    case "OPEN_MODAL":
+      return { ...state, modal: { type: action.modal, data: action.data } };
+    case "CLOSE_MODAL":
+      return { ...state, modal: null };
     default:
       return state;
   }
@@ -153,7 +176,7 @@ function marketplace(state = {}, action) {
 const rootReducer = combineReducers({
   web3,
   marketplace,
-  // exchange
+  modal,
 });
 
 export default rootReducer;

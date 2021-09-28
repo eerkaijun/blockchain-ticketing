@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Tabs, Tab, Button, Row, Col, Container, Table } from "react-bootstrap";
+
 import { accountSelector, marketplaceSelector } from "../store/selectors";
 import {
   loadAllTickets,
@@ -11,11 +11,11 @@ import Tickets from "./Tickets";
 
 class Content extends Component {
   async componentWillMount() {
-    await this.loadTicketsData(this.props);
+    await this.loadTicketsData();
   }
 
-  async loadTicketsData(props) {
-    const { dispatch, marketplace } = props;
+  async loadTicketsData() {
+    const { dispatch, marketplace } = this.props;
     await loadAllTickets(marketplace, dispatch);
     await subscribeToEvents(marketplace, dispatch);
     // await createTicket(
@@ -32,12 +32,10 @@ class Content extends Component {
     return (
       <div className="container">
         <div className="row">
-          {/* <div className="col">Column</div> */}
           <div className="col">
             Nice cinema places picture here
             <Tickets />
           </div>
-          {/* <div className="col">Column</div> */}
         </div>
       </div>
     );

@@ -42,6 +42,9 @@ export const saleTogglingSelector = createSelector(
   (status) => status
 );
 
+const modal = (state) => get(state, "modal", null);
+export const modalSelector = createSelector(modal, (modal) => modal);
+
 ///////////////////////////////////////////////
 
 // const filledOrders = state => get(state, 'exchange.filledOrders.data', [])

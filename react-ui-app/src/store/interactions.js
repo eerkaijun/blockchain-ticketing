@@ -23,6 +23,8 @@ import {
   buyOrderMaking,
   sellOrderMaking,
   orderMade,
+  ticketPriceChanging,
+  ticketPriceChanged,
 } from "./actions";
 import Marketplace from "../contracts-json/Marketplace.json";
 // import Exchange from "../abis/Exchange.json";
@@ -167,47 +169,79 @@ export const toggleSale = async (dispatch, marketplace, ticket, account) => {
       window.alert("There was an error!");
     });
 };
+///////TODO instead of ticket.ticket_value call contract with  web3.utils.toWei(ticket.ticket_value,'ether'),
+export const changeTicketPrice = async (
+  dispatch,
+  marketplace,
+  web3,
+  ticket,
+  account
+) => {
+  let uri = await marketplace.methods.tokenURI(ticket.ticket_id).call();
+  var item;
+  try {
+    let data = await axios.get(uri);
+    item = data.data;
+    item.ticket_value = ticket.ticket_value;
+  } catch (error) {
+    console.log(error);
+  }
+  let result = await ipfs.add(JSON.stringify(item));
+
+  console.log("!!!!! IPFS result: ", result);
+
+  await marketplace.methods
+    .changeTicketPrice(ticket.ticket_id, "790", result.path)
+    .send({ from: account })
+    .on("transactionHash", (hash) => {
+      dispatch(ticketPriceChanging(ticket));
+    });
+  console.log("Ticket price changed successfully!");
+};
+///////////////////////////
+
+// async changeTicketPrice(id, price) {
+//   let uri = await this.contract.methods.tokenURI(id).call();
+//   var item;
+//   try {
+//     let data = await axios.get(uri);
+//     item = data.data;
+//     item.ticket_value = price;
+//     console.log(item);
+//   } catch (error) {
+//     console.log(error);
+//   }
+//   let result = await ipfs.add(JSON.stringify(item));
+//   console.log("IPFS hash: ", result.path);
+//   await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
+//   console.log("Ticket price changed successfully!");
+// },
+
+// export const makeBuyOrder = (dispatch, exchange, token, web3, order, account) => {
+//   const tokenGet = token.options.address
+//   const amountGet = web3.utils.toWei(order.amount, 'ether')
+//   const tokenGive = ETHER_ADDRESS
+//   const amountGive = web3.utils.toWei((order.amount * order.price).toString(), 'ether')
+
+//   exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+//   .on('transactionHash', (hash) => {
+//     dispatch(buyOrderMaking())
+//   })
+//   .on('error',(error) => {
+//     console.error(error)
+//     window.alert(`There was an error!`)
+//   })
+// }
 
 export const subscribeToEvents = async (marketplace, dispatch) => {
   marketplace.events.saleToggled({}, (error, event) => {
     dispatch(saleToggled(event.returnValues));
   });
+  //TODO: uncomment this when Kai has added ticketPriceChanged event
+  // marketplace.events.ticketPriceChanged({}, (error, event) => {
+  //   dispatch(ticketPriceChanged(event.returnValues));
+  // });
 };
 
-// async toggleSale(id) {
-//   await this.contract.methods.toggleSale(id).send({from:this.account});
-//    console.log("Ticket put on sale!");
-//  },
-
-// async initMarketplace() {
-//   this.state.myTickets = [];
-//   this.state.items = [];
-
-//   const num_tickets = await this.contract.methods.getOnSaleLength().call();
-//   // console.log("!!!!!num_tickets", num_tickets);
-//   var uri, data, item, myTicket, onSale, owner;
-//   for (let i = 0; i < num_tickets; i++) {
-//     onSale = await this.contract.methods.onSale(i).call();
-//     owner = await this.contract.methods.owners(i).call();
-//     //if (owner == this.account) this.myTickets.push(i);
-//     uri = await this.contract.methods.tokenURI(i).call();
-//     try {
-//       data = await axios.get(uri);
-//       if (owner == this.account) {
-//         myTicket = data.data;
-//         myTicket.ticket_id = i;
-//         myTicket.on_sale = await this.contract.methods.onSale(i).call();
-//         this.state.myTickets.push(myTicket);
-//       } else {
-//         item = data.data;
-//         item.ticket_id = i;
-//         item.on_sale = await this.contract.methods.onSale(i).call();
-//         console.log(item);
-//         this.state.items.push(item);
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
 //   console.log("!!!!!this.state.myTickets", this.state.myTickets);
 // }

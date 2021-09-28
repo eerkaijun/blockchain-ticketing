@@ -42,6 +42,30 @@ export function saleToggled(ticket) {
   };
 }
 
+export function openModal(modal, data) {
+  return {
+    type: "OPEN_MODAL",
+    modal,
+    data,
+  };
+}
+export function closeModal() {
+  return {
+    type: "CLOSE_MODAL",
+  };
+}
+export function ticketPriceChanging(ticket) {
+  return {
+    type: "TICKET_PRICE_CHANGING",
+    ticket,
+  };
+}
+export function ticketPriceChanged(ticket) {
+  return {
+    type: "TICKET_PRICE_CHANGED",
+    ticket,
+  };
+}
 //////////////////////////TODO remove not needed below
 
 export function cancelledOrdersLoaded(cancelledOrders) {
