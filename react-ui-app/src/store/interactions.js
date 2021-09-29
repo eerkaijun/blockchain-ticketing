@@ -97,6 +97,7 @@ export const createTicket = async (
   category,
   marketplace,
   account,
+  web3,
   dispatch
 ) => {
   let metadata = {
@@ -111,12 +112,12 @@ export const createTicket = async (
   // console.log("!!!account", account);
   await marketplace.methods
     // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
-    .createTicket(7894125630000, result.path)
+    .createTicket(web3.utils.toWei(price, "ether"), result.path)
     .send({ from: account });
   console.log("Ticket created successfully!");
 
   const num_tickets = await marketplace.methods.getOnSaleLength().call();
-  // console.log("!!!!!num_tickets", num_tickets);
+  console.log("!!!!!num_tickets", num_tickets);
 };
 
 export const loadAllTickets = async (marketplace, dispatch) => {

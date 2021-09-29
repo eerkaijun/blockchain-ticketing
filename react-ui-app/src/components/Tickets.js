@@ -12,6 +12,8 @@ import {
 } from "react-bootstrap";
 import Spinner from "./Spinner";
 import ChangePriceModal from "./ChangePriceModal";
+import CreateTicketModal from "./CreateTicketModal";
+
 import {
   accountSelector,
   ticketsLoadedSelector,
@@ -41,12 +43,11 @@ const showTickets = (props, handleShow) => {
             <td>{ticket.on_sale.toString()}</td>
 
             <td>
-              <Button>Change Price</Button>
               <Button
                 variant="primary"
                 onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
               >
-                Launch demo modal
+                Change Price
               </Button>
               <Button
                 onClick={(e) => {
@@ -122,9 +123,14 @@ class Tickets extends Component {
             )}
           </table>
         </div>
-        {/* <Button variant="primary" onClick={this.handleShow}>
-          Launch demo modal
-        </Button> */}
+
+        <Button
+          variant="primary"
+          onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
+        >
+          Create Ticket
+        </Button>
+
         {!!this.props.modal &&
         !!this.props.modal.modal &&
         this.props.modal.modal.type === "ChangePrice" ? (
@@ -133,34 +139,13 @@ class Tickets extends Component {
           <div></div>
         )}
 
-        {/* <Modal
-          show={
-            !!this.props.modal &&
-            !!this.props.modal.modal &&
-            this.props.modal.modal.type === "ChangePrice"
-          }
-          // onHide={this.handleClose}
-          onHide={(e) => this.props.dispatch(closeModal())}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={(e) => this.props.dispatch(closeModal())}
-            >
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={(e) => this.props.dispatch(closeModal())}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal> */}
+        {!!this.props.modal &&
+        !!this.props.modal.modal &&
+        this.props.modal.modal.type === "CreateTicket" ? (
+          <CreateTicketModal />
+        ) : (
+          <div></div>
+        )}
       </div>
     );
   }

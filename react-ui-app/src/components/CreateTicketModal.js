@@ -20,11 +20,11 @@ import {
   modalSelector,
   web3Selector,
 } from "../store/selectors";
-import { changeTicketPrice } from "../store/interactions";
+import { createTicket } from "../store/interactions";
 import { openModal, closeModal, ticketPriceChanged } from "../store/actions";
 
-class ChangePriceModal extends Component {
-  state = { price: null };
+class CreateTicketModal extends Component {
+  state = { price: null, seat: null, category: null };
   render() {
     const ticket = this.props.modal.modal.data;
     console.log("!!!!ChangePriceModal props", this.props);
@@ -32,19 +32,6 @@ class ChangePriceModal extends Component {
 
     const { dispatch } = this.props;
 
-    let headerText = "";
-    switch (this.props.modal.modal.type) {
-      case "ChangePrice":
-        headerText = `Change Price`;
-        break;
-      case "CreateTicket":
-        headerText = `Create Ticket`;
-        break;
-
-      default:
-        headerText = `Other`;
-        break;
-    }
     return (
       <Modal
         show={true}
@@ -56,7 +43,7 @@ class ChangePriceModal extends Component {
         onHide={(e) => this.props.dispatch(closeModal())}
       >
         <Modal.Header closeButton>
-          <Modal.Title>{headerText}</Modal.Title>
+          <Modal.Title> Create Ticket</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {/* Woohoo, you're reading this text in a modal! */}
@@ -67,30 +54,39 @@ class ChangePriceModal extends Component {
           // }}
           >
             <div className="form-group small">
-              <label>Old price</label>
+              <label>Price</label>
               <div className="input-group">
                 <input
-                  disabled={true}
-                  placeholder={ticket.ticket_value}
-                  className="form-control form-control-sm bg-dark text-white"
-                />
-                {/* <input
                   type="text"
                   className="form-control form-control-sm bg-dark text-white"
-                  placeholder="Buy Amount"
-                  // onChange={(e) => dispatch( buyOrderAmountChanged( e.target.value ) )}
+                  placeholder="Price"
+                  onChange={(e) => (this.state.price = e.target.value)}
                   required
-                /> */}
+                />
               </div>
             </div>
+
             <div className="form-group small">
-              <label>New Price</label>
+              <label>Seat</label>
               <div className="input-group">
                 <input
                   type="text"
                   className="form-control form-control-sm bg-dark text-white"
-                  placeholder="Buy Price"
-                  onChange={(e) => (this.state.price = e.target.value)}
+                  placeholder="Seat"
+                  onChange={(e) => (this.state.seat = e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group small">
+              <label>Category</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control form-control-sm bg-dark text-white"
+                  placeholder="Category"
+                  onChange={(e) => (this.state.category = e.target.value)}
                   required
                 />
               </div>
@@ -108,16 +104,16 @@ class ChangePriceModal extends Component {
             variant="primary"
             // onClick={(e) => this.props.dispatch(closeModal())}
             onClick={(e) => {
-              changeTicketPrice(
-                this.props.dispatch,
+              createTicket(
+                this.state.price,
+                this.state.seat,
+                this.state.category,
                 this.props.marketplace,
+                this.props.account,
                 this.props.web3,
-                {
-                  ...ticket,
-                  ticket_value: this.state.price,
-                },
-                this.props.account
+                this.props.dispatch
               );
+
               this.props.dispatch(closeModal());
             }}
           >
@@ -140,4 +136,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ChangePriceModal);
+export default connect(mapStateToProps)(CreateTicketModal);
