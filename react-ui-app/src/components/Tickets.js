@@ -29,7 +29,7 @@ import { openModal, closeModal } from "../store/actions";
 const showTickets = (props, handleShow) => {
   const { tickets, dispatch, marketplace, account } = props;
 
-  console.log("!!!!showTickets props", props);
+  // console.log("!!!!showTickets props", props);
   return (
     <tbody>
       {tickets.map((ticket, ind) => {
@@ -46,6 +46,7 @@ const showTickets = (props, handleShow) => {
               <Button
                 variant="primary"
                 onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
+                className="action-button"
               >
                 Change Price
               </Button>
@@ -53,6 +54,7 @@ const showTickets = (props, handleShow) => {
                 onClick={(e) => {
                   toggleSale(dispatch, marketplace, ticket, account);
                 }}
+                className="action-button"
               >
                 Toggle Sale
               </Button>
@@ -71,27 +73,17 @@ const showTickets = (props, handleShow) => {
 };
 
 class Tickets extends Component {
-  ////////////////Modal demo////////////////////////
-  state = {
-    show: false,
-  };
-
-  setShow = (isShow) => {
-    this.setState({ show: isShow });
-  };
-  handleClose = () => {
-    this.setState({ show: false });
-  };
-  handleShow = () => {
-    this.setState({ show: true });
-  };
-
-  /////////////////////end Modal demo//////////////
   render() {
     return (
       <div className="card bg-dark text-white">
         <div className="card-header">Tickets in the Marketplace</div>
         <div className="card-body">
+          <Button
+            variant="primary"
+            onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
+          >
+            Create Ticket
+          </Button>
           <table className="table table-dark table-sm small">
             <thead>
               <tr>
@@ -112,24 +104,10 @@ class Tickets extends Component {
                 this.handleShow
               )
             ) : (
-              // <tbody>
-              //   <tr>
-              //     <td colSpan="4">
-              //       <Spinner type="table" />
-              //     </td>
-              //   </tr>
-              // </tbody>
               <Spinner type="table" />
             )}
           </table>
         </div>
-
-        <Button
-          variant="primary"
-          onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
-        >
-          Create Ticket
-        </Button>
 
         {!!this.props.modal &&
         !!this.props.modal.modal &&

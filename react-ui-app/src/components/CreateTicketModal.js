@@ -21,38 +21,18 @@ import {
   web3Selector,
 } from "../store/selectors";
 import { createTicket } from "../store/interactions";
-import { openModal, closeModal, ticketPriceChanged } from "../store/actions";
+import { closeModal } from "../store/actions";
 
 class CreateTicketModal extends Component {
   state = { price: null, seat: null, category: null };
   render() {
-    const ticket = this.props.modal.modal.data;
-    console.log("!!!!ChangePriceModal props", this.props);
-    console.log("!!!!ChangePriceModal ticket", ticket);
-
-    const { dispatch } = this.props;
-
     return (
-      <Modal
-        show={true}
-        // show={
-        //   !!this.props.modal &&
-        //   !!this.props.modal.modal &&
-        //   this.props.modal.modal.type === "ChangePrice"
-        // }
-        onHide={(e) => this.props.dispatch(closeModal())}
-      >
+      <Modal show={true} onHide={(e) => this.props.dispatch(closeModal())}>
         <Modal.Header closeButton>
           <Modal.Title> Create Ticket</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Woohoo, you're reading this text in a modal! */}
-          <form
-          // onSubmit={(event) => {
-          //   event.preventDefault()
-          //   makeBuyOrder(dispatch, exchange, token, web3, buyOrder, account)
-          // }}
-          >
+          <form>
             <div className="form-group small">
               <label>Price</label>
               <div className="input-group">
@@ -102,7 +82,6 @@ class CreateTicketModal extends Component {
           </Button>
           <Button
             variant="primary"
-            // onClick={(e) => this.props.dispatch(closeModal())}
             onClick={(e) => {
               createTicket(
                 this.state.price,
@@ -132,7 +111,6 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     modal: modalSelector(state),
     web3: web3Selector(state),
-    // setShow: this.setShow,
   };
 }
 
