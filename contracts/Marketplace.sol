@@ -64,6 +64,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(_newPrice < tix.maxPrice, "not more than the upper limit price");
     tix.price = _newPrice;
     _setTokenURI(_tokenId, _tokenURI);
+    emit ticketPriceChanged(_tokenId, _newPrice, _tokenURI);
   }
 
   function startEvent() public onlyOwner {
@@ -118,5 +119,5 @@ contract Marketplace is Ownable, ERC721URIStorage{
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
   event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
   event ticketCreated(uint256 _id, uint256 _price, string _tokenURI);
-
+  event ticketPriceChanged(uint256 _id, uint256 _newPrice, string _tokenURI);
 }

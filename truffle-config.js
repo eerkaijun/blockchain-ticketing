@@ -56,6 +56,14 @@ module.exports = {
       skipDryRun: true
     },
 
+    shibuya: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc.shibuya.astar.network:8545`),
+      network_id: 81,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    }
+
     // Useful for private networks
     // private: {
       // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
