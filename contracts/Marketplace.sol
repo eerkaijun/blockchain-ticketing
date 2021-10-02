@@ -3,30 +3,30 @@
 
 pragma solidity ^0.8.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract Marketplace is Ownable, ERC721URIStorage{
 
   using SafeMath for uint;
-  
+
   // metadata for each ticket
   struct Ticket {
       uint256 maxPrice; // maximum price cap on the ticket
       uint256 price; // current price
       bool onSale;
   }
-  
-  address public financeAddress; 
+
+  address public financeAddress;
 
   uint256 private _currentTokenId = 0;
-  Ticket[] public tickets; 
+  Ticket[] public tickets;
   bool eventStarted = false;
   mapping (address => uint256) etherBalance;
   uint public vaultBalance;
   uint private _maxTicketNum = 10;
-  string private _base; 
+  string private _base;
 
   constructor() ERC721("NFT Tickets", "TIX") {
     _setBaseURI("https://ipfs.infura.io/ipfs/");
@@ -36,11 +36,11 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(eventStarted == false);
     _;
   }
-  
+
   function _setBaseURI(string memory _uri) private {
-    _base = _uri; 
+    _base = _uri;
   }
-  
+
   function _baseURI() internal view override returns (string memory) {
     return _base;
   }
@@ -64,7 +64,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
   function startEvent() public onlyOwner {
     eventStarted = true;
   }
-  
+
   function getEventStarted() public view returns(bool) {
     return eventStarted;
   }
@@ -72,7 +72,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
   function _incrementTokenId() private {
     _currentTokenId++;
   }
-  
+
   function withdraw() public {
     payable(msg.sender).transfer(etherBalance[msg.sender]);
   }
@@ -100,14 +100,14 @@ contract Marketplace is Ownable, ERC721URIStorage{
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
   }
-  
+
   function transferToVault() public {
     payable(financeAddress).transfer(vaultBalance);
     vaultBalance = 0;
   }
-  
+
   function setFinanceAddress(address _finance) public onlyOwner {
-    financeAddress = _finance; 
+    financeAddress = _finance;
   }
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
