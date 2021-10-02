@@ -98,8 +98,8 @@ export const createTicket = async (
     .send({ from: account });
   console.log("Ticket created successfully!");
 
-  const num_tickets = await marketplace.methods.getOnSaleLength().call();
-  console.log("!!!!!num_tickets", num_tickets);
+  //const num_tickets = await marketplace.methods.getOnSaleLength().call();
+  //console.log("!!!!!num_tickets", num_tickets);
 };
 
 export const loadAllTickets = async (marketplace, dispatch) => {
