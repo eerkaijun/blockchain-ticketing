@@ -175,7 +175,7 @@ export const changeTicketPrice = async (
   console.log("!!!!! IPFS result: ", result);
 
   await marketplace.methods
-    .changeTicketPrice(ticket.ticket_id, "790", result.path)
+    .changeTicketPrice(ticket.ticket_id, web3.utils.toWei(ticket.ticket_value,'ether'), result.path)
     .send({ from: account })
     .on("transactionHash", (hash) => {
       dispatch(ticketPriceChanging(ticket));
