@@ -2,15 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   Modal,
-  Tabs,
-  Tab,
+  //Tabs,
+  //Tab,
   Button,
-  Row,
-  Col,
-  Container,
-  Table,
+  //Row,
+  //Col,
+  //Container,
+  //Table,
 } from "react-bootstrap";
-import Spinner from "./Spinner";
+//import Spinner from "./Spinner";
 import {
   accountSelector,
   ticketsLoadedSelector,

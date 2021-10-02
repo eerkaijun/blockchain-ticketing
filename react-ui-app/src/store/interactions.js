@@ -6,31 +6,13 @@ import {
   ticketsLoaded,
   saleToggling,
   saleToggled,
-  exchangeLoaded,
-  cancelledOrdersLoaded,
-  filledOrdersLoaded,
-  allOrdersLoaded,
-  orderCancelling,
-  orderCancelled,
-  orderFilling,
-  orderFilled,
-  etherBalanceLoaded,
-  tokenBalanceLoaded,
-  exchangeEtherBalanceLoaded,
-  exchangeTokenBalanceLoaded,
-  balancesLoaded,
-  balancesLoading,
-  buyOrderMaking,
-  sellOrderMaking,
-  orderMade,
   ticketPriceChanging,
-  ticketPriceChanged,
 } from "./actions";
 import Marketplace from "../contracts-json/Marketplace.json";
 // import Exchange from "../abis/Exchange.json";
 // import { ETHER_ADDRESS } from "../helpers";
 
-const ipfsClient = require("ipfs-http-client");
+// const ipfsClient = require("ipfs-http-client");
 const ipfs = require("ipfs-http-client")({
   host: "ipfs.infura.io",
   port: "5001",

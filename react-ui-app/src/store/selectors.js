@@ -1,7 +1,8 @@
-import { get, groupBy, reject, maxBy, minBy } from "lodash";
+// import { get, groupBy, reject, maxBy, minBy } from "lodash";
+import { get } from "lodash";
 import { createSelector } from "reselect";
-import moment from "moment";
-import { useSelector } from "react-redux";
+// import moment from "moment";
+// import { useSelector } from "react-redux";
 // import { ETHER_ADDRESS, GREEN, RED, ether, tokens } from '../helpers'
 
 const account = (state) => get(state, "web3.account");

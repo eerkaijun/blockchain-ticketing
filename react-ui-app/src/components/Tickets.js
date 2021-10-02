@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
-  Modal,
-  Tabs,
-  Tab,
+  //Modal,
+  //Tabs,
+  //Tab,
   Button,
-  Row,
-  Col,
-  Container,
-  Table,
+  //Row,
+  //Col,
+  //Container,
+  //Table,
 } from "react-bootstrap";
 import Spinner from "./Spinner";
 import ChangePriceModal from "./ChangePriceModal";
@@ -23,7 +23,8 @@ import {
   modalSelector,
 } from "../store/selectors";
 import { toggleSale } from "../store/interactions";
-import { openModal, closeModal } from "../store/actions";
+//import { openModal, closeModal } from "../store/actions";
+import { openModal } from "../store/actions";
 
 // const showTickets = (props, parentState, handleClose, handleShow) => {
 const showTickets = (props, handleShow) => {

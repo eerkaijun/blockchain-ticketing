@@ -5,7 +5,7 @@ import { accountSelector, marketplaceSelector } from "../store/selectors";
 import {
   loadAllTickets,
   subscribeToEvents,
-  createTicket,
+  // createTicket,
 } from "../store/interactions";
 import Tickets from "./Tickets";
 

@@ -7,13 +7,13 @@ import Navbar from "./Navbar";
 import Content from "./Content";
 // TODO : look lesson 17 and setup truffle-config to put build to ./src directory
 
-const ipfsClient = require("ipfs-http-client");
+// const ipfsClient = require("ipfs-http-client");
 const ipfs = require("ipfs-http-client")({
   host: "ipfs.infura.io",
   port: "5001",
   protocol: "https",
 });
-const axios = require("axios");
+// const axios = require("axios");
 
 class App extends Component {
   async componentWillMount() {
@@ -38,7 +38,7 @@ class App extends Component {
       .send({ from: this.account });
     console.log("Ticket created successfully!");
 
-    const num_tickets = await this.contract.methods.getOnSaleLength().call();
+    // const num_tickets = await this.contract.methods.getOnSaleLength().call();
   }
 
   async loadBlockchainData(dispatch) {
