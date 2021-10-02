@@ -45,12 +45,17 @@ contract Marketplace is Ownable, ERC721URIStorage{
     return _base;
   }
 
-  function createTicket(uint256 _price, uint256 _maxPrice, string memory _tokenURI) public onlyOwner {
+  function createTicket(uint256 _price, string memory _tokenURI) public onlyOwner {
     _mint(msg.sender, _currentTokenId); //token id starts from 0
+    uint256 _maxPrice = _price.mul(11).div(10); // 10 % above the original price
     tickets.push(Ticket(_maxPrice, _price, false));
     _setTokenURI(_currentTokenId, _tokenURI);
-	emit ticketCreated(_currentTokenId, _price, _tokenURI);
+	  emit ticketCreated(_currentTokenId, _price, _tokenURI);
     _incrementTokenId();
+  }
+
+  function getTicketsLength() public view returns(uint) {
+    return tickets.length;
   }
 
   function changeTicketPrice(uint256 _tokenId, uint256 _newPrice, string memory _tokenURI) public {

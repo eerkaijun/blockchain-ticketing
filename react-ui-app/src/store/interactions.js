@@ -106,19 +106,20 @@ export const loadAllTickets = async (marketplace, dispatch) => {
   const myTickets = [];
   const items = [];
 
-  const num_tickets = await marketplace.methods.getOnSaleLength().call();
+  const num_tickets = await marketplace.methods.getTicketsLength().call();
   // console.log("!!!!!num_tickets", num_tickets);
-  var uri, data, item, myTicket, onSale, owner;
+  var uri, data, item, myTicket, ticket;
   for (let i = 0; i < num_tickets; i++) {
-    onSale = await marketplace.methods.onSale(i).call();
-    owner = await marketplace.methods.owners(i).call();
+    ticket = await marketplace.methods.tickets(i).call();
+    //onSale = ticket.onSale;
+    //owner = await marketplace.methods.owners(i).call();
     //if (owner == this.account) this.myTickets.push(i);
     uri = await marketplace.methods.tokenURI(i).call();
     try {
       data = await axios.get(uri);
       myTicket = data.data;
       myTicket.ticket_id = i;
-      myTicket.on_sale = await marketplace.methods.onSale(i).call();
+      myTicket.on_sale = ticket.onSale;
       myTickets.push(myTicket);
       // if (owner == this.account) {
       //   myTicket = data.data;
