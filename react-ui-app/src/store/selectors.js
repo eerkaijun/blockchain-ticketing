@@ -43,6 +43,13 @@ export const saleTogglingSelector = createSelector(
   (status) => status
 );
 
+const ticketPriceChanging = (state) =>
+  get(state, "marketplace.ticketPriceChanging", false);
+export const ticketPriceChangingSelector = createSelector(
+  ticketPriceChanging,
+  (status) => status
+);
+
 const modal = (state) => get(state, "modal", null);
 export const modalSelector = createSelector(modal, (modal) => modal);
 

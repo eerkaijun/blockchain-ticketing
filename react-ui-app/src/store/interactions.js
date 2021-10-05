@@ -7,6 +7,7 @@ import {
   saleToggling,
   saleToggled,
   ticketPriceChanging,
+  ticketPriceChanged,
 } from "./actions";
 import Marketplace from "../contracts-json/Marketplace.json";
 // import Exchange from "../abis/Exchange.json";
@@ -175,7 +176,11 @@ export const changeTicketPrice = async (
   console.log("!!!!! IPFS result: ", result);
 
   await marketplace.methods
-    .changeTicketPrice(ticket.ticket_id, web3.utils.toWei(ticket.ticket_value,'ether'), result.path)
+    .changeTicketPrice(
+      ticket.ticket_id,
+      web3.utils.toWei(ticket.ticket_value, "ether"),
+      result.path
+    )
     .send({ from: account })
     .on("transactionHash", (hash) => {
       dispatch(ticketPriceChanging(ticket));
@@ -217,14 +222,19 @@ export const changeTicketPrice = async (
 //   })
 // }
 
-export const subscribeToEvents = async (marketplace, dispatch) => {
+export const subscribeToEvents = async (web3, marketplace, dispatch) => {
   marketplace.events.saleToggled({}, (error, event) => {
     dispatch(saleToggled(event.returnValues));
   });
-  //TODO: uncomment this when Kai has added ticketPriceChanged event
-  // marketplace.events.ticketPriceChanged({}, (error, event) => {
-  //   dispatch(ticketPriceChanged(event.returnValues));
-  // });
+  marketplace.events.ticketPriceChanged({}, (error, event) => {
+    console.log("!!!!!event.returnValues,", event.returnValues);
+    let ticket = {
+      ticket_id: event.returnValues._id,
+      _newPrice: web3.utils.fromWei(event.returnValues._newPrice),
+      _tokenURI: event.returnValues._tokenURI,
+    };
+    dispatch(ticketPriceChanged(ticket));
+  });
 };
 
 //   console.log("!!!!!this.state.myTickets", this.state.myTickets);

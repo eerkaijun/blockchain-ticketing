@@ -34,14 +34,17 @@ function marketplace(state = {}, action) {
           ),
         },
       };
+    case "TICKET_PRICE_CHANGING":
+      return { ...state, ticketPriceChanging: true };
     case "TICKET_PRICE_CHANGED":
       return {
         ...state,
+        ticketPriceChanging: false,
         tickets: {
           ...state.tickets,
 
           data: state.tickets.data.map((ticket) =>
-            ticket.ticket_id == action.ticket.ticket_id
+            ticket.ticket_id == action.ticket._id
               ? { ...ticket, ticket_value: action.ticket.ticket_value }
               : ticket
           ),

@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { accountSelector, marketplaceSelector } from "../store/selectors";
+import {
+  accountSelector,
+  marketplaceSelector,
+  web3Selector,
+} from "../store/selectors";
 import {
   loadAllTickets,
   subscribeToEvents,
@@ -15,9 +19,9 @@ class Content extends Component {
   }
 
   async loadTicketsData() {
-    const { dispatch, marketplace } = this.props;
+    const { dispatch, marketplace, web3 } = this.props;
     await loadAllTickets(marketplace, dispatch);
-    await subscribeToEvents(marketplace, dispatch);
+    await subscribeToEvents(web3, marketplace, dispatch);
     // await createTicket(
     //   "789",
     //   31,
@@ -44,6 +48,7 @@ class Content extends Component {
 
 function mapStateToProps(state) {
   return {
+    web3: web3Selector(state),
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
   };

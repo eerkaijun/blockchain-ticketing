@@ -55,12 +55,14 @@ export function closeModal() {
   };
 }
 export function ticketPriceChanging(ticket) {
+  // console.log("TICKET_PRICE_CHANGING ticket", ticket);
   return {
     type: "TICKET_PRICE_CHANGING",
     ticket,
   };
 }
 export function ticketPriceChanged(ticket) {
+  // console.log("TICKET_PRICE_CHANGED ticket", ticket);
   return {
     type: "TICKET_PRICE_CHANGED",
     ticket,

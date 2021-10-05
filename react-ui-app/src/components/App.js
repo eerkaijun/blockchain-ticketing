@@ -45,6 +45,7 @@ class App extends Component {
     const web3 = await loadWeb3(dispatch);
     await loadAccount(web3, dispatch);
     const networkId = await web3.eth.net.getId();
+    console.log("!!!!networkId", networkId);
     const marketplace = await loadMarketplace(web3, networkId, dispatch);
     if (!marketplace) {
       window.alert(

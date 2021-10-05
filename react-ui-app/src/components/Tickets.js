@@ -21,6 +21,7 @@ import {
   marketplaceSelector,
   saleTogglingSelector,
   modalSelector,
+  ticketPriceChangingSelector,
 } from "../store/selectors";
 import { toggleSale } from "../store/interactions";
 //import { openModal, closeModal } from "../store/actions";
@@ -133,8 +134,9 @@ class Tickets extends Component {
 function mapStateToProps(state) {
   const ticketsLoaded = ticketsLoadedSelector(state);
   const saleToggling = saleTogglingSelector(state);
+  const ticketPriceChanging = ticketPriceChangingSelector(state);
   return {
-    ticketsLoaded: ticketsLoaded && !saleToggling,
+    ticketsLoaded: ticketsLoaded && !saleToggling && !ticketPriceChanging,
     marketplace: marketplaceSelector(state),
     tickets: ticketsSelector(state),
     account: accountSelector(state),
