@@ -10,76 +10,126 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract Marketplace is Ownable, ERC721URIStorage{
 
   using SafeMath for uint;
-
+  
+  enum State { creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart }
+  State public currentState = State.creatingTickets; 
+  
   // metadata for each ticket
   struct Ticket {
       uint256 maxPrice; // maximum price cap on the ticket
       uint256 price; // current price
       bool onSale;
   }
-
-  address public financeAddress;
-
+  
   uint256 private _currentTokenId = 0;
-  Ticket[] public tickets;
-  bool eventStarted = false;
+  Ticket[] public tickets; 
   mapping (address => uint256) etherBalance;
   uint public vaultBalance;
   uint private _maxTicketNum = 10;
-  string private _base;
+  string private _base; 
+  
+  uint public investmentPrice;
+  uint public unitReturn; 
+  uint private _investmentSold = 0;
+  mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
 
   constructor() ERC721("NFT Tickets", "TIX") {
+    investmentPrice = 30;
     _setBaseURI("https://ipfs.infura.io/ipfs/");
   }
 
   modifier eventNotStarted() {
-    require(eventStarted == false);
+    require(currentState == State.ticketSaleStart);
     _;
   }
-
+  
   function _setBaseURI(string memory _uri) private {
-    _base = _uri;
+    _base = _uri; 
   }
-
+  
   function _baseURI() internal view override returns (string memory) {
     return _base;
   }
 
-  function createTicket(uint256 _price, string memory _tokenURI) public onlyOwner {
+  function createTicket(uint256 _price, uint256 _maxPrice, string memory _tokenURI) public onlyOwner {
+    require(currentState == State.creatingTickets);
     _mint(msg.sender, _currentTokenId); //token id starts from 0
-    uint256 _maxPrice = _price.mul(11).div(10); // 10 % above the original price
-    tickets.push(Ticket(_maxPrice, _price, false));
+    tickets.push(Ticket(_maxPrice, _price, true));
     _setTokenURI(_currentTokenId, _tokenURI);
-	  emit ticketCreated(_currentTokenId, _price, _tokenURI);
+    emit ticketCreated(_currentTokenId, _price, _tokenURI);
     _incrementTokenId();
   }
+  
+    
+  // let's say the event organiser will have 100 tickets as Collateral
+  // each ticket will cost $100 in the primary market = $10000
+  // for each ticket sold, $40 will be put into a vault (40%)
+  // total collateral worth $40 x 100 (if sold out) = $4000
+  // and now the event organiser wants to pre finance $3000
+  // so the event organiser will sell each collateral at $30 until 100 collateral has been sold
 
-  function getTicketsLength() public view returns(uint) {
-    return tickets.length;
+    
+  // investors can choose to invest in a number of tokens
+  function invest(uint _number) public payable {
+    require(currentState == State.investmentStart);
+    require(msg.value == investmentPrice.mul(_number));
+    require(_number + _investmentSold < _currentTokenId.add(1));
+    _incrementInvestmentId(_number);
+    investors[msg.sender] += _number;
   }
-
+    
+  function _incrementInvestmentId(uint _number) private {
+    _investmentSold = _investmentSold + _number;
+  }
+    
+  // event organiser can withdraw funds before the event starts
+  function withdraw() public onlyOwner {
+    require(currentState == State.investmentStop);
+    payable(msg.sender).transfer(address(this).balance);
+  }
+    
+  function getContractBalance() public view returns(uint) {
+    return address(this).balance;
+  }
+  
   function changeTicketPrice(uint256 _tokenId, uint256 _newPrice, string memory _tokenURI) public {
     require(msg.sender == ownerOf(_tokenId));
     Ticket storage tix = tickets[_tokenId];
     require(_newPrice < tix.maxPrice, "not more than the upper limit price");
     tix.price = _newPrice;
     _setTokenURI(_tokenId, _tokenURI);
-    emit ticketPriceChanged(_tokenId, _newPrice, _tokenURI);
   }
 
   function startEvent() public onlyOwner {
-    eventStarted = true;
+    require(currentState == State.ticketSaleStart);
+    currentState = State.eventStart;
+    unitReturn = vaultBalance.div(_investmentSold);
   }
-
-  function getEventStarted() public view returns(bool) {
-    return eventStarted;
+  
+  function startInvestment() public onlyOwner {
+    require(currentState == State.creatingTickets);
+    currentState = State.investmentStart; 
   }
-
+  
+  function stopInvestment() public onlyOwner {
+    require(currentState == State.investmentStart);
+    currentState = State.investmentStop;
+  }
+  
+  function startTicketSale() public onlyOwner {
+    require(currentState == State.investmentStop);
+    currentState = State.ticketSaleStart;
+  }
+  
   function _incrementTokenId() private {
     _currentTokenId++;
   }
-
-  function withdraw() public {
+  
+  function retrieve() public {
+    require(currentState == State.eventStart);
+    if (investors[msg.sender] > 0) {
+      etherBalance[msg.sender] += unitReturn.mul(investors[msg.sender]);
+    }
     payable(msg.sender).transfer(etherBalance[msg.sender]);
   }
 
@@ -99,25 +149,15 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(balanceOf(msg.sender) < _maxTicketNum, "exceeded max number of tickets bought");
     address seller = ownerOf(_tokenId);
     tix.onSale = false;
-    etherBalance[seller] += (msg.value).div(5).mul(3);
-    vaultBalance += (msg.value).div(5).mul(2);
-    //payable(financeAddress).transfer((msg.value).div(5).mul(2)); // transfer 40% to the finance contract
+    etherBalance[seller] += (msg.value).div(5).mul(3); //60%
+    vaultBalance += (msg.value).div(5).mul(2); //40%
     _safeTransfer(seller, msg.sender, _tokenId, "");
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
   }
 
-  function transferToVault() public {
-    payable(financeAddress).transfer(vaultBalance);
-    vaultBalance = 0;
-  }
-
-  function setFinanceAddress(address _finance) public onlyOwner {
-    financeAddress = _finance;
-  }
-
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
   event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
   event ticketCreated(uint256 _id, uint256 _price, string _tokenURI);
-  event ticketPriceChanged(uint256 _id, uint256 _newPrice, string _tokenURI);
+
 }
