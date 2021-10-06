@@ -155,6 +155,10 @@ contract Marketplace is Ownable, ERC721URIStorage{
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
   }
+  
+  function getTicketsLength() public view returns(uint) {
+    return tickets.length;
+  }
 
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
   event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
