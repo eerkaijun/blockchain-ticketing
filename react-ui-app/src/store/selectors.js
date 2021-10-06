@@ -4,9 +4,27 @@ import { createSelector } from "reselect";
 // import moment from "moment";
 // import { useSelector } from "react-redux";
 // import { ETHER_ADDRESS, GREEN, RED, ether, tokens } from '../helpers'
+import { MARKETPLACE_OWNER_ACCOUNT } from "../hardcodedConstants";
 
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);
+
+// const marketplaceOwnerAccount = (state) =>
+//   get(state, "marketplaceOwnerAccount");
+const marketplaceOwnerAccount = () => {
+  return MARKETPLACE_OWNER_ACCOUNT;
+};
+export const marketplaceOwnerAccountSelector = createSelector(
+  marketplaceOwnerAccount,
+  (a) => a
+);
+const isMarketplaceOwnerAccount = (state) => {
+  return MARKETPLACE_OWNER_ACCOUNT == get(state, "web3.account");
+};
+export const isMarketplaceOwnerAccountSelector = createSelector(
+  isMarketplaceOwnerAccount,
+  (a) => a
+);
 
 const web3 = (state) => get(state, "web3.connection");
 export const web3Selector = createSelector(web3, (w) => w);

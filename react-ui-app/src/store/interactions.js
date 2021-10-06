@@ -95,7 +95,11 @@ export const createTicket = async (
   // console.log("!!!account", account);
   await marketplace.methods
     // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
-    .createTicket(web3.utils.toWei(price, "ether"), result.path)
+    .createTicket(
+      web3.utils.toWei(price, "ether"),
+      web3.utils.toWei(price + 10, "ether"),
+      result.path
+    )
     .send({ from: account });
   console.log("Ticket created successfully!");
 
@@ -108,6 +112,7 @@ export const loadAllTickets = async (marketplace, dispatch) => {
   const items = [];
 
   const num_tickets = await marketplace.methods.getTicketsLength().call();
+  // const num_tickets = 1;
   // console.log("!!!!!num_tickets", num_tickets);
   var uri, data, item, myTicket, ticket;
   for (let i = 0; i < num_tickets; i++) {
@@ -226,15 +231,15 @@ export const subscribeToEvents = async (web3, marketplace, dispatch) => {
   marketplace.events.saleToggled({}, (error, event) => {
     dispatch(saleToggled(event.returnValues));
   });
-  marketplace.events.ticketPriceChanged({}, (error, event) => {
-    console.log("!!!!!event.returnValues,", event.returnValues);
-    let ticket = {
-      ticket_id: event.returnValues._id,
-      _newPrice: web3.utils.fromWei(event.returnValues._newPrice),
-      _tokenURI: event.returnValues._tokenURI,
-    };
-    dispatch(ticketPriceChanged(ticket));
-  });
+  // marketplace.events.ticketPriceChanged({}, (error, event) => {
+  //   console.log("!!!!!event.returnValues,", event.returnValues);
+  //   let ticket = {
+  //     ticket_id: event.returnValues._id,
+  //     _newPrice: web3.utils.fromWei(event.returnValues._newPrice),
+  //     _tokenURI: event.returnValues._tokenURI,
+  //   };
+  //   dispatch(ticketPriceChanged(ticket));
+  // });
 };
 
 //   console.log("!!!!!this.state.myTickets", this.state.myTickets);

@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { accountSelector, contractsLoadedSelector } from "../store/selectors";
+import {
+  accountSelector,
+  contractsLoadedSelector,
+  MarketplaceOwnerAccountSelector,
+  isMarketplaceOwnerAccountSelector,
+} from "../store/selectors";
 import { connect } from "react-redux";
 import { loadWeb3, loadAccount, loadMarketplace } from "../store/interactions";
 import "./App.css";
@@ -7,6 +12,7 @@ import Navbar from "./Navbar";
 import Content from "./Content";
 // TODO : look lesson 17 and setup truffle-config to put build to ./src directory
 
+import "../hardcodedConstants";
 // const ipfsClient = require("ipfs-http-client");
 const ipfs = require("ipfs-http-client")({
   host: "ipfs.infura.io",
@@ -44,8 +50,11 @@ class App extends Component {
   async loadBlockchainData(dispatch) {
     const web3 = await loadWeb3(dispatch);
     await loadAccount(web3, dispatch);
+    console.log(
+      "!!!!!! isMarketplaceOwnerAccount",
+      this.props.isMarketplaceOwnerAccount
+    );
     const networkId = await web3.eth.net.getId();
-    console.log("!!!!networkId", networkId);
     const marketplace = await loadMarketplace(web3, networkId, dispatch);
     if (!marketplace) {
       window.alert(
@@ -73,6 +82,7 @@ function mapStateToProps(state) {
   return {
     account: accountSelector(state),
     contractsLoaded: contractsLoadedSelector(state),
+    isMarketplaceOwnerAccount: isMarketplaceOwnerAccountSelector(state),
   };
 }
 

@@ -13,6 +13,13 @@ export function web3AccountLoaded(account) {
   };
 }
 
+export function marketplaseOwnerAccountLoaded(account) {
+  return {
+    type: "MARKETPLACE_OWNER_ACCOUNT_LOADED",
+    account,
+  };
+}
+
 // MARKETPLACE
 export function marketplaceLoaded(contract) {
   return {

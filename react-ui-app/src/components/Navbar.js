@@ -1,9 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { accountSelector } from "../store/selectors";
+import {
+  accountSelector,
+  isMarketplaceOwnerAccountSelector,
+} from "../store/selectors";
 
 class Navbar extends Component {
   render() {
+    console.log(
+      "!!!!!! navbar isMarketplaceOwnerAccount",
+      this.props.isMarketplaceOwnerAccount
+    );
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <a className="navbar-brand" href="#/">
@@ -28,7 +35,9 @@ class Navbar extends Component {
               // target="_blank"
               // rel="noopener noreferrer"
             >
-              {this.props.account}
+              {this.props.account +
+                " IsOwner " +
+                this.props.isMarketplaceOwnerAccount}
             </a>
           </li>
         </ul>
@@ -40,6 +49,7 @@ class Navbar extends Component {
 function mapStateToProps(state) {
   return {
     account: accountSelector(state),
+    isMarketplaceOwnerAccount: isMarketplaceOwnerAccountSelector(state),
   };
 }
 
