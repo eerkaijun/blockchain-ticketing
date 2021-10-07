@@ -22,14 +22,15 @@ import {
   saleTogglingSelector,
   modalSelector,
   ticketPriceChangingSelector,
+  web3Selector,
 } from "../store/selectors";
-import { toggleSale } from "../store/interactions";
+import { toggleSale, buyTicket } from "../store/interactions";
 //import { openModal, closeModal } from "../store/actions";
 import { openModal } from "../store/actions";
 
 // const showTickets = (props, parentState, handleClose, handleShow) => {
 const showTickets = (props, handleShow) => {
-  const { tickets, dispatch, marketplace, account } = props;
+  const { tickets, dispatch, marketplace, account, web3 } = props;
 
   // console.log("!!!!showTickets props", props);
   return (
@@ -45,6 +46,15 @@ const showTickets = (props, handleShow) => {
             <td>{ticket.on_sale.toString()}</td>
 
             <td>
+              <Button
+                variant="primary"
+                onClick={(e) => {
+                  buyTicket(dispatch, marketplace, web3, ticket, account);
+                }}
+                className="action-button"
+              >
+                Buy Ticket
+              </Button>
               <Button
                 variant="primary"
                 onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
@@ -141,6 +151,7 @@ function mapStateToProps(state) {
     tickets: ticketsSelector(state),
     account: accountSelector(state),
     modal: modalSelector(state),
+    web3: web3Selector(state),
     // setShow: this.setShow,
   };
 }

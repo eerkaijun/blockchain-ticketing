@@ -7,10 +7,6 @@ import {
 
 class Navbar extends Component {
   render() {
-    console.log(
-      "!!!!!! navbar isMarketplaceOwnerAccount",
-      this.props.isMarketplaceOwnerAccount
-    );
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <a className="navbar-brand" href="#/">

@@ -8,12 +8,15 @@ import {
   saleToggled,
   ticketPriceChanging,
   ticketPriceChanged,
+  ticketBuying,
+  ticketBouhgt,
 } from "./actions";
 import Marketplace from "../contracts-json/Marketplace.json";
 // import Exchange from "../abis/Exchange.json";
 // import { ETHER_ADDRESS } from "../helpers";
 
 // const ipfsClient = require("ipfs-http-client");
+
 const ipfs = require("ipfs-http-client")({
   host: "ipfs.infura.io",
   port: "5001",
@@ -96,8 +99,10 @@ export const createTicket = async (
   await marketplace.methods
     // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
     .createTicket(
-      web3.utils.toWei(price, "ether"),
-      web3.utils.toWei(price + 10, "ether"),
+      // web3.utils.toWei(price, "ether"),
+      // web3.utils.toWei(price + 10, "ether"),
+      price,
+      price + 10,
       result.path
     )
     .send({ from: account });
@@ -159,6 +164,31 @@ export const toggleSale = async (dispatch, marketplace, ticket, account) => {
       window.alert("There was an error!");
     });
 };
+
+export const buyTicket = async (
+  dispatch,
+  marketplace,
+  web3,
+  ticket,
+  account
+) => {
+  marketplace.methods
+    .buyTicket(ticket.ticket_id)
+    // .send({ from: account, value: ticket.ticket_value })
+    .send({
+      from: account,
+      value: 0.000000000002,
+      // value: ticket.ticket_value,
+      // value: web3.utils.toWei(ticket.ticket_value, "ether"),
+    })
+    .on("transactionHash", (hash) => {
+      // dispatch(saleToggling(ticket));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
 ///////TODO instead of ticket.ticket_value call contract with  web3.utils.toWei(ticket.ticket_value,'ether'),
 export const changeTicketPrice = async (
   dispatch,
@@ -178,7 +208,7 @@ export const changeTicketPrice = async (
   }
   let result = await ipfs.add(JSON.stringify(item));
 
-  console.log("!!!!! IPFS result: ", result);
+  // console.log("!!!!! IPFS result: ", result);
 
   await marketplace.methods
     .changeTicketPrice(
