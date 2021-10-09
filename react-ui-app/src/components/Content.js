@@ -1,15 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
+import {
+  Button,
+  Spinner,
+  //Row,
+  //Col,
+  //Container,
+  //Table,
+} from "react-bootstrap";
 import {
   accountSelector,
   marketplaceSelector,
   web3Selector,
+  marketplaceStateSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
   subscribeToEvents,
-  // createTicket,
+  startInvestment,
 } from "../store/interactions";
 import Tickets from "./Tickets";
 
@@ -22,22 +30,63 @@ class Content extends Component {
     const { dispatch, marketplace, web3 } = this.props;
     await loadAllTickets(marketplace, dispatch);
     await subscribeToEvents(web3, marketplace, dispatch);
-    // await createTicket(
-    //   "789",
-    //   31,
-    //   32,
-    //   this.props.marketplace,
-    //   this.props.account,
-    //   dispatch
-    // );
+    // await loadMarketplaceState(marketplace, dispatch);
   }
 
   render() {
     return (
       <div className="container">
         <div className="row">
+          <div className="col">Nice cinema places picture here</div>
+        </div>
+
+        {this.props.marketplaceState ? (
+          <div className="row">
+            <div className="col">
+              {this.props.marketplaceState[1] == "creatingTickets" ? (
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    startInvestment(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Start Investment
+                </Button>
+              ) : (
+                <div></div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <Spinner type="table" />
+        )}
+
+        {/* <div className="row">
           <div className="col">
-            Nice cinema places picture here
+            {this.props.marketplaceState[1] == "creatingTickets" ? (
+              <Button
+                variant="primary"
+                // onClick={(e) => {
+                //   buyTicket(dispatch, marketplace, web3, ticket, account);
+                // }}
+                className="action-button"
+              >
+                Start Investment
+              </Button>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </div> */}
+
+        <div className="row">
+          <div className="col">
             <Tickets />
           </div>
         </div>
@@ -51,6 +100,7 @@ function mapStateToProps(state) {
     web3: web3Selector(state),
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
+    marketplaceState: marketplaceStateSelector(state),
   };
 }
 

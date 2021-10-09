@@ -142,7 +142,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
   }
 
   // this function should be called by the buyer
-  function buyTicket(uint256 _tokenId) external payable eventNotStarted {
+  function buyTicket(uint256 _tokenId) external payable {
     Ticket storage tix = tickets[_tokenId];
     require(tix.onSale == true);
     require(msg.value >= tix.price, "at least the ticket price");

@@ -46,15 +46,20 @@ const showTickets = (props, handleShow) => {
             <td>{ticket.on_sale.toString()}</td>
 
             <td>
-              <Button
-                variant="primary"
-                onClick={(e) => {
-                  buyTicket(dispatch, marketplace, web3, ticket, account);
-                }}
-                className="action-button"
-              >
-                Buy Ticket
-              </Button>
+              {ticket.on_sale ? (
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    buyTicket(dispatch, marketplace, web3, ticket, account);
+                  }}
+                  className="action-button"
+                >
+                  Buy Ticket
+                </Button>
+              ) : (
+                <div></div>
+              )}
+
               <Button
                 variant="primary"
                 onClick={(e) => dispatch(openModal("ChangePrice", ticket))}

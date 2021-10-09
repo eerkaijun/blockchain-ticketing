@@ -15,6 +15,9 @@ function marketplace(state = {}, action) {
   switch (action.type) {
     case "MARKETPLACE_LOADED":
       return { ...state, loaded: true, contract: action.contract };
+    case "MARKETPLACE_STATE_CHANGED":
+      return { ...state, marketplaceState: action.marketplaceState };
+
     case "TICKETS_LOADED":
       return { ...state, tickets: { loaded: true, data: action.tickets } };
     case "SALE_TOGGLING":

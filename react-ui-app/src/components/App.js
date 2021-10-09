@@ -6,7 +6,12 @@ import {
   isMarketplaceOwnerAccountSelector,
 } from "../store/selectors";
 import { connect } from "react-redux";
-import { loadWeb3, loadAccount, loadMarketplace } from "../store/interactions";
+import {
+  loadWeb3,
+  loadAccount,
+  loadMarketplace,
+  loadMarketplaceState,
+} from "../store/interactions";
 import "./App.css";
 import Navbar from "./Navbar";
 import Content from "./Content";
@@ -50,10 +55,10 @@ class App extends Component {
   async loadBlockchainData(dispatch) {
     const web3 = await loadWeb3(dispatch);
     await loadAccount(web3, dispatch);
-    console.log(
-      "!!!!!! isMarketplaceOwnerAccount",
-      this.props.isMarketplaceOwnerAccount
-    );
+    // console.log(
+    //   "!!!!!! isMarketplaceOwnerAccount",
+    //   this.props.isMarketplaceOwnerAccount
+    // );
     const networkId = await web3.eth.net.getId();
     const marketplace = await loadMarketplace(web3, networkId, dispatch);
     if (!marketplace) {
@@ -62,6 +67,7 @@ class App extends Component {
       );
       return;
     }
+    await loadMarketplaceState(marketplace, dispatch);
   }
 
   render() {
