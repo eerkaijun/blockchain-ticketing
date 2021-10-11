@@ -43,7 +43,8 @@ class Content extends Component {
         {this.props.marketplaceState ? (
           <div className="row">
             <div className="col">
-              {this.props.marketplaceState[1] == "creatingTickets" ? (
+              {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
+              {this.props.marketplaceState == "creatingTickets" ? (
                 <Button
                   variant="primary"
                   onClick={(e) => {
@@ -96,11 +97,12 @@ class Content extends Component {
 }
 
 function mapStateToProps(state) {
+  // const marketplaceState = marketplaceStateSelector(state);
   return {
     web3: web3Selector(state),
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
-    marketplaceState: marketplaceStateSelector(state),
+    marketplaceState: marketplaceStateSelector(state)[1],
   };
 }
 

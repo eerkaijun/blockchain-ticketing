@@ -13,6 +13,7 @@ import {
 import Spinner from "./Spinner";
 import ChangePriceModal from "./ChangePriceModal";
 import CreateTicketModal from "./CreateTicketModal";
+import InvestModal from "./InvestModal";
 
 import {
   accountSelector,
@@ -23,6 +24,7 @@ import {
   modalSelector,
   ticketPriceChangingSelector,
   web3Selector,
+  marketplaceStateSelector,
 } from "../store/selectors";
 import { toggleSale, buyTicket } from "../store/interactions";
 //import { openModal, closeModal } from "../store/actions";
@@ -30,12 +32,14 @@ import { openModal } from "../store/actions";
 
 // const showTickets = (props, parentState, handleClose, handleShow) => {
 const showTickets = (props, handleShow) => {
-  const { tickets, dispatch, marketplace, account, web3 } = props;
+  const { tickets, dispatch, marketplace, account, web3, marketplaceState } =
+    props;
 
   // console.log("!!!!showTickets props", props);
   return (
     <tbody>
       {tickets.map((ticket, ind) => {
+        // console.log("!!!!!Tickets marketplaceState: ", marketplaceState);
         return (
           <tr className={``} key={ticket.ticket_id}>
             <td>{ind}</td>
@@ -46,7 +50,9 @@ const showTickets = (props, handleShow) => {
             <td>{ticket.on_sale.toString()}</td>
 
             <td>
-              {ticket.on_sale ? (
+              {/* TODO use marketplaceState[1] to hide/show buttons depend on the marketplaceState
+            creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
+              {ticket.on_sale && marketplaceState === "ticketSaleStart" ? (
                 <Button
                   variant="primary"
                   onClick={(e) => {
@@ -95,12 +101,26 @@ class Tickets extends Component {
       <div className="card bg-dark text-white">
         <div className="card-header">Tickets in the Marketplace</div>
         <div className="card-body">
-          <Button
-            variant="primary"
-            onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
-          >
-            Create Ticket
-          </Button>
+          {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
+
+          {this.props.marketplaceState === "creatingTickets" ? (
+            <Button
+              variant="primary"
+              onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
+            >
+              Create Ticket
+            </Button>
+          ) : this.props.marketplaceState === "investmentStart" ? (
+            <Button
+              variant="primary"
+              onClick={(e) => this.props.dispatch(openModal("Invest"))}
+            >
+              Invest
+            </Button>
+          ) : (
+            <div></div>
+          )}
+
           <table className="table table-dark table-sm small">
             <thead>
               <tr>
@@ -141,6 +161,14 @@ class Tickets extends Component {
         ) : (
           <div></div>
         )}
+
+        {!!this.props.modal &&
+        !!this.props.modal.modal &&
+        this.props.modal.modal.type === "Invest" ? (
+          <InvestModal />
+        ) : (
+          <div></div>
+        )}
       </div>
     );
   }
@@ -150,6 +178,7 @@ function mapStateToProps(state) {
   const ticketsLoaded = ticketsLoadedSelector(state);
   const saleToggling = saleTogglingSelector(state);
   const ticketPriceChanging = ticketPriceChangingSelector(state);
+
   return {
     ticketsLoaded: ticketsLoaded && !saleToggling && !ticketPriceChanging,
     marketplace: marketplaceSelector(state),
@@ -157,7 +186,7 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     modal: modalSelector(state),
     web3: web3Selector(state),
-    // setShow: this.setShow,
+    marketplaceState: marketplaceStateSelector(state)[1],
   };
 }
 

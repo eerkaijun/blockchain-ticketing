@@ -9,7 +9,8 @@ import { MARKETPLACE_OWNER_ACCOUNT } from "../hardcodedConstants";
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);
 
-const marketplaceState = (state) => get(state, "marketplace.marketplaceState");
+const marketplaceState = (state) =>
+  get(state, "marketplace.marketplaceState", [null, null]);
 export const marketplaceStateSelector = createSelector(
   marketplaceState,
   (m) => m

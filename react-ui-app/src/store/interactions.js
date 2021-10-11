@@ -265,38 +265,16 @@ export const changeTicketPrice = async (
 };
 ///////////////////////////
 
-// async changeTicketPrice(id, price) {
-//   let uri = await this.contract.methods.tokenURI(id).call();
-//   var item;
-//   try {
-//     let data = await axios.get(uri);
-//     item = data.data;
-//     item.ticket_value = price;
-//     console.log(item);
-//   } catch (error) {
-//     console.log(error);
-//   }
-//   let result = await ipfs.add(JSON.stringify(item));
-//   console.log("IPFS hash: ", result.path);
-//   await this.contract.methods.changeTicketPrice(id, web3.utils.toWei(price,'ether'), result.path).send({from:this.account});
-//   console.log("Ticket price changed successfully!");
-// },
-
-// export const makeBuyOrder = (dispatch, exchange, token, web3, order, account) => {
-//   const tokenGet = token.options.address
-//   const amountGet = web3.utils.toWei(order.amount, 'ether')
-//   const tokenGive = ETHER_ADDRESS
-//   const amountGive = web3.utils.toWei((order.amount * order.price).toString(), 'ether')
-
-//   exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
-//   .on('transactionHash', (hash) => {
-//     dispatch(buyOrderMaking())
-//   })
-//   .on('error',(error) => {
-//     console.error(error)
-//     window.alert(`There was an error!`)
-//   })
-// }
+export const invest = async (dispatch, marketplace, web3, ticket, account) => {
+  await marketplace.methods
+    .invest(1)
+    // .send({ from: account, value: web3.utils.toWei("30", "ether") })
+    .send({ from: account, value: "30" })
+    .on("transactionHash", (hash) => {
+      // dispatch(investChanging());
+    });
+  console.log("invested successfully!");
+};
 
 export const subscribeToEvents = async (web3, marketplace, dispatch) => {
   marketplace.events.saleToggled({}, (error, event) => {
