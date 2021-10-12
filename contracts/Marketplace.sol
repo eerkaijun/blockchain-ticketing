@@ -30,7 +30,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
 
   uint public investmentPrice;
   uint public unitReturn;
-  uint private _investmentSold = 0;
+  uint public _investmentSold = 0;
   mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
 
   constructor(uint _investmentPrice) ERC721("NFT Tickets", "TIX") {
