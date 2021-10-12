@@ -10,31 +10,31 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract Marketplace is Ownable, ERC721URIStorage{
 
   using SafeMath for uint;
-  
+
   enum State { creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart }
-  State public currentState = State.creatingTickets; 
-  
+  State public currentState = State.creatingTickets;
+
   // metadata for each ticket
   struct Ticket {
       uint256 maxPrice; // maximum price cap on the ticket
       uint256 price; // current price
       bool onSale;
   }
-  
+
   uint256 private _currentTokenId = 0;
-  Ticket[] public tickets; 
+  Ticket[] public tickets;
   mapping (address => uint256) etherBalance;
   uint public vaultBalance;
   uint private _maxTicketNum = 10;
-  string private _base; 
-  
+  string private _base;
+
   uint public investmentPrice;
-  uint public unitReturn; 
+  uint public unitReturn;
   uint private _investmentSold = 0;
   mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
 
-  constructor() ERC721("NFT Tickets", "TIX") {
-    investmentPrice = 30;
+  constructor(uint _investmentPrice) ERC721("NFT Tickets", "TIX") {
+    investmentPrice = _investmentPrice;
     _setBaseURI("https://ipfs.infura.io/ipfs/");
   }
 
@@ -42,11 +42,11 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(currentState == State.ticketSaleStart);
     _;
   }
-  
+
   function _setBaseURI(string memory _uri) private {
-    _base = _uri; 
+    _base = _uri;
   }
-  
+
   function _baseURI() internal view override returns (string memory) {
     return _base;
   }
@@ -59,8 +59,8 @@ contract Marketplace is Ownable, ERC721URIStorage{
     emit ticketCreated(_currentTokenId, _price, _tokenURI);
     _incrementTokenId();
   }
-  
-    
+
+
   // let's say the event organiser will have 100 tickets as Collateral
   // each ticket will cost $100 in the primary market = $10000
   // for each ticket sold, $40 will be put into a vault (40%)
@@ -68,7 +68,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
   // and now the event organiser wants to pre finance $3000
   // so the event organiser will sell each collateral at $30 until 100 collateral has been sold
 
-    
+
   // investors can choose to invest in a number of tokens
   function invest(uint _number) public payable {
     require(currentState == State.investmentStart);
@@ -77,21 +77,21 @@ contract Marketplace is Ownable, ERC721URIStorage{
     _incrementInvestmentId(_number);
     investors[msg.sender] += _number;
   }
-    
+
   function _incrementInvestmentId(uint _number) private {
     _investmentSold = _investmentSold + _number;
   }
-    
+
   // event organiser can withdraw funds before the event starts
   function withdraw() public onlyOwner {
     require(currentState == State.investmentStop);
     payable(msg.sender).transfer(address(this).balance);
   }
-    
+
   function getContractBalance() public view returns(uint) {
     return address(this).balance;
   }
-  
+
   function changeTicketPrice(uint256 _tokenId, uint256 _newPrice, string memory _tokenURI) public {
     require(msg.sender == ownerOf(_tokenId));
     Ticket storage tix = tickets[_tokenId];
@@ -105,26 +105,26 @@ contract Marketplace is Ownable, ERC721URIStorage{
     currentState = State.eventStart;
     unitReturn = vaultBalance.div(_investmentSold);
   }
-  
+
   function startInvestment() public onlyOwner {
     require(currentState == State.creatingTickets);
-    currentState = State.investmentStart; 
+    currentState = State.investmentStart;
   }
-  
+
   function stopInvestment() public onlyOwner {
     require(currentState == State.investmentStart);
     currentState = State.investmentStop;
   }
-  
+
   function startTicketSale() public onlyOwner {
     require(currentState == State.investmentStop);
     currentState = State.ticketSaleStart;
   }
-  
+
   function _incrementTokenId() private {
     _currentTokenId++;
   }
-  
+
   function retrieve() public {
     require(currentState == State.eventStart);
     if (investors[msg.sender] > 0) {
@@ -155,7 +155,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
     emit ticketTransferred(_tokenId, msg.sender);
     emit saleToggled(_tokenId, false);
   }
-  
+
   function getTicketsLength() public view returns(uint) {
     return tickets.length;
   }
