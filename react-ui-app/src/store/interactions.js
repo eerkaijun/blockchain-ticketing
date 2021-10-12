@@ -96,16 +96,14 @@ export const createTicket = async (
   };
   // console.log(JSON.stringify(metadata));
   let result = await ipfs.add(JSON.stringify(metadata));
-
+  let maxPrice = parseInt(price) * 1.1;
   // console.log("IPFS hash: ", result.path);
   // console.log("!!!account", account);
   await marketplace.methods
     // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
     .createTicket(
-      // web3.utils.toWei(price, "ether"),
-      // web3.utils.toWei(price + 10, "ether"),
-      price,
-      price + 10,
+      web3.utils.toWei(price, "ether"),
+      web3.utils.toWei(maxPrice.toString(), "ether"),
       result.path
     )
     .send({ from: account });
@@ -266,10 +264,11 @@ export const changeTicketPrice = async (
 ///////////////////////////
 
 export const invest = async (dispatch, marketplace, web3, ticket, account) => {
+  //var investPrice = await marketplace.methods.investmentPrice();
   await marketplace.methods
     .invest(1)
     // .send({ from: account, value: web3.utils.toWei("30", "ether") })
-    .send({ from: account, value: "30" })
+    .send({ from: account, value: web3.utils.toWei("3","ether") })
     .on("transactionHash", (hash) => {
       // dispatch(investChanging());
     });
