@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import {
   Button,
   Spinner,
-  //Row,
-  //Col,
-  //Container,
+  Row,
+  Col,
+  Container,
   //Table,
 } from "react-bootstrap";
 import {
@@ -20,6 +20,7 @@ import {
   startInvestment,
 } from "../store/interactions";
 import Tickets from "./Tickets";
+import Invest from "./Invest";
 
 class Content extends Component {
   async componentWillMount() {
@@ -35,16 +36,18 @@ class Content extends Component {
 
   render() {
     return (
-      <div className="container">
+      <Container>
+        {/* <div className="container"> */}
+
         <div className="row">
           <div className="col">Nice cinema places picture here</div>
         </div>
 
         {this.props.marketplaceState ? (
           <div className="row">
-            <div className="col">
-              {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
-              {this.props.marketplaceState == "creatingTickets" ? (
+            {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
+            {this.props.marketplaceState == "creatingTickets" ? (
+              <div className="col">
                 <Button
                   variant="primary"
                   onClick={(e) => {
@@ -59,9 +62,30 @@ class Content extends Component {
                 >
                   Start Investment
                 </Button>
-              ) : (
-                <div></div>
-              )}
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {/* <div className="row"> */}
+            <Row>
+              <Col>1 of 1</Col>
+              <Col>
+                {/* <div className="col"> */}
+                {this.props.marketplaceState == "investmentStart" ? (
+                  <Invest />
+                ) : (
+                  <div></div>
+                )}
+                {/* </div> */}
+              </Col>
+            </Row>
+            {/* </div> */}
+
+            <div className="row">
+              <div className="col">
+                <Tickets />
+              </div>
             </div>
           </div>
         ) : (
@@ -70,28 +94,11 @@ class Content extends Component {
 
         {/* <div className="row">
           <div className="col">
-            {this.props.marketplaceState[1] == "creatingTickets" ? (
-              <Button
-                variant="primary"
-                // onClick={(e) => {
-                //   buyTicket(dispatch, marketplace, web3, ticket, account);
-                // }}
-                className="action-button"
-              >
-                Start Investment
-              </Button>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </div> */}
-
-        <div className="row">
-          <div className="col">
             <Tickets />
           </div>
-        </div>
-      </div>
+        </div> */}
+        {/* </div> */}
+      </Container>
     );
   }
 }

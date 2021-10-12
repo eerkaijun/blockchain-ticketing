@@ -95,48 +95,30 @@ const showTickets = (props, handleShow) => {
   );
 };
 
-class Tickets extends Component {
+class Invest extends Component {
   render() {
     return (
       <div className="card bg-dark text-white">
-        <div className="card-header">Tickets in the Marketplace</div>
+        <div className="card-header">Invest into the Event</div>
         <div className="card-body">
           {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
 
-          {this.props.marketplaceState === "creatingTickets" ? (
+          {this.props.marketplaceState === "investmentStart" ? (
             <Button
               variant="primary"
-              onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
+              onClick={(e) => this.props.dispatch(openModal("Invest"))}
             >
-              Create Ticket
+              Invest
             </Button>
           ) : (
             <div></div>
           )}
 
-          <table className="table table-dark table-sm small">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Seat Number</th>
-                <th>Ticket Price (in ETH)</th>
-                <th>Category</th>
-                <th>Ticket ID</th>
-                <th>On Sale</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            {this.props.ticketsLoaded ? (
-              showTickets(
-                this.props,
-                // this.state,
-                // this.handleClose,
-                this.handleShow
-              )
-            ) : (
-              <Spinner type="table" />
-            )}
-          </table>
+          <div>
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!! Available units(tickets) for
+            investment: 67{" "}
+          </div>
+          <div>Investment price : 30 SHY per unit(ticket)</div>
         </div>
 
         {!!this.props.modal &&
@@ -183,4 +165,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Tickets);
+export default connect(mapStateToProps)(Invest);
