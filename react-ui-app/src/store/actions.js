@@ -34,6 +34,13 @@ export function marketplaceLoaded(contract) {
     contract,
   };
 }
+
+export function numTicketsLoaded(numTickets) {
+  return {
+    type: "NUM_TICKETS_LOADED",
+    numTickets,
+  };
+}
 export function ticketsLoaded(tickets) {
   return {
     type: "TICKETS_LOADED",

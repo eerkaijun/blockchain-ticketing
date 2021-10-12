@@ -4,6 +4,7 @@ import {
   web3AccountLoaded,
   marketplaceLoaded,
   marketplaceStateChanged,
+  numTicketsLoaded,
   ticketsLoaded,
   saleToggling,
   saleToggled,
@@ -140,6 +141,7 @@ export const loadAllTickets = async (marketplace, dispatch) => {
   const items = [];
 
   const num_tickets = await marketplace.methods.getTicketsLength().call();
+  dispatch(numTicketsLoaded(num_tickets));
   // const num_tickets = 1;
   // console.log("!!!!!num_tickets", num_tickets);
   var uri, data, item, myTicket, ticket;
@@ -263,12 +265,21 @@ export const changeTicketPrice = async (
 };
 ///////////////////////////
 
-export const invest = async (dispatch, marketplace, web3, ticket, account) => {
-  //var investPrice = await marketplace.methods.investmentPrice();
+export const invest = async (
+  dispatch,
+  marketplace,
+  web3,
+  collateralUnits,
+  account
+) => {
+  const investValue = collateralUnits * 3;
   await marketplace.methods
-    .invest(1)
+    .invest(collateralUnits)
     // .send({ from: account, value: web3.utils.toWei("30", "ether") })
-    .send({ from: account, value: web3.utils.toWei("3","ether") })
+    .send({
+      from: account,
+      value: web3.utils.toWei(investValue.toString(), "ether"),
+    })
     .on("transactionHash", (hash) => {
       // dispatch(investChanging());
     });

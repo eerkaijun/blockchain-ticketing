@@ -16,6 +16,9 @@ export const marketplaceStateSelector = createSelector(
   (m) => m
 );
 
+const numTickets = (state) => get(state, "marketplace.numTickets", null);
+export const numTicketsSelector = createSelector(numTickets, (n) => n);
+
 // const marketplaceOwnerAccount = (state) =>
 //   get(state, "marketplaceOwnerAccount");
 const marketplaceOwnerAccount = () => {

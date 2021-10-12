@@ -7,14 +7,16 @@ import {
   marketplaceSelector,
   modalSelector,
   web3Selector,
+  numTicketsSelector,
 } from "../store/selectors";
 import { changeTicketPrice, invest } from "../store/interactions";
 import { closeModal } from "../store/actions";
 
 class InvestModal extends Component {
-  state = { price: null };
+  state = { collateralUnits: 0 };
   render() {
     const ticket = this.props.modal.modal.data;
+    const { numTickets } = this.props;
 
     return (
       <Modal show={true} onHide={(e) => this.props.dispatch(closeModal())}>
@@ -22,30 +24,54 @@ class InvestModal extends Component {
           <Modal.Title>Invest</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* <form>
+          <form>
             <div className="form-group small">
-              <label>Old price</label>
+              <label>Total units for collateral</label>
               <div className="input-group">
                 <input
                   disabled={true}
-                  placeholder={ticket.ticket_value}
+                  placeholder={numTickets}
                   className="form-control form-control-sm bg-dark text-white"
                 />
               </div>
             </div>
             <div className="form-group small">
-              <label>New Price</label>
+              <label>Sold collateral units</label>
+              <div className="input-group">
+                <input
+                  disabled={true}
+                  // placeholder={ticket.ticket_value}
+                  placeholder={12}
+                  className="form-control form-control-sm bg-dark text-white"
+                />
+              </div>
+            </div>
+            <div className="form-group small">
+              <label>Available collateral units</label>
+              <div className="input-group">
+                <input
+                  disabled={true}
+                  // placeholder={ticket.ticket_value}
+                  placeholder={numTickets}
+                  className="form-control form-control-sm bg-dark text-white"
+                />
+              </div>
+            </div>
+            <div className="form-group small">
+              <label>Collateral units to invest</label>
               <div className="input-group">
                 <input
                   type="text"
                   className="form-control form-control-sm bg-dark text-white"
-                  placeholder="Buy Price"
-                  onChange={(e) => (this.state.price = e.target.value)}
+                  placeholder="Units to invest"
+                  onChange={(e) =>
+                    (this.state.collateralUnits = e.target.value)
+                  }
                   required
                 />
               </div>
             </div>
-          </form> */}
+          </form>
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -61,10 +87,7 @@ class InvestModal extends Component {
                 this.props.dispatch,
                 this.props.marketplace,
                 this.props.web3,
-                {
-                  ...ticket,
-                  ticket_value: this.state.price,
-                },
+                this.state.collateralUnits,
                 this.props.account
               );
               this.props.dispatch(closeModal());
@@ -81,7 +104,8 @@ class InvestModal extends Component {
 function mapStateToProps(state) {
   return {
     marketplace: marketplaceSelector(state),
-    tickets: ticketsSelector(state),
+    numTickets: numTicketsSelector(state),
+
     account: accountSelector(state),
     modal: modalSelector(state),
     web3: web3Selector(state),

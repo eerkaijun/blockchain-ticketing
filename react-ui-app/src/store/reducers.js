@@ -20,6 +20,8 @@ function marketplace(state = {}, action) {
 
     case "TICKETS_LOADED":
       return { ...state, tickets: { loaded: true, data: action.tickets } };
+    case "NUM_TICKETS_LOADED":
+      return { ...state, numTickets: action.numTickets };
     case "SALE_TOGGLING":
       return { ...state, saleToggling: true };
 
