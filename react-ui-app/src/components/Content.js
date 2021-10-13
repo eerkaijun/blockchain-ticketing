@@ -13,11 +13,13 @@ import {
   marketplaceSelector,
   web3Selector,
   marketplaceStateSelector,
+  investmentSoldSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
   subscribeToEvents,
   startInvestment,
+  loadInvestmentSold,
 } from "../store/interactions";
 import Tickets from "./Tickets";
 import Invest from "./Invest";
@@ -31,7 +33,7 @@ class Content extends Component {
     const { dispatch, marketplace, web3 } = this.props;
     await loadAllTickets(marketplace, dispatch);
     await subscribeToEvents(web3, marketplace, dispatch);
-    // await loadMarketplaceState(marketplace, dispatch);
+    await loadInvestmentSold(marketplace, dispatch);
   }
 
   render() {
@@ -110,6 +112,7 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
     marketplaceState: marketplaceStateSelector(state)[1],
+    investmentSold: investmentSoldSelector,
   };
 }
 

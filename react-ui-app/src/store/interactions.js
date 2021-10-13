@@ -4,6 +4,7 @@ import {
   web3AccountLoaded,
   marketplaceLoaded,
   marketplaceStateChanged,
+  investmentSoldChanged,
   numTicketsLoaded,
   ticketsLoaded,
   saleToggling,
@@ -119,10 +120,6 @@ export const loadMarketplaceState = async (marketplace, dispatch) => {
   //   enum State { creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart }
   // 0 = creatingTickets 1 = investmentStart... etc
 
-  // const marketplaceState = marketplace.methods.currentState.call((err, res) => {
-  //   console.log("!!!!!marketplaceState res", res);
-  //   return res;
-  // });
   const marketplaceStateNum = await marketplace.methods.currentState
     .call((err, res) => res)
     .call();
@@ -134,6 +131,17 @@ export const loadMarketplaceState = async (marketplace, dispatch) => {
   // console.log("!!!!!marketplaceState ", marketplaceState);
 
   dispatch(marketplaceStateChanged(marketplaceState));
+};
+
+export const loadInvestmentSold = async (marketplace, dispatch) => {
+  // const investmentSold = await marketplace.methods._investmentSold;
+  const investmentSold = await marketplace.methods._investmentSold
+    .call((err, res) => res)
+    .call();
+
+  // console.log("!!!!!investmentSold ", investmentSold);
+
+  dispatch(investmentSoldChanged(investmentSold));
 };
 
 export const loadAllTickets = async (marketplace, dispatch) => {
@@ -272,6 +280,7 @@ export const invest = async (
   collateralUnits,
   account
 ) => {
+  //TODO replace 3 with actual value of collateral unit price when it's ready in the smart contract
   const investValue = collateralUnits * 3;
   await marketplace.methods
     .invest(collateralUnits)

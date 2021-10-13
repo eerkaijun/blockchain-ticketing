@@ -20,6 +20,13 @@ export function marketplaceStateChanged(marketplaceState) {
   };
 }
 
+export function investmentSoldChanged(investmentSold) {
+  return {
+    type: "INVESTMENT_SOLD_CHANGED",
+    investmentSold,
+  };
+}
+
 export function marketplaseOwnerAccountLoaded(account) {
   return {
     type: "MARKETPLACE_OWNER_ACCOUNT_LOADED",

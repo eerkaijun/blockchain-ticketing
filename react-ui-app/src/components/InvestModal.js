@@ -8,6 +8,7 @@ import {
   modalSelector,
   web3Selector,
   numTicketsSelector,
+  investmentSoldSelector,
 } from "../store/selectors";
 import { changeTicketPrice, invest } from "../store/interactions";
 import { closeModal } from "../store/actions";
@@ -16,7 +17,7 @@ class InvestModal extends Component {
   state = { collateralUnits: 0 };
   render() {
     const ticket = this.props.modal.modal.data;
-    const { numTickets } = this.props;
+    const { numTickets, investmentSold } = this.props;
 
     return (
       <Modal show={true} onHide={(e) => this.props.dispatch(closeModal())}>
@@ -40,8 +41,7 @@ class InvestModal extends Component {
               <div className="input-group">
                 <input
                   disabled={true}
-                  // placeholder={ticket.ticket_value}
-                  placeholder={12}
+                  placeholder={investmentSold}
                   className="form-control form-control-sm bg-dark text-white"
                 />
               </div>
@@ -52,7 +52,7 @@ class InvestModal extends Component {
                 <input
                   disabled={true}
                   // placeholder={ticket.ticket_value}
-                  placeholder={numTickets}
+                  placeholder={numTickets - investmentSold}
                   className="form-control form-control-sm bg-dark text-white"
                 />
               </div>
@@ -109,7 +109,7 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     modal: modalSelector(state),
     web3: web3Selector(state),
-    // setShow: this.setShow,
+    investmentSold: investmentSoldSelector(state),
   };
 }
 
