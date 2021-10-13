@@ -20,6 +20,9 @@ import {
   subscribeToEvents,
   startInvestment,
   stopInvestment,
+  startTicketSale,
+  startEvent,
+  retrieve,
   loadInvestmentSold,
 } from "../store/interactions";
 import Tickets from "./Tickets";
@@ -96,7 +99,7 @@ class Content extends Component {
                 <Button
                   variant="primary"
                   onClick={(e) => {
-                    stopInvestment(
+                    startTicketSale(
                       this.props.dispatch,
                       this.props.marketplace,
                       this.props.account
@@ -106,6 +109,48 @@ class Content extends Component {
                   style={{ float: "right" }}
                 >
                   Start Tickets Sale
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "ticketSaleStart" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    startEvent(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Start Event
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "eventStart" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    retrieve(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Retrieve Investments
                 </Button>
               </div>
             ) : (
