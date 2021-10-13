@@ -19,6 +19,7 @@ import {
   loadAllTickets,
   subscribeToEvents,
   startInvestment,
+  stopInvestment,
   loadInvestmentSold,
 } from "../store/interactions";
 import Tickets from "./Tickets";
@@ -69,6 +70,57 @@ class Content extends Component {
               <div></div>
             )}
 
+            {this.props.marketplaceState == "investmentStart" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    stopInvestment(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Stop Investment
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "investmentStop" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    stopInvestment(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Start Tickets Sale
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {/* 
+
+
+
+
+
+ */}
+
+            {/* show Invest and Ticket components depend on the marketplaseState*/}
             {/* <div className="row"> */}
             <Row>
               <Col>1 of 1</Col>

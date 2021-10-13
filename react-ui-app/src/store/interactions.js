@@ -214,6 +214,22 @@ export const startInvestment = async (dispatch, marketplace, account) => {
     });
 };
 
+export const stopInvestment = async (dispatch, marketplace, account) => {
+  marketplace.methods
+    .stopInvestment()
+    .send({
+      from: account,
+    })
+    .on("transactionHash", (hash) => {
+      //TODO add dispatch(marketplaceStateChanging when investmentStarted event is added to the smart contract
+      // dispatch(marketplaceStateChanging(marketplace));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+
 export const buyTicket = async (
   dispatch,
   marketplace,
