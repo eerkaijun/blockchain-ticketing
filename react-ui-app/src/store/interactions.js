@@ -5,6 +5,7 @@ import {
   marketplaceLoaded,
   marketplaceStateChanged,
   investmentSoldChanged,
+  investorUnitsChanged,
   numTicketsLoaded,
   ticketsLoaded,
   saleToggling,
@@ -131,6 +132,19 @@ export const loadMarketplaceState = async (marketplace, dispatch) => {
   // console.log("!!!!!marketplaceState ", marketplaceState);
 
   dispatch(marketplaceStateChanged(marketplaceState));
+};
+
+export const loadInvestorUnits = async (marketplace, account, dispatch) => {
+  // console.log("!!!!!web3 ", web3);
+  const investorUnits = await marketplace.methods
+    .investors(account)
+    // .investors("0x80BC2298872D8C88f0Eca80fA1a63953Ac3093F8")
+
+    .call((err, res) => res);
+
+  // console.log("!!!!!investorUnits ", investorUnits);
+
+  dispatch(investorUnitsChanged(investorUnits));
 };
 
 export const loadInvestmentSold = async (marketplace, dispatch) => {

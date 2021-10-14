@@ -20,6 +20,10 @@ function marketplace(state = {}, action) {
 
     case "INVESTMENT_SOLD_CHANGED":
       return { ...state, investmentSold: action.investmentSold };
+
+    case "INVESTOR_UNITS_CHANGED":
+      return { ...state, investorUnits: action.investorUnits };
+
     case "TICKETS_LOADED":
       return { ...state, tickets: { loaded: true, data: action.tickets } };
     case "NUM_TICKETS_LOADED":

@@ -14,6 +14,7 @@ import {
   web3Selector,
   marketplaceStateSelector,
   investmentSoldSelector,
+  investorUnitsSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
@@ -24,6 +25,7 @@ import {
   startEvent,
   retrieve,
   loadInvestmentSold,
+  loadInvestorUnits,
 } from "../store/interactions";
 import Tickets from "./Tickets";
 import Invest from "./Invest";
@@ -34,10 +36,11 @@ class Content extends Component {
   }
 
   async loadTicketsData() {
-    const { dispatch, marketplace, web3 } = this.props;
+    const { dispatch, marketplace, web3, account } = this.props;
     await loadAllTickets(marketplace, dispatch);
     await subscribeToEvents(web3, marketplace, dispatch);
     await loadInvestmentSold(marketplace, dispatch);
+    await loadInvestorUnits(marketplace, account, dispatch);
   }
 
   render() {
@@ -136,7 +139,8 @@ class Content extends Component {
               <div></div>
             )}
 
-            {this.props.marketplaceState == "eventStart" ? (
+            {this.props.marketplaceState == "eventStart" &&
+            this.props.investorUnits > 0 ? (
               <div className="col">
                 <Button
                   variant="primary"
@@ -209,7 +213,8 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
     marketplaceState: marketplaceStateSelector(state)[1],
-    investmentSold: investmentSoldSelector,
+    investmentSold: investmentSoldSelector(state),
+    investorUnits: investorUnitsSelector(state),
   };
 }
 

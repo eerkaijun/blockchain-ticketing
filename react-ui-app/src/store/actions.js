@@ -27,6 +27,13 @@ export function investmentSoldChanged(investmentSold) {
   };
 }
 
+export function investorUnitsChanged(investorUnits) {
+  return {
+    type: "INVESTOR_UNITS_CHANGED",
+    investorUnits,
+  };
+}
+
 export function marketplaseOwnerAccountLoaded(account) {
   return {
     type: "MARKETPLACE_OWNER_ACCOUNT_LOADED",
