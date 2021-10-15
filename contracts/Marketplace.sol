@@ -129,6 +129,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(currentState == State.eventStart);
     if (investors[msg.sender] > 0) {
       etherBalance[msg.sender] += unitReturn.mul(investors[msg.sender]);
+      investors[msg.sender] = 0;
     }
     payable(msg.sender).transfer(etherBalance[msg.sender]);
   }
