@@ -20,6 +20,20 @@ export function marketplaceStateChanged(marketplaceState) {
   };
 }
 
+export function investmentSoldChanged(investmentSold) {
+  return {
+    type: "INVESTMENT_SOLD_CHANGED",
+    investmentSold,
+  };
+}
+
+export function investorUnitsChanged(investorUnits) {
+  return {
+    type: "INVESTOR_UNITS_CHANGED",
+    investorUnits,
+  };
+}
+
 export function marketplaseOwnerAccountLoaded(account) {
   return {
     type: "MARKETPLACE_OWNER_ACCOUNT_LOADED",
@@ -32,6 +46,13 @@ export function marketplaceLoaded(contract) {
   return {
     type: "MARKETPLACE_LOADED",
     contract,
+  };
+}
+
+export function numTicketsLoaded(numTickets) {
+  return {
+    type: "NUM_TICKETS_LOADED",
+    numTickets,
   };
 }
 export function ticketsLoaded(tickets) {

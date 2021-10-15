@@ -13,11 +13,19 @@ import {
   marketplaceSelector,
   web3Selector,
   marketplaceStateSelector,
+  investmentSoldSelector,
+  investorUnitsSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
   subscribeToEvents,
   startInvestment,
+  stopInvestment,
+  startTicketSale,
+  startEvent,
+  retrieve,
+  loadInvestmentSold,
+  loadInvestorUnits,
 } from "../store/interactions";
 import Tickets from "./Tickets";
 import Invest from "./Invest";
@@ -28,10 +36,11 @@ class Content extends Component {
   }
 
   async loadTicketsData() {
-    const { dispatch, marketplace, web3 } = this.props;
+    const { dispatch, marketplace, web3, account } = this.props;
     await loadAllTickets(marketplace, dispatch);
     await subscribeToEvents(web3, marketplace, dispatch);
-    // await loadMarketplaceState(marketplace, dispatch);
+    await loadInvestmentSold(marketplace, dispatch);
+    await loadInvestorUnits(marketplace, account, dispatch);
   }
 
   render() {
@@ -67,6 +76,100 @@ class Content extends Component {
               <div></div>
             )}
 
+            {this.props.marketplaceState == "investmentStart" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    stopInvestment(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Stop Investment
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "investmentStop" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    startTicketSale(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Start Tickets Sale
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "ticketSaleStart" ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    startEvent(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Start Event
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {this.props.marketplaceState == "eventStart" &&
+            this.props.investorUnits > 0 ? (
+              <div className="col">
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    retrieve(
+                      this.props.dispatch,
+                      this.props.marketplace,
+                      this.props.account
+                    );
+                  }}
+                  className="action-button"
+                  style={{ float: "right" }}
+                >
+                  Retrieve Investments
+                </Button>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
+            {/* 
+
+
+
+
+
+ */}
+
+            {/* show Invest and Ticket components depend on the marketplaseState*/}
             {/* <div className="row"> */}
             <Row>
               <Col>1 of 1</Col>
@@ -110,6 +213,8 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     marketplace: marketplaceSelector(state),
     marketplaceState: marketplaceStateSelector(state)[1],
+    investmentSold: investmentSoldSelector(state),
+    investorUnits: investorUnitsSelector(state),
   };
 }
 

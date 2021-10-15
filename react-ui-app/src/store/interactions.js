@@ -4,6 +4,9 @@ import {
   web3AccountLoaded,
   marketplaceLoaded,
   marketplaceStateChanged,
+  investmentSoldChanged,
+  investorUnitsChanged,
+  numTicketsLoaded,
   ticketsLoaded,
   saleToggling,
   saleToggled,
@@ -118,10 +121,6 @@ export const loadMarketplaceState = async (marketplace, dispatch) => {
   //   enum State { creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart }
   // 0 = creatingTickets 1 = investmentStart... etc
 
-  // const marketplaceState = marketplace.methods.currentState.call((err, res) => {
-  //   console.log("!!!!!marketplaceState res", res);
-  //   return res;
-  // });
   const marketplaceStateNum = await marketplace.methods.currentState
     .call((err, res) => res)
     .call();
@@ -135,11 +134,36 @@ export const loadMarketplaceState = async (marketplace, dispatch) => {
   dispatch(marketplaceStateChanged(marketplaceState));
 };
 
+export const loadInvestorUnits = async (marketplace, account, dispatch) => {
+  // console.log("!!!!!web3 ", web3);
+  const investorUnits = await marketplace.methods
+    .investors(account)
+    // .investors("0x80BC2298872D8C88f0Eca80fA1a63953Ac3093F8")
+
+    .call((err, res) => res);
+
+  // console.log("!!!!!investorUnits ", investorUnits);
+
+  dispatch(investorUnitsChanged(investorUnits));
+};
+
+export const loadInvestmentSold = async (marketplace, dispatch) => {
+  // const investmentSold = await marketplace.methods._investmentSold;
+  const investmentSold = await marketplace.methods._investmentSold
+    .call((err, res) => res)
+    .call();
+
+  // console.log("!!!!!investmentSold ", investmentSold);
+
+  dispatch(investmentSoldChanged(investmentSold));
+};
+
 export const loadAllTickets = async (marketplace, dispatch) => {
   const myTickets = [];
   const items = [];
 
   const num_tickets = await marketplace.methods.getTicketsLength().call();
+  dispatch(numTicketsLoaded(num_tickets));
   // const num_tickets = 1;
   // console.log("!!!!!num_tickets", num_tickets);
   var uri, data, item, myTicket, ticket;
@@ -196,6 +220,70 @@ export const startInvestment = async (dispatch, marketplace, account) => {
     })
     .on("transactionHash", (hash) => {
       //TODO add dispatch(marketplaceStateChanging when investmentStarted event is added to the smart contract
+      // dispatch(marketplaceStateChanging(marketplace));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+
+export const stopInvestment = async (dispatch, marketplace, account) => {
+  marketplace.methods
+    .stopInvestment()
+    .send({
+      from: account,
+    })
+    .on("transactionHash", (hash) => {
+      //TODO add dispatch(marketplaceStateChanging when investmentStarted event is added to the smart contract
+      // dispatch(marketplaceStateChanging(marketplace));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+
+export const startTicketSale = async (dispatch, marketplace, account) => {
+  marketplace.methods
+    .startTicketSale()
+    .send({
+      from: account,
+    })
+    .on("transactionHash", (hash) => {
+      //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
+      // dispatch(marketplaceStateChanging(marketplace));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+
+export const startEvent = async (dispatch, marketplace, account) => {
+  marketplace.methods
+    .startEvent()
+    .send({
+      from: account,
+    })
+    .on("transactionHash", (hash) => {
+      //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
+      // dispatch(marketplaceStateChanging(marketplace));
+    })
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
+    });
+};
+
+export const retrieve = async (dispatch, marketplace, account) => {
+  marketplace.methods
+    .retrieve()
+    .send({
+      from: account,
+    })
+    .on("transactionHash", (hash) => {
+      //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
       // dispatch(marketplaceStateChanging(marketplace));
     })
     .on("error", (error) => {
@@ -263,12 +351,22 @@ export const changeTicketPrice = async (
 };
 ///////////////////////////
 
-export const invest = async (dispatch, marketplace, web3, ticket, account) => {
-  //var investPrice = await marketplace.methods.investmentPrice();
+export const invest = async (
+  dispatch,
+  marketplace,
+  web3,
+  collateralUnits,
+  account
+) => {
+  //TODO replace 3 with actual value of collateral unit price when it's ready in the smart contract
+  const investValue = collateralUnits * 3;
   await marketplace.methods
-    .invest(1)
+    .invest(collateralUnits)
     // .send({ from: account, value: web3.utils.toWei("30", "ether") })
-    .send({ from: account, value: web3.utils.toWei("3","ether") })
+    .send({
+      from: account,
+      value: web3.utils.toWei(investValue.toString(), "ether"),
+    })
     .on("transactionHash", (hash) => {
       // dispatch(investChanging());
     });
