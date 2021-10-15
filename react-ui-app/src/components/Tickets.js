@@ -25,6 +25,7 @@ import {
   ticketPriceChangingSelector,
   web3Selector,
   marketplaceStateSelector,
+  marketplaceOwnerAccountSelector,
 } from "../store/selectors";
 import { toggleSale, buyTicket } from "../store/interactions";
 //import { openModal, closeModal } from "../store/actions";
@@ -103,7 +104,8 @@ class Tickets extends Component {
         <div className="card-body">
           {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
 
-          {this.props.marketplaceState === "creatingTickets" ? (
+          {this.props.marketplaceState === "creatingTickets" &&
+          this.props.marketplaceOwner == this.props.account ? (
             <Button
               variant="primary"
               onClick={(e) => this.props.dispatch(openModal("CreateTicket"))}
@@ -180,6 +182,7 @@ function mapStateToProps(state) {
     modal: modalSelector(state),
     web3: web3Selector(state),
     marketplaceState: marketplaceStateSelector(state)[1],
+    marketplaceOwner: marketplaceOwnerAccountSelector(state),
   };
 }
 
