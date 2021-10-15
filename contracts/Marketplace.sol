@@ -29,7 +29,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
   string private _base;
 
   uint public investmentPrice;
-  uint public unitReturn;
+  uint public unitReturn; 
   uint public _investmentSold = 0;
   mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
 
