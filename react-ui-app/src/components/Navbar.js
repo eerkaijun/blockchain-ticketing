@@ -31,9 +31,9 @@ class Navbar extends Component {
               // target="_blank"
               // rel="noopener noreferrer"
             >
-              {this.props.account +
-                " IsOwner " +
-                this.props.isMarketplaceOwnerAccount}
+              {this.props.isMarketplaceOwnerAccount
+                ? this.props.account + " Marketplase Owner "
+                : this.props.account}
             </a>
           </li>
         </ul>

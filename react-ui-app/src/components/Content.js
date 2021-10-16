@@ -16,6 +16,7 @@ import {
   investmentSoldSelector,
   investorUnitsSelector,
   numTicketsSelector,
+  isMarketplaceOwnerAccountSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
@@ -45,6 +46,15 @@ class Content extends Component {
   }
 
   render() {
+    const {
+      isMarketplaceOwnerAccount,
+      marketplaceState,
+      numTickets,
+      dispatch,
+      marketplace,
+      account,
+      investorUnits,
+    } = this.props;
     return (
       <Container>
         {/* <div className="container"> */}
@@ -53,21 +63,18 @@ class Content extends Component {
           <Col>Nice cinema places picture here</Col>
         </Row>
 
-        {this.props.marketplaceState ? (
+        {marketplaceState ? (
           <>
             <Row>
               {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
-              {this.props.marketplaceState == "creatingTickets" ? (
-                this.props.numTickets > 0 ? (
+              {marketplaceState == "creatingTickets" &&
+              isMarketplaceOwnerAccount ? (
+                numTickets > 0 ? (
                   <Col>
                     <Button
                       variant="primary"
                       onClick={(e) => {
-                        startInvestment(
-                          this.props.dispatch,
-                          this.props.marketplace,
-                          this.props.account
-                        );
+                        startInvestment(dispatch, marketplace, account);
                       }}
                       className="action-button"
                       style={{ float: "right" }}
@@ -82,16 +89,13 @@ class Content extends Component {
                 <></>
               )}
 
-              {this.props.marketplaceState == "investmentStart" ? (
+              {marketplaceState == "investmentStart" &&
+              isMarketplaceOwnerAccount ? (
                 <Col>
                   <Button
                     variant="primary"
                     onClick={(e) => {
-                      stopInvestment(
-                        this.props.dispatch,
-                        this.props.marketplace,
-                        this.props.account
-                      );
+                      stopInvestment(dispatch, marketplace, account);
                     }}
                     className="action-button"
                     style={{ float: "right" }}
@@ -103,16 +107,13 @@ class Content extends Component {
                 <></>
               )}
 
-              {this.props.marketplaceState == "investmentStop" ? (
+              {marketplaceState == "investmentStop" &&
+              isMarketplaceOwnerAccount ? (
                 <Col>
                   <Button
                     variant="primary"
                     onClick={(e) => {
-                      startTicketSale(
-                        this.props.dispatch,
-                        this.props.marketplace,
-                        this.props.account
-                      );
+                      startTicketSale(dispatch, marketplace, account);
                     }}
                     className="action-button"
                     style={{ float: "right" }}
@@ -124,16 +125,13 @@ class Content extends Component {
                 <></>
               )}
 
-              {this.props.marketplaceState == "ticketSaleStart" ? (
+              {marketplaceState == "ticketSaleStart" &&
+              isMarketplaceOwnerAccount ? (
                 <Col>
                   <Button
                     variant="primary"
                     onClick={(e) => {
-                      startEvent(
-                        this.props.dispatch,
-                        this.props.marketplace,
-                        this.props.account
-                      );
+                      startEvent(dispatch, marketplace, account);
                     }}
                     className="action-button"
                     style={{ float: "right" }}
@@ -145,8 +143,7 @@ class Content extends Component {
                 <></>
               )}
 
-              {this.props.marketplaceState == "eventStart" &&
-              this.props.investorUnits > 0 ? (
+              {marketplaceState == "eventStart" && investorUnits > 0 ? (
                 <Col>
                   <Button
                     variant="primary"
@@ -167,15 +164,11 @@ class Content extends Component {
                 <></>
               )}
             </Row>
-            <Row>
+            <Row className="add-space">
               {/* <Col>1 of 1</Col> */}
               <Col>
                 {/* <div className="col"> */}
-                {this.props.marketplaceState == "investmentStart" ? (
-                  <Invest />
-                ) : (
-                  <></>
-                )}
+                {marketplaceState == "investmentStart" ? <Invest /> : <></>}
               </Col>
             </Row>
 
@@ -203,6 +196,7 @@ function mapStateToProps(state) {
     investmentSold: investmentSoldSelector(state),
     investorUnits: investorUnitsSelector(state),
     numTickets: numTicketsSelector(state),
+    isMarketplaceOwnerAccount: isMarketplaceOwnerAccountSelector(state),
   };
 }
 

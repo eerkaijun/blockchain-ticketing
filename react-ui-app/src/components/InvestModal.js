@@ -16,7 +16,7 @@ import { closeModal } from "../store/actions";
 class InvestModal extends Component {
   state = { collateralUnits: 0 };
   render() {
-    const ticket = this.props.modal.modal.data;
+    // const ticket = this.props.modal.modal.data;
     const { numTickets, investmentSold } = this.props;
 
     return (

@@ -53,7 +53,7 @@ const showTickets = (props, handleShow) => {
             <td>
               {/* TODO use marketplaceState[1] to hide/show buttons depend on the marketplaceState
             creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
-              {ticket.on_sale && marketplaceState === "ticketSaleStart" ? (
+              {ticket.on_sale && marketplaceState !== "eventStart" ? (
                 <Button
                   variant="primary"
                   onClick={(e) => {
@@ -64,24 +64,33 @@ const showTickets = (props, handleShow) => {
                   Buy Ticket
                 </Button>
               ) : (
-                <div></div>
+                <></>
               )}
 
-              <Button
-                variant="primary"
-                onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
-                className="action-button"
-              >
-                Change Price
-              </Button>
-              <Button
-                onClick={(e) => {
-                  toggleSale(dispatch, marketplace, ticket, account);
-                }}
-                className="action-button"
-              >
-                Toggle Sale
-              </Button>
+              {marketplaceState === "creatingTickets" ? (
+                <Button
+                  variant="primary"
+                  onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
+                  className="action-button"
+                >
+                  Change Price
+                </Button>
+              ) : (
+                <></>
+              )}
+
+              {marketplaceState === "creatingTickets" ? (
+                <Button
+                  onClick={(e) => {
+                    toggleSale(dispatch, marketplace, ticket, account);
+                  }}
+                  className="action-button"
+                >
+                  Toggle Sale
+                </Button>
+              ) : (
+                <></>
+              )}
               {/* <v-btn class="mx-2" dark color="green" v-on:click="toggleSale(props.item.ticket_id)"> */}
               {/* Toggle Sale */}
               {/* </v-btn> */}
