@@ -9,3 +9,7 @@ export const MARKETPLACE_STATES = {
   ticketSaleStart: 3,
   eventStart: 4,
 };
+export const CATEGORIES = {
+  0: "common",
+  1: "VIP",
+};

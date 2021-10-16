@@ -4,7 +4,7 @@ import { createSelector } from "reselect";
 // import moment from "moment";
 // import { useSelector } from "react-redux";
 // import { ETHER_ADDRESS, GREEN, RED, ether, tokens } from '../helpers'
-import { MARKETPLACE_OWNER_ACCOUNT } from "../hardcodedConstants";
+import { MARKETPLACE_OWNER_ACCOUNT, CATEGORIES } from "../hardcodedConstants";
 
 const account = (state) => get(state, "web3.account");
 export const accountSelector = createSelector(account, (a) => a);

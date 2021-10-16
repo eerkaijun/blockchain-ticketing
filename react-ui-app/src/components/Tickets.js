@@ -30,6 +30,7 @@ import {
 import { toggleSale, buyTicket } from "../store/interactions";
 //import { openModal, closeModal } from "../store/actions";
 import { openModal } from "../store/actions";
+import { CATEGORIES } from "../hardcodedConstants";
 
 // const showTickets = (props, parentState, handleClose, handleShow) => {
 const showTickets = (props, handleShow) => {
