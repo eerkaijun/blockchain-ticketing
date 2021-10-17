@@ -10,6 +10,6 @@ export const MARKETPLACE_STATES = {
   eventStart: 4,
 };
 export const CATEGORIES = {
-  0: "common",
+  0: "Common",
   1: "VIP",
 };

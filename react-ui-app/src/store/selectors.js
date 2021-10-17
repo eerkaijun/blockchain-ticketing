@@ -67,6 +67,9 @@ const tickets = (state) => get(state, "marketplace.tickets.data", []);
 export const ticketsSelector = createSelector(tickets, (tickets) => {
   // Sort orders by date ascending for price comparison
   tickets = tickets.sort((a, b) => b.ticket_id - a.ticket_id);
+  tickets = tickets.map((ticket) => {
+    return { ...ticket, ticket_category: CATEGORIES[ticket.ticket_category] };
+  });
   // console.log("!!!tick", tickets);
   return tickets;
 });
