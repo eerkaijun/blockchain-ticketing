@@ -34,8 +34,15 @@ import { CATEGORIES } from "../hardcodedConstants";
 
 // const showTickets = (props, parentState, handleClose, handleShow) => {
 const showTickets = (props, handleShow) => {
-  const { tickets, dispatch, marketplace, account, web3, marketplaceState } =
-    props;
+  const {
+    tickets,
+    dispatch,
+    marketplace,
+    account,
+    web3,
+    marketplaceState,
+    marketplaceOwner,
+  } = props;
 
   // console.log("!!!!showTickets props", props);
   return (
@@ -68,7 +75,8 @@ const showTickets = (props, handleShow) => {
                 <></>
               )}
 
-              {marketplaceState === "creatingTickets" ? (
+              {marketplaceState === "creatingTickets" &&
+              marketplaceOwner == account ? (
                 <Button
                   variant="primary"
                   onClick={(e) => dispatch(openModal("ChangePrice", ticket))}
@@ -80,7 +88,8 @@ const showTickets = (props, handleShow) => {
                 <></>
               )}
 
-              {marketplaceState === "creatingTickets" ? (
+              {marketplaceState === "creatingTickets" &&
+              marketplaceOwner == account ? (
                 <Button
                   onClick={(e) => {
                     toggleSale(dispatch, marketplace, ticket, account);
