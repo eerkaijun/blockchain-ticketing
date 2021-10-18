@@ -75,7 +75,7 @@ const showTickets = (props, handleShow) => {
                 <></>
               )}
 
-              {marketplaceState === "creatingTickets" &&
+              {marketplaceState === "ticketSaleStart" &&
               marketplaceOwner == account ? (
                 <Button
                   variant="primary"
@@ -88,7 +88,7 @@ const showTickets = (props, handleShow) => {
                 <></>
               )}
 
-              {marketplaceState === "creatingTickets" &&
+              {marketplaceState === "ticketSaleStart" &&
               marketplaceOwner == account ? (
                 <Button
                   onClick={(e) => {
