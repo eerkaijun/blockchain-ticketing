@@ -76,6 +76,7 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(_number + _investmentSold < _currentTokenId.add(1));
     _incrementInvestmentId(_number);
     investors[msg.sender] += _number;
+    emit invested(msg.sender, _number);
   }
 
   function _incrementInvestmentId(uint _number) private {
@@ -104,21 +105,25 @@ contract Marketplace is Ownable, ERC721URIStorage{
     require(currentState == State.ticketSaleStart);
     currentState = State.eventStart;
     unitReturn = vaultBalance.div(_investmentSold);
+    emit eventStarted(); 
   }
 
   function startInvestment() public onlyOwner {
     require(currentState == State.creatingTickets);
     currentState = State.investmentStart;
+    emit investmentStarted(); 
   }
 
   function stopInvestment() public onlyOwner {
     require(currentState == State.investmentStart);
     currentState = State.investmentStop;
+    emit investmentStopped();
   }
 
   function startTicketSale() public onlyOwner {
     require(currentState == State.investmentStop);
     currentState = State.ticketSaleStart;
+    emit ticketSaleStarted();
   }
 
   function _incrementTokenId() private {
@@ -164,5 +169,10 @@ contract Marketplace is Ownable, ERC721URIStorage{
   event ticketTransferred(uint256 _id, address _owner); //show the address of new owner
   event saleToggled(uint256 _id, bool state); //show whether ticket is on sale
   event ticketCreated(uint256 _id, uint256 _price, string _tokenURI);
+  event invested(address _investor, uint _number);
+  event investmentStarted();
+  event investmentStopped();
+  event ticketSaleStarted();
+  event eventStarted();
 
 }
