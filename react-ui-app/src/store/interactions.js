@@ -10,6 +10,7 @@ import {
   ticketsLoaded,
   saleToggling,
   saleToggled,
+  ticketCreated,
   ticketPriceChanging,
   ticketPriceChanged,
   ticketBuying,
@@ -377,6 +378,11 @@ export const subscribeToEvents = async (web3, marketplace, dispatch) => {
   marketplace.events.saleToggled({}, (error, event) => {
     dispatch(saleToggled(event.returnValues));
   });
+
+  marketplace.events.ticketCreated({}, (error, event) => {
+    dispatch(ticketCreated(event.returnValues));
+  });
+
   // marketplace.events.ticketPriceChanged({}, (error, event) => {
   //   console.log("!!!!!event.returnValues,", event.returnValues);
   //   let ticket = {

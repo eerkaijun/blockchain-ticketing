@@ -77,6 +77,20 @@ export function saleToggled(ticket) {
   };
 }
 
+export function ticketCreating(ticket) {
+  return {
+    type: "TICKET_CREATING",
+    ticket,
+  };
+}
+
+export function ticketCreated(ticket) {
+  return {
+    type: "TICKET_CREATED",
+    ticket,
+  };
+}
+
 export function openModal(modal, data) {
   return {
     type: "OPEN_MODAL",
