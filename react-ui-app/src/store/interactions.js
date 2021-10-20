@@ -10,6 +10,7 @@ import {
   ticketsLoaded,
   saleToggling,
   saleToggled,
+  ticketCreating,
   ticketCreated,
   ticketPriceChanging,
   ticketPriceChanged,
@@ -111,6 +112,13 @@ export const createTicket = async (
       result.path
     )
     .send({ from: account });
+  // .on("transactionHash", (hash) => {
+  //   dispatch(ticketCreating());
+  // })
+  // .on("error", (error) => {
+  //   console.log(error);
+  //   window.alert("There was an error!");
+  // });
   console.log("Ticket created successfully!");
 
   //const num_tickets = await marketplace.methods.getOnSaleLength().call();
@@ -170,9 +178,7 @@ export const loadAllTickets = async (marketplace, dispatch) => {
   var uri, data, item, myTicket, ticket;
   for (let i = 0; i < num_tickets; i++) {
     ticket = await marketplace.methods.tickets(i).call();
-    //onSale = ticket.onSale;
-    //owner = await marketplace.methods.owners(i).call();
-    //if (owner == this.account) this.myTickets.push(i);
+
     uri = await marketplace.methods.tokenURI(i).call();
     try {
       data = await axios.get(uri);
@@ -180,18 +186,6 @@ export const loadAllTickets = async (marketplace, dispatch) => {
       myTicket.ticket_id = i;
       myTicket.on_sale = ticket.onSale;
       myTickets.push(myTicket);
-      // if (owner == this.account) {
-      //   myTicket = data.data;
-      //   myTicket.ticket_id = i;
-      //   myTicket.on_sale = await this.contract.methods.onSale(i).call();
-      //   this.state.myTickets.push(myTicket);
-      // } else {
-      //   item = data.data;
-      //   item.ticket_id = i;
-      //   item.on_sale = await this.contract.methods.onSale(i).call();
-      //   console.log(item);
-      //   this.state.items.push(item);
-      // }
     } catch (error) {
       console.log(error);
     }
@@ -380,6 +374,7 @@ export const subscribeToEvents = async (web3, marketplace, dispatch) => {
   });
 
   marketplace.events.ticketCreated({}, (error, event) => {
+    console.log("!!!!marketplace.events.ticketCreated event: ", event);
     dispatch(ticketCreated(event.returnValues));
   });
 

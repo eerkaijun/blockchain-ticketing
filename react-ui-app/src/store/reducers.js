@@ -45,6 +45,32 @@ function marketplace(state = {}, action) {
           ),
         },
       };
+
+    case "TICKET_CREATING":
+      return { ...state, ticketCreating: true };
+
+    // case "TICKET_CREATED":
+    //   console.log("!!!!!!ticket_created action.ticket", action.ticket);
+    //   let createdTicket = {
+    //     seat_number:
+    //       "TODO: get from send request or return from smart contract",
+    //     ticket_category: 0,
+    //     ticket_value: action.ticket._price,
+    //     ticket_id: action.ticket._id,
+    //     on_sale: true,
+    //   };
+
+    //   return {
+    //     ...state,
+    //     ticketCreating: false,
+    //     tickets: {
+    //       ...state.tickets,
+
+    //       // data: state.tickets.data.push(action.ticket),
+
+    //       data: [...state.tickets.data, createdTicket],
+    //     },
+    //   };
     case "TICKET_PRICE_CHANGING":
       return { ...state, ticketPriceChanging: true };
     case "TICKET_PRICE_CHANGED":

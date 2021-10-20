@@ -77,10 +77,9 @@ export function saleToggled(ticket) {
   };
 }
 
-export function ticketCreating(ticket) {
+export function ticketCreating() {
   return {
     type: "TICKET_CREATING",
-    ticket,
   };
 }
 
