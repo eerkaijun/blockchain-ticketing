@@ -2,12 +2,13 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import {
   Button,
-  Spinner,
+  // Spinner,
   Row,
   Col,
   Container,
   //Table,
 } from "react-bootstrap";
+import Spinner from "./Spinner";
 import {
   accountSelector,
   marketplaceSelector,
@@ -17,6 +18,7 @@ import {
   investorUnitsSelector,
   numTicketsSelector,
   isMarketplaceOwnerAccountSelector,
+  marketplaceStateChangingSelector,
 } from "../store/selectors";
 import {
   loadAllTickets,
@@ -54,6 +56,7 @@ class Content extends Component {
       marketplace,
       account,
       investorUnits,
+      marketplaceStateChanging,
     } = this.props;
     return (
       <Container>
@@ -63,7 +66,7 @@ class Content extends Component {
           <Col>Nice cinema places picture here</Col>
         </Row>
 
-        {marketplaceState ? (
+        {marketplaceState && !marketplaceStateChanging ? (
           <>
             <Row>
               {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
@@ -179,7 +182,14 @@ class Content extends Component {
             </Row>
           </>
         ) : (
-          <Spinner type="table" />
+          // <Spinner type="table" />
+
+          // <div>
+          //   Loading...
+          //   <Spinner type="div" />
+          // </div>
+
+          <Spinner type="div" />
         )}
       </Container>
     );
@@ -197,6 +207,7 @@ function mapStateToProps(state) {
     investorUnits: investorUnitsSelector(state),
     numTickets: numTicketsSelector(state),
     isMarketplaceOwnerAccount: isMarketplaceOwnerAccountSelector(state),
+    marketplaceStateChanging: marketplaceStateChangingSelector(state),
   };
 }
 

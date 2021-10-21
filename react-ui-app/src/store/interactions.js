@@ -3,6 +3,7 @@ import {
   web3Loaded,
   web3AccountLoaded,
   marketplaceLoaded,
+  marketplaceStateChanging,
   marketplaceStateChanged,
   investmentSoldChanged,
   investorUnitsChanged,
@@ -10,6 +11,8 @@ import {
   ticketsLoaded,
   saleToggling,
   saleToggled,
+  investing,
+  invested,
   ticketCreating,
   ticketCreated,
   ticketPriceChanging,
@@ -215,7 +218,10 @@ export const startInvestment = async (dispatch, marketplace, account) => {
     })
     .on("transactionHash", (hash) => {
       //TODO add dispatch(marketplaceStateChanging when investmentStarted event is added to the smart contract
-      // dispatch(marketplaceStateChanging(marketplace));
+      console.log(
+        "!!!!!startInvestment will call dispatch(marketplaceStateChanging());"
+      );
+      dispatch(marketplaceStateChanging());
     })
     .on("error", (error) => {
       console.log(error);
@@ -231,7 +237,7 @@ export const stopInvestment = async (dispatch, marketplace, account) => {
     })
     .on("transactionHash", (hash) => {
       //TODO add dispatch(marketplaceStateChanging when investmentStarted event is added to the smart contract
-      // dispatch(marketplaceStateChanging(marketplace));
+      dispatch(marketplaceStateChanging());
     })
     .on("error", (error) => {
       console.log(error);
@@ -362,9 +368,16 @@ export const invest = async (
       from: account,
       value: web3.utils.toWei(investValue.toString(), "ether"),
     })
+
     .on("transactionHash", (hash) => {
-      // dispatch(investChanging());
+      dispatch(investing());
+    })
+
+    .on("error", (error) => {
+      console.log(error);
+      window.alert("There was an error!");
     });
+
   console.log("invested successfully!");
 };
 
@@ -373,21 +386,41 @@ export const subscribeToEvents = async (web3, marketplace, dispatch) => {
     dispatch(saleToggled(event.returnValues));
   });
 
+  // invested(address _investor, uint _number);
+  marketplace.events.invested({}, (error, event) => {
+    console.log(
+      "!!!!!!! marketplace.events.invested subscription event:",
+      event
+    );
+    // dispatch(invested());
+  });
+
   marketplace.events.ticketCreated({}, (error, event) => {
     console.log("!!!!marketplace.events.ticketCreated event: ", event);
     dispatch(ticketCreated(event.returnValues));
   });
 
-  // marketplace.events.ticketPriceChanged({}, (error, event) => {
-  //   console.log("!!!!!event.returnValues,", event.returnValues);
-  //   let ticket = {
-  //     ticket_id: event.returnValues._id,
-  //     _newPrice: web3.utils.fromWei(event.returnValues._newPrice),
-  //     _tokenURI: event.returnValues._tokenURI,
-  //   };
-  //   dispatch(ticketPriceChanged(ticket));
+  marketplace.events.investmentStarted({}, (error, event) => {
+    console.log("!!!!marketplace.events.investmentStarted event: ", event);
+    dispatch(marketplaceStateChanged(["1", "investmentStart"]));
+  });
+
+  marketplace.events.investmentStopped({}, (error, event) => {
+    console.log("!!!!marketplace.events.investmentStopped event: ", event);
+    dispatch(marketplaceStateChanged(["2", "investmentStop"]));
+  });
+
+  marketplace.events.ticketSaleStarted({}, (error, event) => {
+    console.log("!!!!marketplace.events.ticketSaleStarted event: ", event);
+    dispatch(marketplaceStateChanged(["3", "ticketSaleStart"]));
+  });
+  marketplace.events.eventStarted({}, (error, event) => {
+    console.log("!!!!marketplace.events.eventStarted event: ", event);
+    dispatch(marketplaceStateChanged(["4", "eventStart"]));
+  });
+  // TODO: add when investmentRetrieved event is added to the smart contract
+  // marketplace.events.investmentRetrieved({}, (error, event) => {
+  //   console.log("!!!!marketplace.events.investmentRetrieved event: ", event);
+  //   dispatch(marketplaceStateChanged(["5", "investmentRetrieved"]));
   // });
 };
-
-//   console.log("!!!!!this.state.myTickets", this.state.myTickets);
-// }

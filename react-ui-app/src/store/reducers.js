@@ -15,8 +15,15 @@ function marketplace(state = {}, action) {
   switch (action.type) {
     case "MARKETPLACE_LOADED":
       return { ...state, loaded: true, contract: action.contract };
+
+    case "MARKETPLACE_STATE_CHANGING":
+      return { ...state, marketplaceStateChanging: true };
     case "MARKETPLACE_STATE_CHANGED":
-      return { ...state, marketplaceState: action.marketplaceState };
+      return {
+        ...state,
+        marketplaceStateChanging: false,
+        marketplaceState: action.marketplaceState,
+      };
 
     case "INVESTMENT_SOLD_CHANGED":
       return { ...state, investmentSold: action.investmentSold };
@@ -44,6 +51,19 @@ function marketplace(state = {}, action) {
               : ticket
           ),
         },
+      };
+
+    case "INVESTING":
+      return { ...state, investing: true };
+
+    case "INVESTED":
+      // console.log("!!!!!!state.investmentSold: ", state.investmentSold);
+      return {
+        ...state,
+        investing: false,
+        // investmentSold: state.investmentSold + 1,
+        investmentSold: 444,
+        investorUnits: "8910",
       };
 
     case "TICKET_CREATING":
