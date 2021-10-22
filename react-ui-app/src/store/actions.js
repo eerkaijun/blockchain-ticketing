@@ -33,6 +33,7 @@ export function investing() {
 }
 
 export function invested() {
+  console.log("!!!!!!! action invested called");
   return {
     type: "INVESTED",
   };

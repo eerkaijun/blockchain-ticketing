@@ -80,6 +80,9 @@ export const saleTogglingSelector = createSelector(
   (status) => status
 );
 
+const investing = (state) => get(state, "marketplace.investing", false);
+export const investingSelector = createSelector(investing, (status) => status);
+
 const marketplaceStateChanging = (state) =>
   get(state, "marketplace.marketplaceStateChanging", false);
 export const marketplaceStateChangingSelector = createSelector(

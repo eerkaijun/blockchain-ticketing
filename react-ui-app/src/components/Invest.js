@@ -28,27 +28,30 @@ import {
   numTicketsSelector,
   investmentSoldSelector,
   investorUnitsSelector,
+  investingSelector,
 } from "../store/selectors";
 
 import { openModal } from "../store/actions";
 
 class Invest extends Component {
   render() {
-    const { numTickets, investmentSold, investorUnits } = this.props;
+    const { numTickets, investmentSold, investorUnits, investing } = this.props;
     return (
       <div className="card bg-dark text-white">
         <div className="card-header">Invest into the Event</div>
-        <div className="card-body">
-          {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
 
-          <div>Your collateral units: {investorUnits}</div>
-          <p></p>
+        {!investing ? (
+          <div className="card-body">
+            {/* creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
 
-          <div>Total units for collateral: {numTickets}</div>
-          <div>Sold collateral units: {investmentSold}</div>
-          <div>Available collateral units: {numTickets - investmentSold}</div>
-          <div>Investment price : 3 SHY per unit(ticket)</div>
-          {this.props.marketplaceState === "investmentStart" ? (
+            <div>Your collateral units: {investorUnits}</div>
+            <p></p>
+
+            <div>Total units for collateral: {numTickets}</div>
+            <div>Sold collateral units: {investmentSold}</div>
+            <div>Available collateral units: {numTickets - investmentSold}</div>
+            <div>Investment price : 3 SHY per unit(ticket)</div>
+
             <Button
               variant="primary"
               onClick={(e) => this.props.dispatch(openModal("Invest"))}
@@ -56,10 +59,10 @@ class Invest extends Component {
             >
               Invest
             </Button>
-          ) : (
-            <></>
-          )}
-        </div>
+          </div>
+        ) : (
+          <Spinner type="div-dark" />
+        )}
 
         {!!this.props.modal &&
         !!this.props.modal.modal &&
@@ -107,6 +110,7 @@ function mapStateToProps(state) {
 
     investmentSold: investmentSoldSelector(state),
     investorUnits: investorUnitsSelector(state),
+    investing: investingSelector(state),
   };
 }
 

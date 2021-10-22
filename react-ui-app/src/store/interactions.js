@@ -388,34 +388,34 @@ export const subscribeToEvents = async (web3, marketplace, dispatch) => {
 
   // invested(address _investor, uint _number);
   marketplace.events.invested({}, (error, event) => {
-    console.log(
-      "!!!!!!! marketplace.events.invested subscription event:",
-      event
-    );
-    // dispatch(invested());
+    // console.log(
+    //   "!!!!!!! marketplace.events.invested subscription event:",
+    //   event
+    // );
+    dispatch(invested());
   });
 
   marketplace.events.ticketCreated({}, (error, event) => {
-    console.log("!!!!marketplace.events.ticketCreated event: ", event);
+    // console.log("!!!!marketplace.events.ticketCreated event: ", event);
     dispatch(ticketCreated(event.returnValues));
   });
 
   marketplace.events.investmentStarted({}, (error, event) => {
-    console.log("!!!!marketplace.events.investmentStarted event: ", event);
+    // console.log("!!!!marketplace.events.investmentStarted event: ", event);
     dispatch(marketplaceStateChanged(["1", "investmentStart"]));
   });
 
   marketplace.events.investmentStopped({}, (error, event) => {
-    console.log("!!!!marketplace.events.investmentStopped event: ", event);
+    // console.log("!!!!marketplace.events.investmentStopped event: ", event);
     dispatch(marketplaceStateChanged(["2", "investmentStop"]));
   });
 
   marketplace.events.ticketSaleStarted({}, (error, event) => {
-    console.log("!!!!marketplace.events.ticketSaleStarted event: ", event);
+    // console.log("!!!!marketplace.events.ticketSaleStarted event: ", event);
     dispatch(marketplaceStateChanged(["3", "ticketSaleStart"]));
   });
   marketplace.events.eventStarted({}, (error, event) => {
-    console.log("!!!!marketplace.events.eventStarted event: ", event);
+    // console.log("!!!!marketplace.events.eventStarted event: ", event);
     dispatch(marketplaceStateChanged(["4", "eventStart"]));
   });
   // TODO: add when investmentRetrieved event is added to the smart contract

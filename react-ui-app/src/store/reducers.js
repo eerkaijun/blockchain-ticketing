@@ -62,8 +62,8 @@ function marketplace(state = {}, action) {
         ...state,
         investing: false,
         // investmentSold: state.investmentSold + 1,
-        investmentSold: 444,
-        investorUnits: "8910",
+        // investmentSold: 444,
+        // investorUnits: "8910",
       };
 
     case "TICKET_CREATING":
