@@ -4,3 +4,8 @@
 .add-space {
   margin: 4px;
 }
+
+.black-placeholder::placeholder {
+  color: black !important;
+  /* background: red; */
+}

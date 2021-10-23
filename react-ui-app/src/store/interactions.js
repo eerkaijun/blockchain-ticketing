@@ -252,8 +252,7 @@ export const startTicketSale = async (dispatch, marketplace, account) => {
       from: account,
     })
     .on("transactionHash", (hash) => {
-      //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
-      // dispatch(marketplaceStateChanging(marketplace));
+      dispatch(marketplaceStateChanging(marketplace));
     })
     .on("error", (error) => {
       console.log(error);
@@ -268,8 +267,7 @@ export const startEvent = async (dispatch, marketplace, account) => {
       from: account,
     })
     .on("transactionHash", (hash) => {
-      //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
-      // dispatch(marketplaceStateChanging(marketplace));
+      dispatch(marketplaceStateChanging(marketplace));
     })
     .on("error", (error) => {
       console.log(error);

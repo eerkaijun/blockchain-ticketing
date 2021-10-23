@@ -51,14 +51,17 @@ class Invest extends Component {
             <div>Sold collateral units: {investmentSold}</div>
             <div>Available collateral units: {numTickets - investmentSold}</div>
             <div>Investment price : 3 SHY per unit(ticket)</div>
-
-            <Button
-              variant="primary"
-              onClick={(e) => this.props.dispatch(openModal("Invest"))}
-              style={{ float: "right" }}
-            >
-              Invest
-            </Button>
+            {numTickets - investmentSold > 0 ? (
+              <Button
+                variant="primary"
+                onClick={(e) => this.props.dispatch(openModal("Invest"))}
+                style={{ float: "right" }}
+              >
+                Invest
+              </Button>
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
           <Spinner type="div-dark" />

@@ -61,7 +61,7 @@ const showTickets = (props, handleShow) => {
             <td>
               {/* TODO use marketplaceState[1] to hide/show buttons depend on the marketplaceState
             creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
-              {ticket.on_sale && marketplaceState !== "eventStart" ? (
+              {ticket.on_sale && marketplaceState == "ticketSaleStart" ? (
                 <Button
                   variant="primary"
                   onClick={(e) => {

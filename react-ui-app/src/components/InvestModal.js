@@ -32,7 +32,7 @@ class InvestModal extends Component {
                 <input
                   disabled={true}
                   placeholder={numTickets}
-                  className="form-control form-control-sm bg-dark text-white"
+                  className="black-placeholder form-control form-control-sm bg-secondary text-white"
                 />
               </div>
             </div>
@@ -42,7 +42,7 @@ class InvestModal extends Component {
                 <input
                   disabled={true}
                   placeholder={investmentSold}
-                  className="form-control form-control-sm bg-dark text-white"
+                  className="black-placeholder form-control form-control-sm bg-secondary text-white"
                 />
               </div>
             </div>
@@ -53,7 +53,7 @@ class InvestModal extends Component {
                   disabled={true}
                   // placeholder={ticket.ticket_value}
                   placeholder={numTickets - investmentSold}
-                  className="form-control form-control-sm bg-dark text-white"
+                  className="black-placeholder form-control form-control-sm bg-secondary text-white"
                 />
               </div>
             </div>
@@ -80,6 +80,7 @@ class InvestModal extends Component {
           >
             Close
           </Button>
+
           <Button
             variant="primary"
             onClick={(e) => {
