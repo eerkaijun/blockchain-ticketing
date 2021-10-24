@@ -33,6 +33,7 @@ import {
 } from "../store/interactions";
 import Tickets from "./Tickets";
 import Invest from "./Invest";
+import seatsImg from "./seats.png";
 
 class Content extends Component {
   async componentWillMount() {
@@ -62,8 +63,10 @@ class Content extends Component {
       <Container>
         {/* <div className="container"> */}
 
-        <Row>
-          <Col>Nice cinema places picture here</Col>
+        <Row className="add-space ">
+          <Col>
+            <img src={seatsImg} style={{ width: "500px" }}></img>
+          </Col>
         </Row>
 
         {marketplaceState && !marketplaceStateChanging ? (

@@ -283,7 +283,7 @@ export const retrieve = async (dispatch, marketplace, account) => {
     })
     .on("transactionHash", (hash) => {
       //TODO add dispatch(marketplaceStateChanging when startTicketSale event is added to the smart contract
-      // dispatch(marketplaceStateChanging(marketplace));
+      dispatch(marketplaceStateChanging(marketplace));
     })
     .on("error", (error) => {
       console.log(error);
