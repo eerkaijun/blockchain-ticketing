@@ -60,6 +60,7 @@ class App extends Component {
     //   this.props.isMarketplaceOwnerAccount
     // );
     const networkId = await web3.eth.net.getId();
+    console.log("!!!networkId : ", networkId);
     const marketplace = await loadMarketplace(web3, networkId, dispatch);
     if (!marketplace) {
       window.alert(
