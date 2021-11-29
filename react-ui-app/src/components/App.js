@@ -21,6 +21,7 @@ import "../hardcodedConstants";
 // const ipfsClient = require("ipfs-http-client");
 const ipfs = require("ipfs-http-client")({
   host: "ipfs.infura.io",
+  // host: "ipfs",
   port: "5001",
   protocol: "https",
 });

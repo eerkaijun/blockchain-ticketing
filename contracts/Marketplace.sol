@@ -34,8 +34,10 @@ contract Marketplace is Ownable, ERC721URIStorage{
   mapping(address=>uint) public investors; // mapping to show number of shares owned by each investor
 
   constructor(uint _investmentPrice) ERC721("NFT Tickets", "TIX") {
-    investmentPrice = _investmentPrice;
+    // investmentPrice = _investmentPrice;
+    investmentPrice = 3;
     _setBaseURI("https://ipfs.infura.io/ipfs/");
+    // _setBaseURI("ipfs://");
   }
 
   modifier eventNotStarted() {
@@ -60,6 +62,9 @@ contract Marketplace is Ownable, ERC721URIStorage{
     _incrementTokenId();
   }
 
+// https://rinkeby.rarible.com/token/0x80BC2298872D8C88f0Eca80fA1a63953Ac3093F8:1
+
+// https://rinkeby.rarible.com/token/0x0000000000000000000000000000000000000000:1
 
   // let's say the event organiser will have 100 tickets as Collateral
   // each ticket will cost $100 in the primary market = $10000

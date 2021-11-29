@@ -88,7 +88,7 @@ export const loadMarketplace = async (web3, networkID, dispatch) => {
   }
 };
 
-export const createTicket = async (
+export const createTicket_old = async (
   price,
   seat,
   category,
@@ -123,6 +123,101 @@ export const createTicket = async (
   //   window.alert("There was an error!");
   // });
   console.log("Ticket created successfully!");
+
+  //const num_tickets = await marketplace.methods.getOnSaleLength().call();
+  //console.log("!!!!!num_tickets", num_tickets);
+};
+
+export const createTicket = async (
+  price,
+  seat,
+  category,
+  marketplace,
+  account,
+  web3,
+  dispatch
+) => {
+  // let ticketText = `Seat: ${seat} \n Price: ${price} \n Category: ${category}`;
+
+  let ticketText = `<tspan x="50%" dy="1.2em">Seat: ${seat}</tspan>
+    <tspan x="50%" dy="1.2em">Category: ${category}</tspan>
+    <tspan x="50%" dy="1.2em">Price: ${price} </tspan>`;
+
+  let encodedString = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">
+  <style>.base { fill: white; font-family: serif; font-size: 14px; }</style>
+  <rect width="100%" height="100%" fill="black" />
+  <text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">${ticketText}</text>
+</svg>`
+  ).toString("base64");
+  let metadata = {
+    seat_number: seat,
+    ticket_category: category,
+    ticket_value: price,
+    attributes: [
+      {
+        trait_type: "Breed",
+        value: "Maltipoo",
+      },
+      {
+        trait_type: "Eye color",
+        value: "Mocha",
+      },
+    ],
+    description: "The world's most adorable and sensitive pup.",
+    image:
+      // "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj4KICAgIDxzdHlsZT4uYmFzZSB7IGZpbGw6IHdoaXRlOyBmb250LWZhbWlseTogc2VyaWY7IGZvbnQtc2l6ZTogMTRweDsgfTwvc3R5bGU+CiAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJibGFjayIgLz4KICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBjbGFzcz0iYmFzZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RXBpY0xvcmRIYW1idXJnZXI8L3RleHQ+Cjwvc3ZnPg==",
+      `data:image/svg+xml;base64,${encodedString}`,
+    name: `Ticket seat# ${seat}`,
+  };
+
+  // {
+  //   attributes: [
+  //     {
+  //       trait_type: "Breed",
+  //       value: "Maltipoo",
+  //     },
+  //     {
+  //       trait_type: "Eye color",
+  //       value: "Mocha",
+  //     },
+  //   ],
+  //   description: "The world's most adorable and sensitive pup.",
+  //   image:
+  //     "https://gateway.pinata.cloud/ipfs/QmWmvTJmJU3pozR9ZHFmQC2DNDwi2XJtf3QGyYiiagFSWb",
+  //   name: "Ramses",
+  // };
+
+  // {
+  //   seat_number: seat,
+  //   ticket_category: category,
+  //   ticket_value: price,
+  //   // image: "data:image/svg+xml;base64"
+  //   image:
+  //     "https://ipfs.io/ipfs/QmQYE35JdthxvBZahG77w5XSuPKL2jNkJdtxQo4Pc57U1n",
+  // };
+  // console.log(JSON.stringify(metadata));
+  let result = await ipfs.add(JSON.stringify(metadata));
+  let maxPrice = parseInt(price) * 1.1;
+  console.log("!!!!IPFS hash: ", result.path);
+  // console.log("!!!account", account);
+  await marketplace.methods
+    // .createTicket(this.web3.utils.toWei(price, "ether"), result.path)
+    .createTicket(
+      web3.utils.toWei(price, "ether"),
+      web3.utils.toWei(maxPrice.toString(), "ether"),
+      result.path
+    )
+    .send({ from: account });
+  // .on("transactionHash", (hash) => {
+  //   dispatch(ticketCreating());
+  // })
+  // .on("error", (error) => {
+  //   console.log(error);
+  //   window.alert("There was an error!");
+  // });
+  console.log("!!!!Ticket created successfully!");
+  console.log("!!!!IPFS hash: ", result.path);
 
   //const num_tickets = await marketplace.methods.getOnSaleLength().call();
   //console.log("!!!!!num_tickets", num_tickets);
