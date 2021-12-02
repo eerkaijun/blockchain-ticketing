@@ -44,7 +44,8 @@ const showTickets = (props, handleShow) => {
     marketplaceOwner,
   } = props;
 
-  // console.log("!!!!showTickets props", props);
+  console.log("!!!!showTickets props", props);
+  console.log("!!!!marketplace._address: ", marketplace._address);
   return (
     <tbody>
       {tickets.map((ticket, ind) => {
@@ -57,7 +58,16 @@ const showTickets = (props, handleShow) => {
             <td>{ticket.ticket_category}</td>
             <td>{ticket.ticket_id}</td>
             <td>{ticket.on_sale.toString()}</td>
-
+            <td>
+              {/* "https://testnets.opensea.io/assets/mumbai/0x4ed16b31e2d57aba2f3e81f0ba57b258e7efc5eb/0" */}
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://testnets.opensea.io/assets/mumbai/${marketplace._address}/${ticket.ticket_id}`}
+              >
+                NFT in OpenSea
+              </a>
+            </td>
             <td>
               {/* TODO use marketplaceState[1] to hide/show buttons depend on the marketplaceState
             creatingTickets, investmentStart, investmentStop, ticketSaleStart, eventStart  */}
@@ -144,6 +154,7 @@ class Tickets extends Component {
                 <th>Category</th>
                 <th>Ticket ID</th>
                 <th>On Sale</th>
+                <th>OpenSea</th>
                 <th>Actions</th>
               </tr>
             </thead>
