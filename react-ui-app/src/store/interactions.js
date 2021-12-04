@@ -21,9 +21,7 @@ import {
   ticketBouhgt,
 } from "./actions";
 import Marketplace from "../contracts-json/Marketplace.json";
-import { MARKETPLACE_STATES } from "../hardcodedConstants";
-// import Exchange from "../abis/Exchange.json";
-// import { ETHER_ADDRESS } from "../helpers";
+import { MARKETPLACE_STATES, CATEGORIES, COLORS } from "../hardcodedConstants";
 
 // const ipfsClient = require("ipfs-http-client");
 
@@ -140,14 +138,14 @@ export const createTicket = async (
   // let ticketText = `Seat: ${seat} \n Price: ${price} \n Category: ${category}`;
 
   let ticketText = `<tspan x="50%" dy="1.2em">Seat: ${seat}</tspan>
-    <tspan x="50%" dy="1.2em">Category: ${category}</tspan>
+    <tspan x="50%" dy="1.2em">Category: ${CATEGORIES[category]}</tspan>
     <tspan x="50%" dy="1.2em">Price: ${price} </tspan>`;
 
   let encodedString = Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">
   <style>.base { fill: white; font-family: serif; font-size: 14px; }</style>
-  <rect width="100%" height="100%" fill="black" />
-  <text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">${ticketText}</text>
+  <rect width="100%" height="100%" fill="${COLORS[category]}" />
+  <text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">${ticketText}</text>
 </svg>`
   ).toString("base64");
   let metadata = {
@@ -155,16 +153,16 @@ export const createTicket = async (
     ticket_category: category,
     ticket_value: price,
     attributes: [
-      {
-        trait_type: "Breed",
-        value: "Maltipoo",
-      },
-      {
-        trait_type: "Eye color",
-        value: "Mocha",
-      },
+      // {
+      //   trait_type: "Breed",
+      //   value: "Maltipoo",
+      // },
+      // {
+      //   trait_type: "Eye color",
+      //   value: "Mocha",
+      // },
     ],
-    description: "The world's most adorable and sensitive pup.",
+    description: `DApp Marketplace. Ticket seat# ${seat}`,
     image:
       // "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj4KICAgIDxzdHlsZT4uYmFzZSB7IGZpbGw6IHdoaXRlOyBmb250LWZhbWlseTogc2VyaWY7IGZvbnQtc2l6ZTogMTRweDsgfTwvc3R5bGU+CiAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJibGFjayIgLz4KICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBjbGFzcz0iYmFzZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RXBpY0xvcmRIYW1idXJnZXI8L3RleHQ+Cjwvc3ZnPg==",
       `data:image/svg+xml;base64,${encodedString}`,

@@ -13,3 +13,7 @@ export const CATEGORIES = {
   0: "Common",
   1: "VIP",
 };
+export const COLORS = {
+  0: "blue",
+  1: "black",
+};
