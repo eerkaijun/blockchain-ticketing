@@ -43,6 +43,15 @@ module.exports = {
       skipDryRun: true,
     },
 
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/3275f4ffdd0d4b3e8ac104b1bd78007d`),
+      network_id: 4,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+    },
+
     ropsten: {
       provider: () =>
         new HDWalletProvider(

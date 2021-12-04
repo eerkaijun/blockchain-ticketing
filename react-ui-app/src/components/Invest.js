@@ -50,7 +50,7 @@ class Invest extends Component {
             <div>Total units for collateral: {numTickets}</div>
             <div>Sold collateral units: {investmentSold}</div>
             <div>Available collateral units: {numTickets - investmentSold}</div>
-            <div>Investment price : 3 SHY per unit(ticket)</div>
+            <div>Investment price : 0.1 ETH per unit(ticket)</div>
             {numTickets - investmentSold > 0 ? (
               <Button
                 variant="primary"

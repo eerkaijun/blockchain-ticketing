@@ -63,7 +63,7 @@ const showTickets = (props, handleShow) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={`https://testnets.opensea.io/assets/mumbai/${marketplace._address}/${ticket.ticket_id}`}
+                href={`https://testnets.opensea.io/assets/rinkeby/${marketplace._address}/${ticket.ticket_id}`}
               >
                 NFT in OpenSea
               </a>

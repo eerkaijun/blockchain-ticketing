@@ -457,7 +457,7 @@ export const invest = async (
     // .send({ from: account, value: web3.utils.toWei("30", "ether") })
     .send({
       from: account,
-      value: web3.utils.toWei(investValue.toString(), "ether"),
+      value: web3.utils.toWei(investValue.toString(), "wei"),
     })
 
     .on("transactionHash", (hash) => {
